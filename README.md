@@ -22,7 +22,7 @@ Le fichier `wrangler.jsonc` contient :
 - D1 `D1im` : `ef0b5766-b3cb-4c29-838a-aa654e5bdffb`
 - KV `KVIM` : `67161ac889e0454ba2ee2de05c097aef`
 - Identifiant Super Admin initial : `megaglobal0777`
-- Nom du projet Pages : `global-immobilier-cloud`
+- Nom du projet Pages : `globalimmobilier`
 
 Le mot de passe Super Admin est fourni dans les fichiers locaux `.dev.vars` et `.secrets.production.env`. Ces deux fichiers sont exclus de Git par `.gitignore` et ne doivent jamais être publiés dans le dépôt.
 
