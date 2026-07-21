@@ -138,3 +138,20 @@ README.md
 ## Sécurité
 
 Les fichiers contenant un vrai mot de passe ne sont pas inclus dans cette nouvelle archive. Ne publiez jamais `.dev.vars`, `.env` ou un fichier de secrets dans GitHub.
+
+## Ajouts — documents des locataires et sécurité visuelle
+
+La fiche de chaque locataire dispose maintenant d’un bouton **Documents** donnant accès aux impressions A4 suivantes :
+
+- état des lieux d’entrée ;
+- état des lieux de sortie ;
+- inventaire des équipements ;
+- reçu du dépôt de garantie et des loyers payés d’avance ;
+- reçu des droits d’agence ;
+- reçu individuel de chaque paiement de loyer.
+
+Les formulaires récupèrent automatiquement le locataire, le bien occupé, le propriétaire, le contrat et les informations de l’entreprise. Les renseignements particuliers saisis sont conservés dans la fiche du locataire et synchronisés dans D1 avec le reste des données. Chaque impression comprend les espaces de signature et de cachet.
+
+Un bouton œil permet également d’afficher ou de masquer les mots de passe dans la connexion, la création d’entreprise, les utilisateurs, les paramètres et la console Super Admin.
+
+Dans le menu principal, **Propriétaires** est placé au-dessus de **Biens immobiliers**. Ces ajouts ne changent ni les bindings Cloudflare, ni les tables D1, ni le système d’authentification et de synchronisation existant.
