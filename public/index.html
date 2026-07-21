@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      GLOBAL IMMOBILIER
+      GLOBAL IMMOBILIER — Multi-entreprises, abonnements et Super Administration
+      V10
     </title>
     <style>
       :root {
@@ -1559,102 +1560,6 @@
         margin: 0 0 7px;
         color: var(--primary);
       }
-
-      /* Affichage / masquage sécurisé des mots de passe */
-      .password-field-wrap {
-        position: relative;
-        width: 100%;
-      }
-      .password-field-wrap > input {
-        padding-right: 52px !important;
-      }
-      .password-toggle {
-        position: absolute;
-        top: 50%;
-        right: 7px;
-        transform: translateY(-50%);
-        width: 38px;
-        height: 34px;
-        border: 0;
-        border-radius: 9px;
-        background: #eaf2ef;
-        color: var(--primary);
-        cursor: pointer;
-        display: grid;
-        place-items: center;
-        font-size: 17px;
-        line-height: 1;
-      }
-      .password-toggle:hover,
-      .password-toggle:focus {
-        background: #dcebe6;
-        outline: 2px solid rgba(13, 102, 89, 0.16);
-      }
-
-      /* Centre documentaire des locataires */
-      .tenant-doc-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-        margin-top: 15px;
-      }
-      .tenant-doc-card {
-        border: 1px solid var(--line);
-        border-radius: 15px;
-        padding: 15px;
-        background: #fbfdfc;
-        display: flex;
-        flex-direction: column;
-        gap: 9px;
-        min-height: 150px;
-      }
-      .tenant-doc-card h4 {
-        margin: 0;
-        color: var(--primary);
-        font-size: 14px;
-      }
-      .tenant-doc-card p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.5;
-        flex: 1;
-      }
-      .tenant-doc-status {
-        font-size: 10px;
-        font-weight: 900;
-        color: var(--ok);
-      }
-      .tenant-context {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .tenant-context > div {
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 11px;
-        background: #f7faf9;
-        min-width: 0;
-      }
-      .tenant-context small {
-        display: block;
-        color: var(--muted);
-        margin-bottom: 5px;
-      }
-      .tenant-context strong {
-        display: block;
-        color: var(--primary);
-        overflow-wrap: anywhere;
-      }
-      @media (max-width: 900px) {
-        .tenant-doc-grid { grid-template-columns: 1fr 1fr; }
-        .tenant-context { grid-template-columns: 1fr 1fr; }
-      }
-      @media (max-width: 560px) {
-        .tenant-doc-grid, .tenant-context { grid-template-columns: 1fr; }
-      }
     </style>
   </head>
   <body>
@@ -1662,7 +1567,9 @@
       <div class="login-visual">
         <h1 class="login-title">GLOBAL <span>IMMOBILIER</span></h1>
         <p>
-          Plateforme complète de gestion immobilière.
+          Plateforme complète de gestion immobilière : biens, propriétaires,
+          locataires, contrats, loyers, ventes de services, comptabilité,
+          rapports et catalogue public.
         </p>
       </div>
 
@@ -1690,6 +1597,8 @@
           <div id="loginPanel" class="auth-panel active">
             <h2>Connexion à l’application</h2>
             <p>
+              Administrateur, utilisateur d’entreprise ou Super Admin : utilisez
+              les mêmes champs de connexion.
             </p>
             <form id="loginForm">
               <div class="field">
@@ -1724,6 +1633,9 @@
               Ouvrir le catalogue public
             </button>
             <div class="auth-note">
+              L’application reconnaît automatiquement le compte et l’entreprise
+              liés à l’identifiant. Chaque identifiant doit être unique dans
+              toute l’application.
             </div>
           </div>
 
@@ -1844,10 +1756,10 @@
         <button class="nav-btn active" data-page="dashboard">
           ▦ Tableau de bord
         </button>
-        <button class="nav-btn" data-page="owners">♙ Propriétaires</button>
         <button class="nav-btn" data-page="properties">
           ⌂ Biens immobiliers
         </button>
+        <button class="nav-btn" data-page="owners">♙ Propriétaires</button>
         <button class="nav-btn" data-page="tenants">♟ Locataires</button>
         <button class="nav-btn" data-page="payments">
           ₣ Paiements et loyers
@@ -3630,7 +3542,7 @@
               .map((t) => {
                 const l = data.leases.find((x) => x.id === t.leaseId),
                   f = tenantFinancial(t);
-                return `<tr><td><b>${t.ref}</b></td><td>${esc(t.name)}<br><small>${esc(t.phone)} · ${esc(t.profession)}</small></td><td>${esc(nameOf(data.properties, t.propertyId))}</td><td>${l ? badge(l.status) : badge("Sans contrat")}</td><td>${money(l?.rent || 0)}</td><td>${money(f.paid)}</td><td>${f.arrears ? `<span class="badge danger">${money(f.arrears)}</span>` : badge("À jour")}</td><td>${fmtDate(t.entryDate)} → ${fmtDate(t.endDate)}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewTenant('${t.id}')">Fiche</button><button class="btn btn-accent btn-sm" onclick="openTenantDocuments('${t.id}')">Documents</button><button class="btn btn-primary btn-sm" onclick="openTenantForm('${t.id}')">Modifier</button><button class="btn btn-light btn-sm" onclick="openPaymentForm('', '${t.id}')">Paiement</button><button class="btn btn-danger btn-sm" onclick="deleteTenant('${t.id}')">Supprimer</button></div></td></tr>`;
+                return `<tr><td><b>${t.ref}</b></td><td>${esc(t.name)}<br><small>${esc(t.phone)} · ${esc(t.profession)}</small></td><td>${esc(nameOf(data.properties, t.propertyId))}</td><td>${l ? badge(l.status) : badge("Sans contrat")}</td><td>${money(l?.rent || 0)}</td><td>${money(f.paid)}</td><td>${f.arrears ? `<span class="badge danger">${money(f.arrears)}</span>` : badge("À jour")}</td><td>${fmtDate(t.entryDate)} → ${fmtDate(t.endDate)}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewTenant('${t.id}')">Fiche</button><button class="btn btn-primary btn-sm" onclick="openTenantForm('${t.id}')">Modifier</button><button class="btn btn-light btn-sm" onclick="openPaymentForm('', '${t.id}')">Paiement</button><button class="btn btn-danger btn-sm" onclick="deleteTenant('${t.id}')">Supprimer</button></div></td></tr>`;
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucun locataire.</td></tr>'
@@ -7003,435 +6915,6 @@
         const info = subscriptionInfo(company);
         return info.state === "active" && info.plan === "free";
       }
-
-
-      /* ================= DOCUMENTS LOCATAIRES & MOTS DE PASSE ================= */
-
-      function enhancePasswordInputs(root = document) {
-        root
-          .querySelectorAll('input[type="password"]:not([data-password-toggle-ready])')
-          .forEach((input) => {
-            input.dataset.passwordToggleReady = "1";
-            const wrapper = document.createElement("div");
-            wrapper.className = "password-field-wrap";
-            input.parentNode.insertBefore(wrapper, input);
-            wrapper.appendChild(input);
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "password-toggle";
-            button.setAttribute("aria-label", "Afficher le mot de passe");
-            button.setAttribute("title", "Afficher le mot de passe");
-            button.textContent = "👁";
-            wrapper.appendChild(button);
-            button.addEventListener("click", () => {
-              const visible = input.type === "text";
-              input.type = visible ? "password" : "text";
-              button.textContent = visible ? "👁" : "🙈";
-              button.setAttribute(
-                "aria-label",
-                visible ? "Afficher le mot de passe" : "Masquer le mot de passe",
-              );
-              button.setAttribute(
-                "title",
-                visible ? "Afficher le mot de passe" : "Masquer le mot de passe",
-              );
-              input.focus();
-              try {
-                input.setSelectionRange(input.value.length, input.value.length);
-              } catch (e) {}
-            });
-          });
-      }
-
-      function installPasswordToggles() {
-        enhancePasswordInputs(document);
-        const observer = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-              if (node.nodeType === 1) enhancePasswordInputs(node);
-            }
-          }
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-      }
-
-      const TENANT_DOCUMENT_LABELS = {
-        entry: "État des lieux d’entrée",
-        exit: "État des lieux de sortie",
-        inventory: "Inventaire des équipements",
-        guarantee: "Reçu du dépôt de garantie et des loyers payés d’avance",
-        agency: "Reçu des droits d’agence",
-      };
-
-      function tenantDocumentContext(tenantId) {
-        const tenant = data.tenants.find((x) => x.id === tenantId);
-        if (!tenant) return null;
-        const property = data.properties.find((x) => x.id === tenant.propertyId);
-        const lease = data.leases.find((x) => x.id === tenant.leaseId);
-        const owner = data.owners.find(
-          (x) => x.id === (lease?.ownerId || property?.ownerId),
-        );
-        const payments = data.payments.filter(
-          (x) => x.tenantId === tenantId && !x.cancelled,
-        );
-        return { tenant, property, lease, owner, payments };
-      }
-
-      function ensureTenantDocuments(tenant) {
-        if (!tenant.documents || typeof tenant.documents !== "object")
-          tenant.documents = {};
-        return tenant.documents;
-      }
-
-      function tenantContextHTML(context) {
-        const { tenant, property, lease, owner } = context;
-        return `<div class="tenant-context"><div><small>Locataire</small><strong>${esc(tenant.name)}<br>${esc(tenant.ref || "—")}</strong></div><div><small>Bien occupé</small><strong>${esc(property?.title || "—")}<br>${esc(property?.ref || "—")}</strong></div><div><small>Propriétaire</small><strong>${esc(owner?.name || "—")}<br>${esc(owner?.phone || "—")}</strong></div><div><small>Contrat</small><strong>${esc(lease?.ref || "—")}<br>${fmtDate(lease?.startDate)} → ${lease?.leaseType === "Indéterminée" ? "Indéterminée" : fmtDate(lease?.endDate)}</strong></div></div>`;
-      }
-
-      function tenantDocCard(tenantId, type, description, saved) {
-        return `<div class="tenant-doc-card"><h4>${esc(TENANT_DOCUMENT_LABELS[type])}</h4><p>${esc(description)}</p><div class="tenant-doc-status">${saved ? "✓ Document renseigné" : "À renseigner"}</div><button class="btn ${saved ? "btn-light" : "btn-primary"} full" type="button" onclick="openTenantDocumentForm('${attr(tenantId)}','${attr(type)}')">${saved ? "Modifier / imprimer" : "Remplir le document"}</button></div>`;
-      }
-
-      function openTenantDocuments(tenantId) {
-        const context = tenantDocumentContext(tenantId);
-        if (!context) {
-          toast("Locataire introuvable.");
-          return;
-        }
-        const docs = ensureTenantDocuments(context.tenant);
-        modalTitle.textContent = "Documents du locataire — " + context.tenant.name;
-        modalBody.innerHTML =
-          tenantContextHTML(context) +
-          `<div class="notice"><b>Documents A4 :</b> les renseignements du locataire, du bien, du propriétaire, du contrat et de l’entreprise sont repris automatiquement. Les informations particulières saisies sont enregistrées dans la fiche du locataire et synchronisées dans D1.</div><div class="tenant-doc-grid">${tenantDocCard(tenantId, "entry", "Constat contradictoire de l’état du bien lors de la remise des clés.", !!docs.entry)}${tenantDocCard(tenantId, "exit", "Constat contradictoire à la restitution du bien et des clés.", !!docs.exit)}${tenantDocCard(tenantId, "inventory", "Liste détaillée des équipements, quantités, états et observations.", !!docs.inventory)}${tenantDocCard(tenantId, "guarantee", "Justificatif du dépôt de garantie et des loyers réglés d’avance.", !!docs.guarantee)}${tenantDocCard(tenantId, "agency", "Justificatif individuel du règlement des droits et frais d’agence.", !!docs.agency)}<div class="tenant-doc-card"><h4>Reçus individuels des loyers</h4><p>Chaque paiement enregistré dispose de son reçu A4 individuel.</p><div class="tenant-doc-status">${context.payments.length} paiement(s) disponible(s)</div><button class="btn btn-primary full" type="button" onclick="openTenantRentReceipts('${attr(tenantId)}')">Afficher les reçus</button></div></div>`;
-        modalSave.textContent = "Fermer";
-        modalSave.onclick = closeModal;
-        modal.classList.add("show");
-      }
-
-      function documentStatusOptions(selected = "") {
-        return ["Très bon", "Bon", "Moyen", "À réparer", "Dégradé", "Non applicable"]
-          .map(
-            (value) =>
-              `<option ${selected === value ? "selected" : ""}>${value}</option>`,
-          )
-          .join("");
-      }
-
-      function tenantDocumentDefaults(type, context) {
-        const { tenant, property, lease } = context;
-        const saved = ensureTenantDocuments(tenant)[type] || {};
-        const base = {
-          date:
-            saved.date ||
-            (type === "entry" ? tenant.entryDate || lease?.startDate : today()),
-          place: saved.place || lease?.signPlace || data.settings.address || "",
-          representative:
-            saved.representative ||
-            lease?.managerName ||
-            currentSessionUser()?.name ||
-            data.settings.adminUser ||
-            "",
-          observations: saved.observations || "",
-        };
-        if (type === "entry" || type === "exit") {
-          return {
-            ...base,
-            electricityMeter: saved.electricityMeter || "",
-            waterMeter: saved.waterMeter || "",
-            keysCount:
-              saved.keysCount ??
-              (type === "entry" ? Number(lease?.keysCount || 0) : 0),
-            generalCondition: saved.generalCondition || "Bon",
-            walls: saved.walls || "Bon",
-            floors: saved.floors || "Bon",
-            ceilings: saved.ceilings || "Bon",
-            doorsWindows: saved.doorsWindows || "Bon",
-            electricity: saved.electricity || "Bon",
-            plumbing: saved.plumbing || "Bon",
-            sanitary: saved.sanitary || "Bon",
-            kitchen: saved.kitchen || "Bon",
-            exterior: saved.exterior || "Bon",
-            cleanliness: saved.cleanliness || "Bon",
-            damages: saved.damages || "",
-            repairs: saved.repairs || "",
-            outstanding: saved.outstanding || "",
-          };
-        }
-        if (type === "inventory") {
-          const equipmentSource = lease?.equipment || property?.equipment || "";
-          const generatedLines = String(equipmentSource)
-            .split(/[,;\n]+/)
-            .map((x) => x.trim())
-            .filter(Boolean)
-            .map((x) => `${x} | 1 | Bon |`)
-            .join("\n");
-          return {
-            ...base,
-            lines: saved.lines || generatedLines,
-            keysCount: saved.keysCount ?? Number(lease?.keysCount || 0),
-            electricityMeter: saved.electricityMeter || "",
-            waterMeter: saved.waterMeter || "",
-          };
-        }
-        if (type === "guarantee") {
-          return {
-            ...base,
-            receipt:
-              saved.receipt ||
-              `DG-${String(tenant.ref || "LOC").replace(/[^A-Za-z0-9]/g, "")}-${String(base.date).replace(/-/g, "")}`,
-            guarantee: saved.guarantee ?? Number(tenant.cautionPaid ?? lease?.caution ?? 0),
-            advanceMonths: saved.advanceMonths ?? Number(lease?.advanceMonths || 0),
-            advanceAmount: saved.advanceAmount ?? Number(lease?.advanceAmount || 0),
-            method: saved.method || lease?.paymentMode || "Espèces",
-            transactionRef: saved.transactionRef || "",
-            payer: saved.payer || tenant.name,
-          };
-        }
-        return {
-          ...base,
-          receipt:
-            saved.receipt ||
-            `AG-${String(tenant.ref || "LOC").replace(/[^A-Za-z0-9]/g, "")}-${String(base.date).replace(/-/g, "")}`,
-          amount: saved.amount ?? Number(tenant.agencyCharges ?? lease?.agencyFees ?? 0),
-          method: saved.method || lease?.paymentMode || "Espèces",
-          transactionRef: saved.transactionRef || "",
-          payer: saved.payer || tenant.name,
-          description:
-            saved.description ||
-            `Droits d’agence relatifs au contrat ${lease?.ref || "—"}`,
-        };
-      }
-
-      function documentCommonHeader(context, doc) {
-        return `${tenantContextHTML(context)}<div class="form-grid"><div class="field"><label>Date du document *</label><input id="doc_date" type="date" value="${attr(doc.date)}" required></div><div class="field"><label>Lieu d’établissement</label><input id="doc_place" value="${attr(doc.place)}"></div><div class="field span-2"><label>Responsable / représentant de l’agence</label><input id="doc_representative" value="${attr(doc.representative)}"></div>`;
-      }
-
-      function openTenantDocumentForm(tenantId, type) {
-        const context = tenantDocumentContext(tenantId);
-        if (!context || !TENANT_DOCUMENT_LABELS[type]) {
-          toast("Document ou locataire introuvable.");
-          return;
-        }
-        const doc = tenantDocumentDefaults(type, context);
-        editing = { type: "tenantDocument", tenantId, documentType: type };
-        modalTitle.textContent = TENANT_DOCUMENT_LABELS[type] + " — " + context.tenant.name;
-        let fields = documentCommonHeader(context, doc);
-        if (type === "entry" || type === "exit") {
-          fields += `<div class="section-title">Compteurs et remise des clés</div><div class="field"><label>Index compteur électrique</label><input id="doc_electricityMeter" value="${attr(doc.electricityMeter)}"></div><div class="field"><label>Index compteur d’eau</label><input id="doc_waterMeter" value="${attr(doc.waterMeter)}"></div><div class="field"><label>${type === "entry" ? "Nombre de clés remises" : "Nombre de clés restituées"}</label><input id="doc_keysCount" type="number" min="0" value="${Number(doc.keysCount || 0)}"></div><div class="field"><label>État général</label><select id="doc_generalCondition">${documentStatusOptions(doc.generalCondition)}</select></div><div class="section-title">État détaillé du bien</div>${[["walls","Murs et peintures"],["floors","Sols et revêtements"],["ceilings","Plafonds"],["doorsWindows","Portes et fenêtres"],["electricity","Installation électrique"],["plumbing","Plomberie et alimentation d’eau"],["sanitary","Sanitaires"],["kitchen","Cuisine"],["exterior","Cour, clôture et extérieurs"],["cleanliness","Propreté générale"]].map(([id,label]) => `<div class="field"><label>${label}</label><select id="doc_${id}">${documentStatusOptions(doc[id])}</select></div>`).join("")}<div class="field span-2"><label>Dégradations, anomalies ou réserves constatées</label><textarea id="doc_damages">${esc(doc.damages)}</textarea></div><div class="field span-2"><label>Travaux ou réparations convenus</label><textarea id="doc_repairs">${esc(doc.repairs)}</textarea></div>${type === "exit" ? `<div class="field span-2"><label>Sommes, charges ou obligations restant à régulariser</label><textarea id="doc_outstanding">${esc(doc.outstanding)}</textarea></div>` : ""}<div class="field span-2"><label>Observations complémentaires</label><textarea id="doc_observations">${esc(doc.observations)}</textarea></div></div>`;
-        } else if (type === "inventory") {
-          fields += `<div class="section-title">Inventaire</div><div class="field span-2"><label>Équipements — une ligne par élément : Désignation | Quantité | État | Observation</label><textarea id="doc_lines" style="min-height:190px" placeholder="Climatiseur | 1 | Bon | Télécommande remise">${esc(doc.lines)}</textarea></div><div class="field"><label>Nombre de clés remises</label><input id="doc_keysCount" type="number" min="0" value="${Number(doc.keysCount || 0)}"></div><div class="field"><label>Index compteur électrique</label><input id="doc_electricityMeter" value="${attr(doc.electricityMeter)}"></div><div class="field"><label>Index compteur d’eau</label><input id="doc_waterMeter" value="${attr(doc.waterMeter)}"></div><div class="field span-2"><label>Observations complémentaires</label><textarea id="doc_observations">${esc(doc.observations)}</textarea></div></div>`;
-        } else if (type === "guarantee") {
-          fields += `<div class="section-title">Règlement reçu</div><div class="field"><label>Numéro du reçu</label><input id="doc_receipt" value="${attr(doc.receipt)}"></div><div class="field"><label>Nom du payeur</label><input id="doc_payer" value="${attr(doc.payer)}"></div><div class="field"><label>Dépôt de garantie</label><input id="doc_guarantee" type="number" value="${Number(doc.guarantee || 0)}" oninput="tenantDocumentAmountCalc()"></div><div class="field"><label>Nombre de mois payés d’avance</label><input id="doc_advanceMonths" type="number" min="0" value="${Number(doc.advanceMonths || 0)}"></div><div class="field"><label>Montant des loyers payés d’avance</label><input id="doc_advanceAmount" type="number" value="${Number(doc.advanceAmount || 0)}" oninput="tenantDocumentAmountCalc()"></div><div class="field"><label>Total reçu</label><input id="doc_total" type="number" value="${Number(doc.guarantee || 0) + Number(doc.advanceAmount || 0)}" readonly></div><div class="field"><label>Mode de paiement</label><select id="doc_method">${paymentModes.map((x) => `<option ${doc.method === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field"><label>Référence de transaction</label><input id="doc_transactionRef" value="${attr(doc.transactionRef)}"></div><div class="field span-2"><label>Observation</label><textarea id="doc_observations">${esc(doc.observations)}</textarea></div></div>`;
-        } else {
-          fields += `<div class="section-title">Règlement reçu</div><div class="field"><label>Numéro du reçu</label><input id="doc_receipt" value="${attr(doc.receipt)}"></div><div class="field"><label>Nom du payeur</label><input id="doc_payer" value="${attr(doc.payer)}"></div><div class="field"><label>Montant des droits d’agence</label><input id="doc_amount" type="number" value="${Number(doc.amount || 0)}"></div><div class="field"><label>Mode de paiement</label><select id="doc_method">${paymentModes.map((x) => `<option ${doc.method === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field span-2"><label>Désignation / motif</label><input id="doc_description" value="${attr(doc.description)}"></div><div class="field"><label>Référence de transaction</label><input id="doc_transactionRef" value="${attr(doc.transactionRef)}"></div><div class="field span-2"><label>Observation</label><textarea id="doc_observations">${esc(doc.observations)}</textarea></div></div>`;
-        }
-        modalBody.innerHTML = `<div class="actions" style="margin-bottom:13px"><button class="btn btn-light" type="button" onclick="openTenantDocuments('${attr(tenantId)}')">← Retour aux documents</button>${ensureTenantDocuments(context.tenant)[type] ? `<button class="btn btn-light" type="button" onclick="printTenantDocument('${attr(tenantId)}','${attr(type)}')">Imprimer la version enregistrée</button>` : ""}</div>${fields}<div class="notice" style="margin-top:14px">L’impression est préparée en A4 avec les zones de signature des parties et l’emplacement du cachet de l’agence.</div>`;
-        modalSave.textContent = "Enregistrer et imprimer";
-        modalSave.onclick = saveAndPrintTenantDocument;
-        modal.classList.add("show");
-        tenantDocumentAmountCalc();
-      }
-
-      function tenantDocumentAmountCalc() {
-        if ($("doc_total"))
-          $("doc_total").value =
-            Number(val("doc_guarantee")) + Number(val("doc_advanceAmount"));
-      }
-
-      function collectTenantDocument(type) {
-        const common = {
-          date: val("doc_date"),
-          place: val("doc_place"),
-          representative: val("doc_representative"),
-          observations: val("doc_observations"),
-          updatedAt: new Date().toISOString(),
-        };
-        if (type === "entry" || type === "exit") {
-          return {
-            ...common,
-            electricityMeter: val("doc_electricityMeter"),
-            waterMeter: val("doc_waterMeter"),
-            keysCount: Number(val("doc_keysCount")),
-            generalCondition: val("doc_generalCondition"),
-            walls: val("doc_walls"),
-            floors: val("doc_floors"),
-            ceilings: val("doc_ceilings"),
-            doorsWindows: val("doc_doorsWindows"),
-            electricity: val("doc_electricity"),
-            plumbing: val("doc_plumbing"),
-            sanitary: val("doc_sanitary"),
-            kitchen: val("doc_kitchen"),
-            exterior: val("doc_exterior"),
-            cleanliness: val("doc_cleanliness"),
-            damages: val("doc_damages"),
-            repairs: val("doc_repairs"),
-            outstanding: val("doc_outstanding"),
-          };
-        }
-        if (type === "inventory") {
-          return {
-            ...common,
-            lines: val("doc_lines"),
-            keysCount: Number(val("doc_keysCount")),
-            electricityMeter: val("doc_electricityMeter"),
-            waterMeter: val("doc_waterMeter"),
-          };
-        }
-        if (type === "guarantee") {
-          return {
-            ...common,
-            receipt: val("doc_receipt"),
-            payer: val("doc_payer"),
-            guarantee: Number(val("doc_guarantee")),
-            advanceMonths: Number(val("doc_advanceMonths")),
-            advanceAmount: Number(val("doc_advanceAmount")),
-            method: val("doc_method"),
-            transactionRef: val("doc_transactionRef"),
-          };
-        }
-        return {
-          ...common,
-          receipt: val("doc_receipt"),
-          payer: val("doc_payer"),
-          amount: Number(val("doc_amount")),
-          method: val("doc_method"),
-          transactionRef: val("doc_transactionRef"),
-          description: val("doc_description"),
-        };
-      }
-
-      function saveAndPrintTenantDocument() {
-        if (editing?.type !== "tenantDocument") return;
-        if (!val("doc_date")) {
-          toast("La date du document est obligatoire.");
-          return;
-        }
-        const { tenantId, documentType } = editing;
-        const context = tenantDocumentContext(tenantId);
-        if (!context) return;
-        ensureTenantDocuments(context.tenant)[documentType] =
-          collectTenantDocument(documentType);
-        logAction(
-          `Enregistrement du document ${TENANT_DOCUMENT_LABELS[documentType]} pour ${context.tenant.ref}`,
-        );
-        closeModal();
-        saveData("Document du locataire enregistré.");
-        setTimeout(() => printTenantDocument(tenantId, documentType), 180);
-      }
-
-      function parseInventoryDocumentLines(value) {
-        return String(value || "")
-          .split(/\n+/)
-          .map((line) => line.trim())
-          .filter(Boolean)
-          .map((line) => {
-            const parts = line.split("|").map((part) => part.trim());
-            return {
-              designation: parts[0] || "—",
-              quantity: parts[1] || "1",
-              condition: parts[2] || "—",
-              observation: parts[3] || "",
-            };
-          });
-      }
-
-      function tenantPrintIdentityTable(context) {
-        const { tenant, property, lease, owner } = context;
-        const propertyAddress = [
-          property?.address,
-          property?.district,
-          property?.commune,
-          property?.city,
-        ]
-          .filter(Boolean)
-          .join(", ");
-        return `<table class="contract-info"><tbody><tr><th>Locataire</th><td><b>${esc(tenant.name)}</b><br>Réf. ${esc(tenant.ref || "—")} · ${esc(tenant.phone || "—")}<br>${esc(tenant.idType || "Pièce")} : ${esc(tenant.idNumber || "—")}</td></tr><tr><th>Bien occupé</th><td><b>${esc(property?.title || "—")}</b> — Réf. ${esc(property?.ref || "—")}<br>${esc(propertyAddress || "Adresse non renseignée")}</td></tr><tr><th>Propriétaire / Bailleur</th><td><b>${esc(owner?.name || "—")}</b><br>${esc(owner?.phone || "—")} · ${esc(owner?.address || "—")}</td></tr><tr><th>Contrat</th><td><b>${esc(lease?.ref || "—")}</b> · du ${fmtDate(lease?.startDate)} au ${lease?.leaseType === "Indéterminée" ? "durée indéterminée" : fmtDate(lease?.endDate)} · Loyer : ${money(lease?.rent || 0)}</td></tr></tbody></table>`;
-      }
-
-      function tenantSignatureHTML(labels = ["Le Bailleur / son représentant", "Le Locataire", "L’Agence immobilière"]) {
-        return `<div class="signature-grid">${labels
-          .map(
-            (label, index) =>
-              `<div><b>${esc(label)}</b><div class="signature-space">${index === labels.length - 1 ? "Signature et cachet" : "Signature précédée de la mention « Lu et approuvé »"}</div></div>`,
-          )
-          .join("")}</div>`;
-      }
-
-      function printTenantDocument(tenantId, type) {
-        const context = tenantDocumentContext(tenantId);
-        if (!context || !TENANT_DOCUMENT_LABELS[type]) return;
-        const doc = tenantDocumentDefaults(type, context);
-        const identity = tenantPrintIdentityTable(context);
-        let body = `<p>Document établi contradictoirement à <b>${esc(doc.place || "—")}</b>, le <b>${fmtDate(doc.date)}</b>, par les parties identifiées ci-dessous.</p>${identity}`;
-        if (type === "entry" || type === "exit") {
-          const rows = [
-            ["État général", doc.generalCondition],
-            ["Murs et peintures", doc.walls],
-            ["Sols et revêtements", doc.floors],
-            ["Plafonds", doc.ceilings],
-            ["Portes et fenêtres", doc.doorsWindows],
-            ["Installation électrique", doc.electricity],
-            ["Plomberie et alimentation d’eau", doc.plumbing],
-            ["Sanitaires", doc.sanitary],
-            ["Cuisine", doc.kitchen],
-            ["Cour, clôture et extérieurs", doc.exterior],
-            ["Propreté générale", doc.cleanliness],
-          ];
-          body += `<h3>Relevés et clés</h3><table><thead><tr><th>Compteur électrique</th><th>Compteur d’eau</th><th>${type === "entry" ? "Clés remises" : "Clés restituées"}</th></tr></thead><tbody><tr><td>${esc(doc.electricityMeter || "—")}</td><td>${esc(doc.waterMeter || "—")}</td><td>${Number(doc.keysCount || 0)}</td></tr></tbody></table><h3>Constat détaillé</h3><table><thead><tr><th>Élément contrôlé</th><th>État constaté</th></tr></thead><tbody>${rows.map(([label, value]) => `<tr><td>${esc(label)}</td><td>${esc(value || "—")}</td></tr>`).join("")}</tbody></table><h3>Dégradations, anomalies ou réserves</h3><p>${esc(doc.damages || "Néant").replace(/\n/g, "<br>")}</p><h3>Travaux ou réparations convenus</h3><p>${esc(doc.repairs || "Néant").replace(/\n/g, "<br>")}</p>${type === "exit" ? `<h3>Sommes ou obligations restant à régulariser</h3><p>${esc(doc.outstanding || "Néant").replace(/\n/g, "<br>")}</p>` : ""}<h3>Observations complémentaires</h3><p>${esc(doc.observations || "Néant").replace(/\n/g, "<br>")}</p><p>Les parties déclarent avoir procédé ensemble à la visite du bien et reconnaissent l’exactitude du présent constat, établi pour servir et valoir ce que de droit.</p>${tenantSignatureHTML()}`;
-        } else if (type === "inventory") {
-          const lines = parseInventoryDocumentLines(doc.lines);
-          body += `<h3>Liste des équipements remis au locataire</h3><table><thead><tr><th>N°</th><th>Désignation</th><th>Quantité</th><th>État</th><th>Observation</th></tr></thead><tbody>${lines.map((item, index) => `<tr><td>${index + 1}</td><td>${esc(item.designation)}</td><td>${esc(item.quantity)}</td><td>${esc(item.condition)}</td><td>${esc(item.observation || "—")}</td></tr>`).join("") || '<tr><td colspan="5">Aucun équipement renseigné.</td></tr>'}</tbody></table><h3>Éléments complémentaires remis</h3><table><tbody><tr><th>Nombre de clés</th><td>${Number(doc.keysCount || 0)}</td><th>Compteur électrique</th><td>${esc(doc.electricityMeter || "—")}</td><th>Compteur d’eau</th><td>${esc(doc.waterMeter || "—")}</td></tr></tbody></table><h3>Observations</h3><p>${esc(doc.observations || "Néant").replace(/\n/g, "<br>")}</p><p>Le locataire reconnaît avoir reçu les équipements ci-dessus dans les états indiqués et s’engage à les restituer à la fin du contrat, sous réserve de leur usure normale.</p>${tenantSignatureHTML()}`;
-        } else if (type === "guarantee") {
-          const total = Number(doc.guarantee || 0) + Number(doc.advanceAmount || 0);
-          body = `<table><tbody><tr><th>N° du reçu</th><td><b>${esc(doc.receipt || "—")}</b></td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Payeur</th><td>${esc(doc.payer || context.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr><tr><th>Référence transaction</th><td colspan="3">${esc(doc.transactionRef || "—")}</td></tr></tbody></table>${identity}<p>Nous, <b>${esc(data.settings.agency)}</b>, reconnaissons avoir reçu de <b>${esc(doc.payer || context.tenant.name)}</b> la somme totale de <b>${money(total)}</b> (${esc(amountInWords(total))}), au titre des règlements détaillés ci-dessous.</p><table><thead><tr><th>Désignation</th><th>Nombre de mois</th><th>Montant</th></tr></thead><tbody><tr><td>Dépôt de garantie / caution</td><td>—</td><td><b>${money(doc.guarantee)}</b></td></tr><tr><td>Loyers payés d’avance</td><td>${Number(doc.advanceMonths || 0)}</td><td><b>${money(doc.advanceAmount)}</b></td></tr><tr><th colspan="2">TOTAL REÇU</th><th>${money(total)}</th></tr></tbody></table><p><b>Observation :</b> ${esc(doc.observations || "Néant")}</p><p>Le présent reçu est délivré au payeur pour servir et valoir ce que de droit.</p>${tenantSignatureHTML(["Le Payeur / Locataire", "Le Bailleur / son représentant", "L’Agence — signature et cachet"])}`;
-        } else {
-          const amount = Number(doc.amount || 0);
-          body = `<table><tbody><tr><th>N° du reçu</th><td><b>${esc(doc.receipt || "—")}</b></td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Payeur</th><td>${esc(doc.payer || context.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr><tr><th>Référence transaction</th><td colspan="3">${esc(doc.transactionRef || "—")}</td></tr></tbody></table>${identity}<p>Nous, <b>${esc(data.settings.agency)}</b>, reconnaissons avoir reçu de <b>${esc(doc.payer || context.tenant.name)}</b> la somme de <b>${money(amount)}</b> (${esc(amountInWords(amount))}).</p><table><thead><tr><th>Désignation</th><th>Montant</th></tr></thead><tbody><tr><td>${esc(doc.description || "Droits et frais d’agence")}</td><td><b>${money(amount)}</b></td></tr></tbody></table><p><b>Observation :</b> ${esc(doc.observations || "Néant")}</p><p>Le présent reçu est délivré au payeur pour servir et valoir ce que de droit.</p>${tenantSignatureHTML(["Le Payeur / Locataire", "Le Bailleur / son représentant", "L’Agence — signature et cachet"])}`;
-        }
-        printDocument(
-          TENANT_DOCUMENT_LABELS[type].toUpperCase(),
-          body,
-          `Locataire : ${context.tenant.name} · Contrat : ${context.lease?.ref || "—"}`,
-        );
-      }
-
-      function openTenantRentReceipts(tenantId) {
-        const context = tenantDocumentContext(tenantId);
-        if (!context) return;
-        const rows = [...context.payments].sort((a, b) =>
-          String(b.date || "").localeCompare(String(a.date || "")),
-        );
-        modalTitle.textContent = "Reçus individuels — " + context.tenant.name;
-        modalBody.innerHTML = `<div class="actions" style="margin-bottom:13px"><button class="btn btn-light" type="button" onclick="openTenantDocuments('${attr(tenantId)}')">← Retour aux documents</button><button class="btn btn-primary" type="button" onclick="openPaymentForm('', '${attr(tenantId)}')">Ajouter un paiement</button></div>${tenantContextHTML(context)}<div class="table-wrap"><table class="data-table"><thead><tr><th>Reçu</th><th>Date</th><th>Type</th><th>Période</th><th>Payé</th><th>Mode</th><th>Actions</th></tr></thead><tbody>${rows.map((payment) => `<tr><td><b>${esc(payment.receipt)}</b></td><td>${fmtDate(payment.date)}</td><td>${esc(payment.kind || "Loyer")}</td><td>${esc(payment.period || "—")}</td><td><b>${money(payment.paid)}</b></td><td>${esc(payment.method || "—")}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="openPaymentForm('${attr(payment.id)}')">Modifier</button><button class="btn btn-primary btn-sm" onclick="printReceipt('${attr(payment.id)}')">Imprimer A4</button></div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">Aucun paiement enregistré pour ce locataire.</td></tr>'}</tbody></table></div>`;
-        modalSave.textContent = "Fermer";
-        modalSave.onclick = closeModal;
-        modal.classList.add("show");
-      }
-
-      /* Reçu individuel enrichi : propriétaire, contrat, entreprise et signatures. */
-      function printReceipt(id) {
-        const payment = data.payments.find((x) => x.id === id);
-        if (!payment) {
-          toast("Paiement introuvable.");
-          return;
-        }
-        const context = tenantDocumentContext(payment.tenantId);
-        if (!context) return;
-        const due = Number(payment.expected || 0) + Number(payment.penalty || 0);
-        const remaining = Math.max(0, due - Number(payment.paid || 0));
-        const title =
-          String(payment.kind || "Loyer").toLowerCase() === "loyer"
-            ? "REÇU INDIVIDUEL DE PAIEMENT DE LOYER"
-            : `REÇU INDIVIDUEL — ${String(payment.kind || "Paiement").toUpperCase()}`;
-        const body = `<table><tbody><tr><th>N° du reçu</th><td><b>${esc(payment.receipt)}</b></td><th>Date</th><td>${fmtDate(payment.date)}</td></tr><tr><th>Locataire</th><td>${esc(context.tenant.name)}</td><th>Téléphone</th><td>${esc(context.tenant.phone || "—")}</td></tr><tr><th>Bien</th><td>${esc(context.property?.title || "—")} — ${esc(context.property?.ref || "—")}</td><th>Contrat</th><td>${esc(context.lease?.ref || "—")}</td></tr><tr><th>Propriétaire</th><td>${esc(context.owner?.name || "—")}</td><th>Période concernée</th><td>${esc(payment.period || "—")}</td></tr><tr><th>Mode de paiement</th><td>${esc(payment.method || "—")}</td><th>Référence transaction</th><td>${esc(payment.transactionRef || "—")}</td></tr></tbody></table><p>Nous, <b>${esc(data.settings.agency)}</b>, reconnaissons avoir reçu de <b>${esc(context.tenant.name)}</b> la somme de <b>${money(payment.paid)}</b> (${esc(amountInWords(payment.paid))}), au titre du règlement indiqué ci-dessous.</p><table><thead><tr><th>Désignation</th><th>Montant attendu</th><th>Pénalité</th><th>Montant payé</th><th>Reste</th></tr></thead><tbody><tr><td>${esc(payment.kind || "Loyer")}</td><td>${money(payment.expected)}</td><td>${money(payment.penalty)}</td><td><b>${money(payment.paid)}</b></td><td>${money(remaining)}</td></tr></tbody></table><p><b>Observation :</b> ${esc(payment.observation || "Néant")}</p><p>Le présent reçu est délivré au locataire pour servir et valoir ce que de droit.</p>${tenantSignatureHTML(["Le Locataire / Payeur", "Le Bailleur / son représentant", "L’Agence — signature et cachet"])}`;
-        printDocument(
-          title,
-          body,
-          `Reçu ${payment.receipt} · ${context.tenant.name}`,
-        );
-      }
-
-      installPasswordToggles();
 
       /* ======================= FIN CLOUD OVERRIDES ======================= */
 
