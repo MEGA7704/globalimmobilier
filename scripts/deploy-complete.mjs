@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 
-const projectName = 'global-immobilier-cloud';
+const projectName = 'globalimmobilier';
 
 function run(command, args, { allowAlreadyExists = false } = {}) {
   const result = spawnSync(command, args, {
