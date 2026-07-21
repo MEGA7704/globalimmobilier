@@ -1,0 +1,18 @@
+{
+  "name": "global-immobilier-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GLOBAL IMMOBILIER multi-entreprises sur Cloudflare Pages, D1 et KV",
+  "scripts": {
+    "dev": "wrangler pages dev public --local --port 8788",
+    "db:migrate:local": "wrangler d1 migrations apply D1IM --local",
+    "db:migrate:remote": "wrangler d1 migrations apply D1IM --remote",
+    "secret:upload": "wrangler pages secret bulk .secrets.production.env --project-name global-immobilier-cloud",
+    "deploy": "wrangler pages deploy public --project-name global-immobilier-cloud",
+    "deploy:complete": "node scripts/deploy-complete.mjs",
+    "check": "node --check 'functions/api/[[path]].js' && node scripts/check-frontend.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.68.0"
+  }
+}
