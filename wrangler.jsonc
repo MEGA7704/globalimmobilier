@@ -7,7 +7,8 @@
   "vars": {
     "SUPER_ADMIN_USERNAME": "megaglobal0777",
     "SESSION_TTL_SECONDS": "604800",
-    "MAX_STATE_BYTES": "12582912"
+    "MAX_STATE_BYTES": "12582912",
+    "SKIP_DEPENDENCY_INSTALL": "true"
   },
   "d1_databases": [
     {
