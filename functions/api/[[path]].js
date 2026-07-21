@@ -84,7 +84,7 @@ class ApiError extends Error {
 function validateBindings(env) {
   if (!env.D1IM) throw new ApiError(500, 'Binding D1IM manquant.', 'D1_BINDING_MISSING');
   if (!env.KVIM) throw new ApiError(500, 'Binding KVIM manquant.', 'KV_BINDING_MISSING');
-  if (!env.SUPER_ADMIN_PASSWORD) throw new ApiError(500, 'Secret Cloudflare manquant : SUPER_ADMIN_PASSWORD.', 'SECRET_MISSING');
+  if (!env.SUPER_ADMIN_PASSWORD) throw new ApiError(500, 'Secret Cloudflare manquant dans le projet globalimmobilier (Production) : SUPER_ADMIN_PASSWORD.', 'SECRET_MISSING');
 }
 
 async function ensureSchema(env) {
@@ -109,6 +109,7 @@ async function health(env) {
   await env.KVIM.get('health:probe');
   return ok({
     status: 'ok',
+    project: 'globalimmobilier',
     database: 'D1IM',
     kv: 'KVIM',
     companies: Number(db?.count || 0),

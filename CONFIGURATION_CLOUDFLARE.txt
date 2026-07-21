@@ -1,0 +1,17 @@
+NOM DU PROJET CLOUDFLARE : globalimmobilier
+URL : https://globalimmobilier.pages.dev/
+DEPOT GITHUB : https://github.com/MEGA7704/globalimmobilier
+BRANCHE : main
+FRAMEWORK : Aucun
+COMMANDE DE BUILD : exit 0
+REPERTOIRE DE SORTIE : public
+REPERTOIRE RACINE : vide
+
+SECRET OBLIGATOIRE EN PRODUCTION :
+SUPER_ADMIN_PASSWORD
+
+IDENTIFIANT SUPER ADMIN :
+megaglobal0777
+
+TEST APRES DEPLOIEMENT :
+https://globalimmobilier.pages.dev/api/health

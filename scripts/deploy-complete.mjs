@@ -1,24 +1,47 @@
 import { spawnSync } from 'node:child_process';
 
 const projectName = 'globalimmobilier';
+const wrangler = ['--yes', 'wrangler@latest'];
 
-function run(command, args, { allowAlreadyExists = false } = {}) {
-  const result = spawnSync(command, args, {
-    encoding: 'utf8',
+function execute(args, options = {}) {
+  const { allowAlreadyExists = false, interactive = false, capture = false } = options;
+  const result = spawnSync('npx', [...wrangler, ...args], {
+    encoding: capture || !interactive ? 'utf8' : undefined,
     shell: process.platform === 'win32',
+    stdio: interactive ? 'inherit' : undefined,
   });
-  const output = `${result.stdout || ''}${result.stderr || ''}`;
-  process.stdout.write(output);
-  if (result.status === 0) return;
-  if (allowAlreadyExists && /already exists|existe déjà|project.*exists/i.test(output)) return;
+
+  const output = interactive ? '' : `${result.stdout || ''}${result.stderr || ''}`;
+  if (output) process.stdout.write(output);
+  if (result.status === 0) return output;
+  if (allowAlreadyExists && /already exists|existe déjà|project.*exists/i.test(output)) return output;
   process.exit(result.status ?? 1);
 }
 
-run('npx', [
-  'wrangler', 'pages', 'project', 'create', projectName,
+execute([
+  'pages', 'project', 'create', projectName,
   '--production-branch', 'main',
-  '--compatibility-date', '2026-07-21',
 ], { allowAlreadyExists: true });
-run('npx', ['wrangler', 'd1', 'migrations', 'apply', 'D1IM', '--remote']);
-run('npx', ['wrangler', 'pages', 'secret', 'bulk', '.secrets.production.env', '--project-name', projectName]);
-run('npx', ['wrangler', 'pages', 'deploy', 'public', '--project-name', projectName]);
+
+execute(['d1', 'migrations', 'apply', 'D1IM', '--remote']);
+
+const secrets = execute([
+  'pages', 'secret', 'list',
+  '--project-name', projectName,
+], { capture: true });
+
+if (!/SUPER_ADMIN_PASSWORD/.test(secrets)) {
+  console.log('\nLe secret SUPER_ADMIN_PASSWORD est absent. Saisissez maintenant sa valeur dans l’invite sécurisée Cloudflare.\n');
+  execute([
+    'pages', 'secret', 'put', 'SUPER_ADMIN_PASSWORD',
+    '--project-name', projectName,
+  ], { interactive: true });
+}
+
+execute([
+  'pages', 'deploy', 'public',
+  '--project-name', projectName,
+  '--branch', 'main',
+]);
+
+console.log('\nDéploiement terminé : https://globalimmobilier.pages.dev/');

@@ -1,162 +1,140 @@
-# GLOBAL IMMOBILIER CLOUD
+# GLOBAL IMMOBILIER — Cloudflare Pages, D1 et KV
 
-Version Cloudflare Pages + Functions de l’application **GLOBAL IMMOBILIER Multi-entreprises**.
+Projet adapté au nom définitif suivant :
 
-## Architecture
+- **Projet Cloudflare Pages** : `globalimmobilier`
+- **Adresse publique** : `https://globalimmobilier.pages.dev/`
+- **Dépôt GitHub prévu** : `https://github.com/MEGA7704/globalimmobilier`
+- **Branche de production** : `main`
 
-- **Frontend** : `public/index.html`
-- **API Cloudflare Pages Functions** : `functions/api/[[path]].js`
-- **Base durable** : D1, binding `D1IM`
-- **Sessions sécurisées** : KV, binding `KVIM`
-- **Authentification** : cookie `HttpOnly`, mots de passe hachés avec PBKDF2-SHA-256
-- **Synchronisation** : sauvegarde automatique dans D1 avec contrôle de version
-- **Données volumineuses** : état de chaque entreprise découpé en plusieurs lignes D1
-- **Anciennes données** : outil Super Admin « Importer localStorage »
+## Ressources Cloudflare déjà configurées
 
-Les tables sont préfixées par `gi_` pour ne pas entrer en conflit avec d’anciennes tables éventuellement présentes dans la même base D1.
+Le fichier `wrangler.json` contient les liaisons suivantes :
 
-## Ressources déjà configurées
+- D1, binding `D1IM`, base `D1im`
+- KV, binding `KVIM`
+- Identifiant Super Admin : `megaglobal0777`
+- Durée de session : `604800` secondes
+- Taille maximale de l’état : `12582912` octets
 
-Le fichier `wrangler.jsonc` contient :
-
-- D1 `D1im` : `ef0b5766-b3cb-4c29-838a-aa654e5bdffb`
-- KV `KVIM` : `67161ac889e0454ba2ee2de05c097aef`
-- Identifiant Super Admin initial : `megaglobal0777`
-- Nom du projet Pages : `globalimmobilier`
-
-Le mot de passe Super Admin est fourni dans les fichiers locaux `.dev.vars` et `.secrets.production.env`. Ces deux fichiers sont exclus de Git par `.gitignore` et ne doivent jamais être publiés dans le dépôt.
-
-## Déploiement direct le plus simple
-
-Dans le dossier du projet :
-
-```bash
-npm install
-npx wrangler login
-npm run deploy:complete
-```
-
-Le script :
-
-1. crée le projet Pages s’il n’existe pas ;
-2. applique la migration D1 ;
-3. enregistre le secret `SUPER_ADMIN_PASSWORD` ;
-4. publie le site et les Functions.
-
-Contrôle après publication :
-
-```text
-https://VOTRE-PROJET.pages.dev/api/health
-```
-
-La réponse attendue contient `"status":"ok"`, `"database":"D1IM"`, `"kv":"KVIM"` et `"secretConfigured":true`.
-
-## Publication avec GitHub et Cloudflare Pages
-
-### 1. Envoyer le projet sur GitHub
-
-```bash
-git init
-git add .
-git commit -m "GLOBAL IMMOBILIER Cloudflare D1 KV"
-git branch -M main
-git remote add origin URL_DE_VOTRE_DEPOT_GITHUB
-git push -u origin main
-```
-
-Les fichiers secrets ne seront pas ajoutés grâce au `.gitignore`.
-
-### 2. Connecter le dépôt à Cloudflare
-
-Dans **Workers & Pages** :
-
-- créer une application Pages depuis Git ;
-- sélectionner le dépôt GitHub ;
-- branche de production : `main` ;
-- commande de build : `npm run check` ;
-- dossier de sortie : `public` ;
-- répertoire racine : laisser vide.
-
-Le fichier `wrangler.jsonc` fournit les bindings D1/KV au projet.
-
-### 3. Ajouter le secret dans Cloudflare
-
-Dans les paramètres du projet Pages, ajouter le secret chiffré :
+Le mot de passe Super Admin n’est volontairement pas enregistré dans le dépôt. Il doit rester un secret Cloudflare nommé exactement :
 
 ```text
 SUPER_ADMIN_PASSWORD
 ```
 
-Ajouter le secret pour **Production** et, si nécessaire, pour **Preview**. Ne pas créer une variable texte ordinaire portant ce mot de passe.
+## Configuration GitHub + Cloudflare Pages
 
-### 4. Initialiser D1 une seule fois
+### Dépôt GitHub
 
-Depuis un ordinateur connecté à Cloudflare :
-
-```bash
-npm install
-npx wrangler login
-npm run db:migrate:remote
-```
-
-La migration utilisée est `migrations/0001_gi_cloud_init.sql`.
-
-## Développement local
-
-```bash
-npm install
-npm run db:migrate:local
-npm run dev
-```
-
-Ouvrir ensuite :
+Le dépôt recommandé est :
 
 ```text
-http://localhost:8788
+https://github.com/MEGA7704/globalimmobilier
 ```
 
-## Migration des anciennes données localStorage
+Placez directement à la racine du dépôt les dossiers et fichiers présents dans cette archive. Ne placez pas le dossier `globalimmobilier` dans un autre sous-dossier.
 
-La migration automatique doit être lancée dans le navigateur qui contient encore les anciennes données, sur la même origine où elles ont été enregistrées :
+### Réglages du build Cloudflare
 
-1. se connecter comme Super Admin ;
-2. ouvrir **Entreprises et abonnements** ;
-3. cliquer sur **Importer localStorage** ;
-4. confirmer l’importation.
+Dans Cloudflare Pages, configurez :
 
-Le navigateur interdit à un nouveau domaine de lire le localStorage d’un ancien domaine. Dans ce cas, ouvrez d’abord l’ancienne application sur son domaine d’origine, exportez une sauvegarde JSON, puis importez les données depuis l’application cloud.
+- Nom du projet : `globalimmobilier`
+- Branche de production : `main`
+- Framework : `Aucun`
+- Commande de build : `exit 0`
+- Répertoire de sortie : `public`
+- Répertoire racine : laisser vide
 
-## Commandes utiles
+Ce paquet ne contient plus de `package.json` ni de `package-lock.json`. Cloudflare n’essaiera donc plus d’exécuter automatiquement `npm clean-install`, ce qui évite l’erreur npm « Exit handler never called » rencontrée auparavant.
+
+## Secret Super Admin
+
+Dans le projet Cloudflare **globalimmobilier** :
+
+1. ouvrez `Paramètres` ;
+2. ouvrez `Variables et secrets` ;
+3. choisissez l’environnement **Production** ;
+4. ajoutez un **Secret** ;
+5. nommez-le exactement `SUPER_ADMIN_PASSWORD` ;
+6. saisissez votre mot de passe ;
+7. enregistrez ;
+8. lancez un nouveau déploiement de production.
+
+Le secret doit être ajouté au projet `globalimmobilier`, pas à un ancien projet ayant un autre nom.
+
+## Initialisation D1
+
+La migration doit être appliquée une seule fois :
 
 ```bash
-npm run check
-npm run db:migrate:local
-npm run db:migrate:remote
-npm run secret:upload
-npm run deploy
-npm run deploy:complete
+npx --yes wrangler@latest login
+npx --yes wrangler@latest d1 migrations apply D1IM --remote
 ```
 
-## Sécurité et fonctionnement
+Le fichier SQL utilisé est :
 
-- aucun mot de passe n’est enregistré dans l’état métier D1 ;
-- les comptes sont conservés séparément avec hachage et sel ;
-- les sessions sont stockées dans KV avec expiration ;
-- les requêtes de modification vérifient l’origine ;
-- les abonnements expirés ou suspendus bloquent la connexion ;
-- la limite actuelle est de deux utilisateurs secondaires par entreprise ;
-- les données d’une entreprise sont isolées par son identifiant.
+```text
+migrations/0001_gi_cloud_init.sql
+```
 
-## Vérifications effectuées
+## Déploiement automatique depuis un ordinateur
 
-- syntaxe de l’API et du JavaScript frontend ;
-- migration D1 locale ;
-- contrôle des bindings D1/KV et du secret ;
-- connexion Super Admin ;
-- création d’entreprise ;
-- sauvegarde et relecture D1 ;
-- création, modification et connexion d’un utilisateur ;
-- catalogue public ;
-- demandes de visite ;
-- vues et favoris publics ;
-- exécution du frontend sans erreur JavaScript détectée.
+### Windows
+
+Double-cliquez sur :
+
+```text
+DEPLOIEMENT_WINDOWS.bat
+```
+
+### Linux ou macOS
+
+```bash
+./DEPLOIEMENT_LINUX_MAC.sh
+```
+
+Le script vérifie si `SUPER_ADMIN_PASSWORD` existe. S’il manque, Wrangler vous demande sa valeur dans une invite sécurisée, puis publie sur :
+
+```text
+https://globalimmobilier.pages.dev/
+```
+
+## Vérification
+
+Après le déploiement, ouvrez :
+
+```text
+https://globalimmobilier.pages.dev/api/health
+```
+
+La réponse doit indiquer que D1, KV et le secret sont configurés. Ensuite, connectez-vous avec :
+
+```text
+Identifiant : megaglobal0777
+Mot de passe : valeur enregistrée dans SUPER_ADMIN_PASSWORD
+```
+
+## Organisation du projet
+
+```text
+public/
+  index.html
+  _headers
+functions/
+  api/
+    [[path]].js
+migrations/
+  0001_gi_cloud_init.sql
+scripts/
+  check-frontend.mjs
+  deploy-complete.mjs
+wrangler.json
+DEPLOIEMENT_WINDOWS.bat
+DEPLOIEMENT_LINUX_MAC.sh
+README.md
+```
+
+## Sécurité
+
+Les fichiers contenant un vrai mot de passe ne sont pas inclus dans cette nouvelle archive. Ne publiez jamais `.dev.vars`, `.env` ou un fichier de secrets dans GitHub.
