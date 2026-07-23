@@ -62,7 +62,7 @@ npm error Exit handler never called!
 La correction est intégrée au dépôt :
 
 ```text
-SKIP_DEPENDENCY_INSTALL=1
+SKIP_DEPENDENCY_INSTALL=true
 NODE_VERSION=20.19.4
 NPM_VERSION=10.8.1
 ```
