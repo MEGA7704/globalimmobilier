@@ -4481,7 +4481,7 @@
         body += contractArticle(
           8,
           "LOYERS D’AVANCE",
-          `<p>À la signature du présent contrat, le Locataire verse la somme de <b>${money(l.advanceAmount || 0)}</b>, correspondant à <b>${esc(String(l.advanceMonths || 0))}</b> mois de loyer d’avance.</p><p>Pour un bail à usage d’habitation, le nombre de mois exigés d’avance doit respecter la réglementation applicable.</p>`,
+          `<p>A la signature du présent contrat, le Locataire verse la somme de <b>${money(l.advanceAmount || 0)}</b>, correspondant à <b>${esc(String(l.advanceMonths || 0))}</b> mois de loyer d’avance.</p>`,
         );
         body += contractArticle(
           9,
@@ -4545,7 +4545,7 @@
         body += contractArticle(
           19,
           "RÉVISION DU LOYER",
-          `<p>Le loyer ne peut être révisé que dans les conditions prévues par la législation applicable au type de bail. Toute révision sera notifiée au Locataire par écrit.</p>`,
+          `<p>Le loyer ne peut être révisé que chaque 12 mois au dernier mois de l'année d'ocupation, dans les conditions prévues par la législation applicable au type de bail. Toute révision sera notifiée au Locataire par écrit.</p>`,
         );
         body += contractArticle(
           20,
@@ -4555,7 +4555,7 @@
         body += contractArticle(
           21,
           "RÉSILIATION DU CONTRAT",
-          `<p>Le présent contrat peut être résilié par accord écrit, à l’arrivée du terme, en cas de force majeure, de non-paiement, de dégradation grave, d’utilisation non conforme, de sous-location non autorisée, de troubles graves du voisinage ou de manquement important de l’une des parties. Toute demande et tout préavis doivent respecter la réglementation applicable.</p>`,
+          `<p>Le présent contrat peut être résilié par accord écrit respectant un préavis d'un (01) mois, à l’arrivée du terme, en cas de force majeure, de non-paiement, de dégradation grave, d’utilisation non conforme, de sous-location non autorisée, de troubles graves du voisinage ou de manquement important de l’une des parties.</p>`,
         );
         body += contractArticle(
           22,
@@ -4575,12 +4575,12 @@
         body += contractArticle(
           25,
           "ENREGISTREMENT DU CONTRAT",
-          `<p>Le présent contrat sera soumis aux formalités d’enregistrement auprès de l’administration fiscale conformément aux dispositions applicables en Côte d’Ivoire. Les tarifs et délais fiscaux devront être vérifiés au moment de l’enregistrement.</p><p>Les frais sont supportés par : <b>${esc(l.registrationPayer || "Les parties selon leur accord")}</b>.</p>`,
+          `<p>Le présent contrat sera soumis à une légalisation auprès de l’administration fiscale gestionnaire de la ville (Sous-préfecture ou Commune).</p><p>Les frais sont supportés par : <b>${esc(l.registrationPayer || "Les parties selon leur accord")}</b>.</p>`,
         );
         body += contractArticle(
           26,
           "RÈGLEMENT DES DIFFÉRENDS",
-          `<p>En cas de difficulté, les parties rechercheront d’abord une solution amiable, notamment par l’intermédiaire de ${esc(agency.agency)}. En l’absence d’accord, le litige sera soumis aux autorités ou juridictions compétentes du lieu de situation du bien, conformément à la législation ivoirienne.</p>`,
+          `<p>En cas de difficulté, les parties rechercheront d’abord une solution amiable, notamment par l’intermédiaire de ${esc(agency.agency)}. En l’absence d’accord, le litige sera soumis aux autorités ou juridictions compétentes du lieu de situation du bien.</p>`,
         );
         body += contractArticle(
           27,
