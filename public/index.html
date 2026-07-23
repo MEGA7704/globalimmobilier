@@ -179,6 +179,63 @@
         background: var(--primary);
         color: #fff;
       }
+      .password-box {
+        position: relative;
+      }
+      .password-box input {
+        padding-right: 88px;
+      }
+      .password-toggle {
+        position: absolute;
+        right: 7px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 0;
+        border-radius: 8px;
+        padding: 7px 9px;
+        background: #e6f0ec;
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .tenant-document-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+        margin-top: 15px;
+      }
+      .tenant-document-card {
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 15px;
+        background: #fbfdfc;
+      }
+      .tenant-document-card h4 {
+        margin: 0 0 7px;
+        color: var(--primary);
+      }
+      .tenant-document-card p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 12px;
+      }
+      .tenant-document-card .actions {
+        margin-top: auto;
+      }
+      .document-auto-info {
+        padding: 12px 14px;
+        border: 1px solid #cfe1da;
+        border-radius: 13px;
+        background: #edf6f2;
+        line-height: 1.55;
+      }
+      @media (max-width: 700px) {
+        .tenant-document-grid {
+          grid-template-columns: 1fr;
+        }
+      }
       .auth-panel {
         display: none;
       }
@@ -1611,14 +1668,17 @@
                 />
               </div>
               <div class="field">
-                <label>Mot de passe</label
-                ><input
-                  id="loginPass"
-                  type="password"
-                  autocomplete="current-password"
-                  placeholder="Votre mot de passe"
-                  required
-                />
+                <label>Mot de passe</label>
+                <div class="password-box">
+                  <input
+                    id="loginPass"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Votre mot de passe"
+                    required
+                  />
+                  <button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button>
+                </div>
               </div>
               <button class="btn btn-primary full" type="submit">
                 Se connecter
@@ -1686,24 +1746,30 @@
                 />
               </div>
               <div class="field">
-                <label>Mot de passe *</label
-                ><input
-                  id="createPass"
-                  type="password"
-                  autocomplete="new-password"
-                  minlength="4"
-                  required
-                />
+                <label>Mot de passe *</label>
+                <div class="password-box">
+                  <input
+                    id="createPass"
+                    type="password"
+                    autocomplete="new-password"
+                    minlength="4"
+                    required
+                  />
+                  <button class="password-toggle" type="button" onclick="togglePassword('createPass', this)">Afficher</button>
+                </div>
               </div>
               <div class="field">
-                <label>Confirmer le mot de passe *</label
-                ><input
-                  id="createPass2"
-                  type="password"
-                  autocomplete="new-password"
-                  minlength="4"
-                  required
-                />
+                <label>Confirmer le mot de passe *</label>
+                <div class="password-box">
+                  <input
+                    id="createPass2"
+                    type="password"
+                    autocomplete="new-password"
+                    minlength="4"
+                    required
+                  />
+                  <button class="password-toggle" type="button" onclick="togglePassword('createPass2', this)">Afficher</button>
+                </div>
               </div>
               <button class="btn btn-accent full create-submit" type="submit">
                 Créer l’entreprise
@@ -1756,10 +1822,10 @@
         <button class="nav-btn active" data-page="dashboard">
           ▦ Tableau de bord
         </button>
+        <button class="nav-btn" data-page="owners">♙ Propriétaires</button>
         <button class="nav-btn" data-page="properties">
           ⌂ Biens immobiliers
         </button>
-        <button class="nav-btn" data-page="owners">♙ Propriétaires</button>
         <button class="nav-btn" data-page="tenants">♟ Locataires</button>
         <button class="nav-btn" data-page="payments">
           ₣ Paiements et loyers
@@ -2254,6 +2320,16 @@
         loginHistory: [],
       };
       const $ = (id) => document.getElementById(id);
+      function togglePassword(inputId, button) {
+        const input = $(inputId);
+        if (!input) return;
+        const visible = input.type === "text";
+        input.type = visible ? "password" : "text";
+        if (button) {
+          button.textContent = visible ? "Afficher" : "Masquer";
+          button.setAttribute("aria-label", visible ? "Afficher le mot de passe" : "Masquer le mot de passe");
+        }
+      }
       function clone(v) {
         return JSON.parse(JSON.stringify(v));
       }
@@ -3542,7 +3618,7 @@
               .map((t) => {
                 const l = data.leases.find((x) => x.id === t.leaseId),
                   f = tenantFinancial(t);
-                return `<tr><td><b>${t.ref}</b></td><td>${esc(t.name)}<br><small>${esc(t.phone)} · ${esc(t.profession)}</small></td><td>${esc(nameOf(data.properties, t.propertyId))}</td><td>${l ? badge(l.status) : badge("Sans contrat")}</td><td>${money(l?.rent || 0)}</td><td>${money(f.paid)}</td><td>${f.arrears ? `<span class="badge danger">${money(f.arrears)}</span>` : badge("À jour")}</td><td>${fmtDate(t.entryDate)} → ${fmtDate(t.endDate)}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewTenant('${t.id}')">Fiche</button><button class="btn btn-primary btn-sm" onclick="openTenantForm('${t.id}')">Modifier</button><button class="btn btn-light btn-sm" onclick="openPaymentForm('', '${t.id}')">Paiement</button><button class="btn btn-danger btn-sm" onclick="deleteTenant('${t.id}')">Supprimer</button></div></td></tr>`;
+                return `<tr><td><b>${t.ref}</b></td><td>${esc(t.name)}<br><small>${esc(t.phone)} · ${esc(t.profession)}</small></td><td>${esc(nameOf(data.properties, t.propertyId))}</td><td>${l ? badge(l.status) : badge("Sans contrat")}</td><td>${money(l?.rent || 0)}</td><td>${money(f.paid)}</td><td>${f.arrears ? `<span class="badge danger">${money(f.arrears)}</span>` : badge("À jour")}</td><td>${fmtDate(t.entryDate)} → ${fmtDate(t.endDate)}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewTenant('${t.id}')">Fiche</button><button class="btn btn-accent btn-sm" onclick="openTenantDocuments('${t.id}')">Documents</button><button class="btn btn-primary btn-sm" onclick="openTenantForm('${t.id}')">Modifier</button><button class="btn btn-light btn-sm" onclick="openPaymentForm('', '${t.id}')">Paiement</button><button class="btn btn-danger btn-sm" onclick="deleteTenant('${t.id}')">Supprimer</button></div></td></tr>`;
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucun locataire.</td></tr>'
@@ -3974,10 +4050,294 @@
  <div class="card" style="margin-top:15px"><h3>Informations et documents</h3><div class="detail-list"><div class="detail-chip">Téléphone<strong>${esc(t.phone)}</strong></div><div class="detail-chip">Profession<strong>${esc(t.profession)}</strong></div><div class="detail-chip">Garant<strong>${esc(t.guarantorName || "—")}</strong></div><div class="detail-chip">Entrée<strong>${fmtDate(t.entryDate)}</strong></div><div class="detail-chip">Fin contrat<strong>${fmtDate(t.endDate)}</strong></div><div class="detail-chip">Caution versée<strong>${money(t.cautionPaid)}</strong></div><div class="detail-chip">Charges agence<strong>${money(t.agencyCharges)}</strong></div><div class="detail-chip">Pièce d’identité<strong>${esc(t.idCopyName || "Non importée")}</strong></div><div class="detail-chip">Justificatifs<strong>${esc(t.supportingDocsName || "Non importés")}</strong></div></div><div class="actions" style="margin-top:13px">${t.idCopy ? `<a class="btn btn-light" href="${attr(t.idCopy)}" target="_blank" download="${attr(t.idCopyName || "piece-identite")}">Ouvrir la pièce</a>` : ""}${t.supportingDocs ? `<a class="btn btn-light" href="${attr(t.supportingDocs)}" target="_blank" download="${attr(t.supportingDocsName || "justificatif")}">Ouvrir le justificatif</a>` : ""}</div></div>
  <div class="card" style="margin-top:15px"><h3>Historique des paiements</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>Reçu</th><th>Date</th><th>Période</th><th>Attendu</th><th>Payé</th><th>Statut</th></tr></thead><tbody>${payments.map((x) => `<tr><td>${x.receipt}</td><td>${fmtDate(x.date)}</td><td>${x.period}</td><td>${money(x.expected)}</td><td>${money(x.paid)}</td><td>${badge(paymentStatus(x))}</td></tr>`).join("") || '<tr><td colspan="6" class="empty">Aucun paiement.</td></tr>'}</tbody></table></div></div>
  <div class="card" style="margin-top:15px"><h3>Historique d’occupation</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>Bien</th><th>Contrat</th><th>Date d’entrée</th><th>Date de sortie</th></tr></thead><tbody>${history.map((h) => `<tr><td>${esc(nameOf(data.properties, h.propertyId))}</td><td>${esc(data.leases.find((x) => x.id === h.leaseId)?.ref || "—")}</td><td>${fmtDate(h.startDate)}</td><td>${fmtDate(h.endDate)}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">Aucune ancienne occupation.</td></tr>'}</tbody></table></div></div>`;
+        modalBody.innerHTML += `<div class="actions" style="margin-top:15px"><button class="btn btn-accent" onclick="openTenantDocuments('${id}')">Documents du locataire</button>${l ? `<button class="btn btn-light" onclick="printContract('${l.id}')">Imprimer le contrat</button>` : ""}</div>`;
         modalSave.textContent = l ? "Imprimer le contrat" : "Fermer";
         modalSave.onclick = l ? () => printContract(l.id) : closeModal;
         modal.classList.add("show");
       }
+      function tenantDocumentContext(tenantId, notifyMissing = true) {
+        const tenant = data.tenants.find((x) => x.id === tenantId),
+          property = data.properties.find((x) => x.id === tenant?.propertyId),
+          lease = data.leases.find((x) => x.id === tenant?.leaseId),
+          owner = data.owners.find(
+            (x) => x.id === (lease?.ownerId || property?.ownerId),
+          );
+        if (!tenant || !property || !lease) {
+          if (notifyMissing)
+            toast(
+              "Le locataire, le bien occupé ou le contrat est incomplet.",
+            );
+          return null;
+        }
+        return { tenant, property, lease, owner, agency: data.settings };
+      }
+      function tenantDocumentData(tenant, type) {
+        tenant.documents = tenant.documents || {};
+        tenant.documents[type] = tenant.documents[type] || {};
+        return tenant.documents[type];
+      }
+      function tenantDocumentReference(prefix, tenant, current = "") {
+        return (
+          current ||
+          `${prefix}-${String(tenant.ref || "LOC").replace(/[^A-Za-z0-9]/g, "")}-${new Date().getFullYear()}`
+        );
+      }
+      function tenantAutomaticInfo(ctx) {
+        const { tenant, property, lease, owner, agency } = ctx;
+        return `<div class="document-auto-info"><b>Données récupérées automatiquement</b><br>Locataire : ${esc(tenant.name)} (${esc(tenant.ref)}) · Bien : ${esc(property.ref)} — ${esc(property.title)}<br>Propriétaire : ${esc(owner?.name || "Non renseigné")} · Contrat : ${esc(lease.ref)} · Entreprise : ${esc(agency.agency)}</div>`;
+      }
+      function openTenantDocuments(tenantId) {
+        const ctx = tenantDocumentContext(tenantId);
+        if (!ctx) return;
+        const { tenant } = ctx;
+        const rentPayments = data.payments.filter(
+          (x) =>
+            x.tenantId === tenantId &&
+            !x.cancelled &&
+            String(x.kind || "Loyer").toLowerCase() === "loyer",
+        );
+        editing = { type: "tenantDocuments", tenantId };
+        modalTitle.textContent = `Documents — ${tenant.name}`;
+        modalBody.innerHTML =
+          tenantAutomaticInfo(ctx) +
+          `<div class="tenant-document-grid">
+            <div class="tenant-document-card"><h4>État des lieux d’entrée</h4><p>Renseignez l’état du bien, les compteurs, les clés et les observations au début de l’occupation.</p><button class="btn btn-primary btn-sm" onclick="openTenantDocumentForm('${tenantId}','entry')">Remplir et imprimer</button></div>
+            <div class="tenant-document-card"><h4>État des lieux de sortie</h4><p>Renseignez l’état constaté à la restitution du bien et les éventuelles dégradations.</p><button class="btn btn-primary btn-sm" onclick="openTenantDocumentForm('${tenantId}','exit')">Remplir et imprimer</button></div>
+            <div class="tenant-document-card"><h4>Inventaire des équipements</h4><p>Établissez la liste des équipements remis, leur quantité, leur état et les observations.</p><button class="btn btn-primary btn-sm" onclick="openTenantDocumentForm('${tenantId}','inventory')">Remplir et imprimer</button></div>
+            <div class="tenant-document-card"><h4>Dépôt de garantie et loyers d’avance</h4><p>Éditez le reçu détaillé du dépôt de garantie et des loyers payés d’avance.</p><button class="btn btn-primary btn-sm" onclick="openTenantDocumentForm('${tenantId}','guarantee')">Remplir et imprimer</button></div>
+            <div class="tenant-document-card"><h4>Droits d’agence</h4><p>Éditez le reçu des droits, honoraires ou frais d’agence réglés par le locataire.</p><button class="btn btn-primary btn-sm" onclick="openTenantDocumentForm('${tenantId}','agency')">Remplir et imprimer</button></div>
+            <div class="tenant-document-card"><h4>Reçus individuels de loyer</h4><p>Chaque paiement de loyer enregistré dispose de son reçu individuel A4.</p><button class="btn btn-light btn-sm" onclick="openPaymentForm('', '${tenantId}')">Enregistrer un loyer</button></div>
+          </div>
+          <div class="card" style="margin-top:16px"><h3>Reçus de loyer disponibles</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>Reçu</th><th>Date</th><th>Période</th><th>Montant payé</th><th>Mode</th><th>Action</th></tr></thead><tbody>${rentPayments
+            .map(
+              (payment) =>
+                `<tr><td><b>${esc(payment.receipt)}</b></td><td>${fmtDate(payment.date)}</td><td>${esc(payment.period)}</td><td>${money(payment.paid)}</td><td>${esc(payment.method)}</td><td><button class="btn btn-light btn-sm" onclick="printReceipt('${payment.id}')">Imprimer le reçu</button></td></tr>`,
+            )
+            .join("") || '<tr><td colspan="6" class="empty">Aucun paiement de loyer enregistré.</td></tr>'}</tbody></table></div></div>`;
+        modalSave.textContent = "Fermer";
+        modalSave.onclick = closeModal;
+        modal.classList.add("show");
+      }
+      function conditionDocumentForm(ctx, type, doc) {
+        const exitMode = type === "exit";
+        const title = exitMode
+          ? "État des lieux de sortie"
+          : "État des lieux d’entrée";
+        const values = ["Très bon", "Bon", "Moyen", "Mauvais", "À réparer"];
+        const conditionSelect = (id, value) =>
+          `<select id="${id}">${values.map((x) => `<option ${value === x ? "selected" : ""}>${x}</option>`).join("")}</select>`;
+        return `${tenantAutomaticInfo(ctx)}<div class="form-grid">
+          <div class="section-title">${title}</div>
+          <div class="field"><label>Date du constat</label><input id="doc_date" type="date" value="${attr(doc.date || (exitMode ? ctx.tenant.endDate || today() : ctx.tenant.entryDate || today()))}"></div>
+          <div class="field"><label>Lieu du constat</label><input id="doc_place" value="${attr(doc.place || ctx.lease.signPlace || ctx.agency.address || "")}"></div>
+          <div class="field"><label>État général</label>${conditionSelect("doc_general", doc.general || "Bon")}</div>
+          <div class="field"><label>Propreté générale</label>${conditionSelect("doc_cleanliness", doc.cleanliness || "Bon")}</div>
+          <div class="field"><label>Murs et peintures</label>${conditionSelect("doc_walls", doc.walls || "Bon")}</div>
+          <div class="field"><label>Sols et revêtements</label>${conditionSelect("doc_floors", doc.floors || "Bon")}</div>
+          <div class="field"><label>Plafonds</label>${conditionSelect("doc_ceilings", doc.ceilings || "Bon")}</div>
+          <div class="field"><label>Portes et serrures</label>${conditionSelect("doc_doors", doc.doors || "Bon")}</div>
+          <div class="field"><label>Fenêtres et vitrages</label>${conditionSelect("doc_windows", doc.windows || "Bon")}</div>
+          <div class="field"><label>Installation électrique</label>${conditionSelect("doc_electricity", doc.electricity || "Bon")}</div>
+          <div class="field"><label>Plomberie et eau</label>${conditionSelect("doc_plumbing", doc.plumbing || "Bon")}</div>
+          <div class="field"><label>Sanitaires / douche</label>${conditionSelect("doc_sanitary", doc.sanitary || "Bon")}</div>
+          <div class="field"><label>Cuisine</label>${conditionSelect("doc_kitchen", doc.kitchen || "Bon")}</div>
+          <div class="field"><label>Nombre de clés</label><input id="doc_keys" type="number" min="0" value="${Number(doc.keys ?? ctx.lease.keysCount ?? 0)}"></div>
+          <div class="field"><label>Index compteur d’eau</label><input id="doc_waterMeter" value="${attr(doc.waterMeter || "")}"></div>
+          <div class="field"><label>Index compteur électrique</label><input id="doc_electricMeter" value="${attr(doc.electricMeter || "")}"></div>
+          ${exitMode ? `<div class="field span-2"><label>Dégradations, réparations ou retenues éventuelles</label><textarea id="doc_damages">${esc(doc.damages || "")}</textarea></div>` : ""}
+          <div class="field span-2"><label>Observations détaillées</label><textarea id="doc_observation">${esc(doc.observation || "")}</textarea></div>
+        </div>`;
+      }
+      function inventoryDocumentForm(ctx, doc) {
+        const source = doc.items || String(ctx.lease.equipment || ctx.property.equipment || "")
+          .split(/[,\n]+/)
+          .map((x) => x.trim())
+          .filter(Boolean)
+          .map((x) => `${x} | 1 | Bon |`)
+          .join("\n");
+        return `${tenantAutomaticInfo(ctx)}<div class="form-grid">
+          <div class="section-title">Inventaire des équipements</div>
+          <div class="field"><label>Date de l’inventaire</label><input id="doc_date" type="date" value="${attr(doc.date || ctx.tenant.entryDate || today())}"></div>
+          <div class="field"><label>Nombre de clés remises</label><input id="doc_keys" type="number" min="0" value="${Number(doc.keys ?? ctx.lease.keysCount ?? 0)}"></div>
+          <div class="field span-2"><label>Équipements — une ligne par élément : Désignation | Quantité | État | Observation</label><textarea id="doc_items" style="min-height:230px" placeholder="Clé de porte | 2 | Bon | Remises au locataire">${esc(source)}</textarea></div>
+          <div class="field span-2"><label>Observations générales</label><textarea id="doc_observation">${esc(doc.observation || "")}</textarea></div>
+        </div>`;
+      }
+      function receiptDocumentForm(ctx, type, doc) {
+        const guaranteeMode = type === "guarantee";
+        const defaultRef = tenantDocumentReference(
+          guaranteeMode ? "RDG" : "RDA",
+          ctx.tenant,
+          doc.receipt,
+        );
+        return `${tenantAutomaticInfo(ctx)}<div class="form-grid">
+          <div class="section-title">${guaranteeMode ? "Reçu du dépôt de garantie et des loyers payés d’avance" : "Reçu des droits d’agence"}</div>
+          <div class="field"><label>Numéro du reçu</label><input id="doc_receipt" value="${attr(defaultRef)}"></div>
+          <div class="field"><label>Date du paiement</label><input id="doc_date" type="date" value="${attr(doc.date || today())}"></div>
+          ${
+            guaranteeMode
+              ? `<div class="field"><label>Dépôt de garantie</label><input id="doc_guarantee" type="number" value="${Number(doc.guarantee ?? ctx.lease.caution ?? ctx.tenant.cautionPaid ?? 0)}" oninput="tenantDocumentReceiptCalc()"></div>
+                 <div class="field"><label>Nombre de mois payés d’avance</label><input id="doc_advanceMonths" type="number" min="0" value="${Number(doc.advanceMonths ?? ctx.lease.advanceMonths ?? 0)}"></div>
+                 <div class="field"><label>Montant des loyers payés d’avance</label><input id="doc_advanceAmount" type="number" value="${Number(doc.advanceAmount ?? ctx.lease.advanceAmount ?? 0)}" oninput="tenantDocumentReceiptCalc()"></div>
+                 <div class="field"><label>Total encaissé</label><input id="doc_total" type="number" value="${Number(doc.total ?? Number(ctx.lease.caution || ctx.tenant.cautionPaid || 0) + Number(ctx.lease.advanceAmount || 0))}" readonly></div>`
+              : `<div class="field"><label>Nature des droits d’agence</label><input id="doc_nature" value="${attr(doc.nature || "Droits et honoraires d’agence liés à la location")}"></div>
+                 <div class="field"><label>Montant payé</label><input id="doc_amount" type="number" value="${Number(doc.amount ?? ctx.lease.agencyFees ?? ctx.tenant.agencyCharges ?? 0)}"></div>`
+          }
+          <div class="field"><label>Mode de paiement</label><select id="doc_method">${paymentModes.map((x) => `<option ${doc.method === x ? "selected" : ""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Référence de transaction</label><input id="doc_transaction" value="${attr(doc.transaction || "")}"></div>
+          <div class="field span-2"><label>Observation</label><textarea id="doc_observation">${esc(doc.observation || "")}</textarea></div>
+        </div>`;
+      }
+      function openTenantDocumentForm(tenantId, type) {
+        const ctx = tenantDocumentContext(tenantId);
+        if (!ctx) return;
+        const doc = tenantDocumentData(ctx.tenant, type);
+        const titles = {
+          entry: "État des lieux d’entrée",
+          exit: "État des lieux de sortie",
+          inventory: "Inventaire des équipements",
+          guarantee: "Dépôt de garantie et loyers d’avance",
+          agency: "Droits d’agence",
+        };
+        editing = { type: "tenantDocument", tenantId, documentType: type };
+        modalTitle.textContent = `${titles[type]} — ${ctx.tenant.name}`;
+        modalBody.innerHTML =
+          type === "entry" || type === "exit"
+            ? conditionDocumentForm(ctx, type, doc)
+            : type === "inventory"
+              ? inventoryDocumentForm(ctx, doc)
+              : receiptDocumentForm(ctx, type, doc);
+        modalSave.textContent = "Enregistrer et imprimer";
+        modalSave.onclick = saveAndPrintTenantDocument;
+        modal.classList.add("show");
+        if (type === "guarantee") tenantDocumentReceiptCalc();
+      }
+      function tenantDocumentReceiptCalc() {
+        if ($("doc_total"))
+          $("doc_total").value =
+            Number(val("doc_guarantee")) + Number(val("doc_advanceAmount"));
+      }
+      function saveAndPrintTenantDocument() {
+        if (editing?.type !== "tenantDocument") return;
+        const tenantId = editing.tenantId,
+          type = editing.documentType,
+          ctx = tenantDocumentContext(tenantId);
+        if (!ctx) return;
+        let doc = {};
+        if (type === "entry" || type === "exit") {
+          doc = {
+            date: val("doc_date"),
+            place: val("doc_place"),
+            general: val("doc_general"),
+            cleanliness: val("doc_cleanliness"),
+            walls: val("doc_walls"),
+            floors: val("doc_floors"),
+            ceilings: val("doc_ceilings"),
+            doors: val("doc_doors"),
+            windows: val("doc_windows"),
+            electricity: val("doc_electricity"),
+            plumbing: val("doc_plumbing"),
+            sanitary: val("doc_sanitary"),
+            kitchen: val("doc_kitchen"),
+            keys: Number(val("doc_keys")),
+            waterMeter: val("doc_waterMeter"),
+            electricMeter: val("doc_electricMeter"),
+            damages: type === "exit" ? val("doc_damages") : "",
+            observation: val("doc_observation"),
+          };
+        } else if (type === "inventory") {
+          doc = {
+            date: val("doc_date"),
+            keys: Number(val("doc_keys")),
+            items: val("doc_items"),
+            observation: val("doc_observation"),
+          };
+        } else if (type === "guarantee") {
+          doc = {
+            receipt: val("doc_receipt"),
+            date: val("doc_date"),
+            guarantee: Number(val("doc_guarantee")),
+            advanceMonths: Number(val("doc_advanceMonths")),
+            advanceAmount: Number(val("doc_advanceAmount")),
+            total: Number(val("doc_total")),
+            method: val("doc_method"),
+            transaction: val("doc_transaction"),
+            observation: val("doc_observation"),
+          };
+        } else if (type === "agency") {
+          doc = {
+            receipt: val("doc_receipt"),
+            date: val("doc_date"),
+            nature: val("doc_nature"),
+            amount: Number(val("doc_amount")),
+            method: val("doc_method"),
+            transaction: val("doc_transaction"),
+            observation: val("doc_observation"),
+          };
+        }
+        ctx.tenant.documents = ctx.tenant.documents || {};
+        ctx.tenant.documents[type] = doc;
+        logAction(
+          `Préparation du document ${type} pour le locataire ${ctx.tenant.ref}`,
+        );
+        closeModal();
+        saveData("Document locataire enregistré.");
+        setTimeout(() => printTenantDocument(tenantId, type), 120);
+      }
+      function tenantDocumentIdentityTable(ctx) {
+        const { tenant, property, lease, owner } = ctx;
+        return `<table class="contract-info"><tbody>
+          <tr><th>Locataire</th><td>${esc(tenant.name)} — ${esc(tenant.ref)}</td></tr>
+          <tr><th>Bien occupé</th><td>${esc(property.ref)} — ${esc(property.title)}<br>${esc([property.address, property.district, property.commune, property.city].filter(Boolean).join(", "))}</td></tr>
+          <tr><th>Propriétaire</th><td>${esc(owner?.name || "Non renseigné")} — ${esc(owner?.phone || "—")}</td></tr>
+          <tr><th>Contrat</th><td>${esc(lease.ref)} · du ${fmtDate(lease.startDate)} au ${lease.leaseType === "Indéterminée" ? "durée indéterminée" : fmtDate(lease.endDate)}</td></tr>
+        </tbody></table>`;
+      }
+      function tenantSignatureBlocks(ctx, wording = "Lu et approuvé") {
+        return `<div class="signature-grid"><div><h4>LE PROPRIÉTAIRE / BAILLEUR</h4><p>${esc(ctx.owner?.name || "Non renseigné")}</p><p>${esc(wording)}</p><div class="signature-space">Signature</div></div><div><h4>LE LOCATAIRE</h4><p>${esc(ctx.tenant.name)}</p><p>${esc(wording)}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(ctx.agency.agency)}</p><p>Cachet obligatoire</p><div class="signature-space">Cachet et signature</div></div></div>`;
+      }
+      function parseInventoryItems(value) {
+        return String(value || "")
+          .split(/\n+/)
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => {
+            const [name = "", quantity = "1", state = "", observation = ""] = line
+              .split("|")
+              .map((x) => x.trim());
+            return { name, quantity, state, observation };
+          });
+      }
+      function printTenantDocument(tenantId, type) {
+        const ctx = tenantDocumentContext(tenantId);
+        if (!ctx) return;
+        const doc = tenantDocumentData(ctx.tenant, type);
+        let title = "DOCUMENT LOCATAIRE",
+          body = tenantDocumentIdentityTable(ctx);
+        if (type === "entry" || type === "exit") {
+          const exitMode = type === "exit";
+          title = exitMode
+            ? "ÉTAT DES LIEUX DE SORTIE"
+            : "ÉTAT DES LIEUX D’ENTRÉE";
+          body += `<p><b>Date du constat :</b> ${fmtDate(doc.date)} &nbsp;&nbsp; <b>Lieu :</b> ${esc(doc.place || "—")}</p><table><thead><tr><th>Élément contrôlé</th><th>État constaté</th></tr></thead><tbody>
+            <tr><td>État général</td><td>${esc(doc.general || "—")}</td></tr><tr><td>Propreté générale</td><td>${esc(doc.cleanliness || "—")}</td></tr><tr><td>Murs et peintures</td><td>${esc(doc.walls || "—")}</td></tr><tr><td>Sols et revêtements</td><td>${esc(doc.floors || "—")}</td></tr><tr><td>Plafonds</td><td>${esc(doc.ceilings || "—")}</td></tr><tr><td>Portes et serrures</td><td>${esc(doc.doors || "—")}</td></tr><tr><td>Fenêtres et vitrages</td><td>${esc(doc.windows || "—")}</td></tr><tr><td>Installation électrique</td><td>${esc(doc.electricity || "—")}</td></tr><tr><td>Plomberie et eau</td><td>${esc(doc.plumbing || "—")}</td></tr><tr><td>Sanitaires / douche</td><td>${esc(doc.sanitary || "—")}</td></tr><tr><td>Cuisine</td><td>${esc(doc.kitchen || "—")}</td></tr>
+          </tbody></table><table><tbody><tr><th>Clés ${exitMode ? "restituées" : "remises"}</th><td>${Number(doc.keys || 0)}</td><th>Compteur d’eau</th><td>${esc(doc.waterMeter || "—")}</td></tr><tr><th>Compteur électrique</th><td>${esc(doc.electricMeter || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr></tbody></table>${exitMode ? `<h3>Dégradations, réparations ou retenues éventuelles</h3><p>${esc(doc.damages || "Néant")}</p>` : ""}<h3>Observations détaillées</h3><p>${esc(doc.observation || "Néant")}</p><p>Les parties déclarent avoir procédé contradictoirement au présent état des lieux et reconnaissent l’exactitude des constatations ci-dessus.</p>${tenantSignatureBlocks(ctx)}`;
+        } else if (type === "inventory") {
+          title = "INVENTAIRE DES ÉQUIPEMENTS";
+          const items = parseInventoryItems(doc.items);
+          body += `<p><b>Date de l’inventaire :</b> ${fmtDate(doc.date)} &nbsp;&nbsp; <b>Nombre de clés remises :</b> ${Number(doc.keys || 0)}</p><table><thead><tr><th>N°</th><th>Désignation</th><th>Quantité</th><th>État</th><th>Observation</th></tr></thead><tbody>${items.map((item, index) => `<tr><td>${index + 1}</td><td>${esc(item.name)}</td><td>${esc(item.quantity)}</td><td>${esc(item.state || "—")}</td><td>${esc(item.observation || "—")}</td></tr>`).join("") || '<tr><td colspan="5">Aucun équipement renseigné.</td></tr>'}</tbody></table><h3>Observations générales</h3><p>${esc(doc.observation || "Néant")}</p><p>Le locataire reconnaît avoir reçu les équipements ci-dessus et s’engage à les restituer dans leur état initial, sous réserve de l’usure normale.</p>${tenantSignatureBlocks(ctx)}`;
+        } else if (type === "guarantee") {
+          title = "REÇU DU DÉPÔT DE GARANTIE ET DES LOYERS PAYÉS D’AVANCE";
+          const total = Number(doc.total || 0);
+          body += `<table><tbody><tr><th>N° du reçu</th><td>${esc(doc.receipt || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Reçu de</th><td>${esc(ctx.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr></tbody></table><p>Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b>, locataire du bien désigné ci-dessus, les sommes suivantes :</p><table><thead><tr><th>Désignation</th><th>Détail</th><th>Montant</th></tr></thead><tbody><tr><td>Dépôt de garantie</td><td>Garantie liée au contrat ${esc(ctx.lease.ref)}</td><td><b>${money(doc.guarantee)}</b></td></tr><tr><td>Loyers payés d’avance</td><td>${Number(doc.advanceMonths || 0)} mois</td><td><b>${money(doc.advanceAmount)}</b></td></tr><tr><th colspan="2">TOTAL ENCAISSÉ</th><th>${money(total)}</th></tr></tbody></table><p>Arrêté le présent reçu à la somme de : <b>${esc(amountInWords(total))}</b>.</p><p><b>Référence de transaction :</b> ${esc(doc.transaction || "—")}<br><b>Observation :</b> ${esc(doc.observation || "—")}</p>${tenantSignatureBlocks(ctx, "Bon pour accord")}`;
+        } else if (type === "agency") {
+          title = "REÇU DES DROITS D’AGENCE";
+          const amount = Number(doc.amount || 0);
+          body += `<table><tbody><tr><th>N° du reçu</th><td>${esc(doc.receipt || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Reçu de</th><td>${esc(ctx.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr></tbody></table><p>Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b> la somme de <b>${money(amount)}</b>, soit <b>${esc(amountInWords(amount))}</b>, au titre de :</p><table><tbody><tr><th>Nature</th><td>${esc(doc.nature || "Droits d’agence")}</td></tr><tr><th>Bien concerné</th><td>${esc(ctx.property.ref)} — ${esc(ctx.property.title)}</td></tr><tr><th>Contrat</th><td>${esc(ctx.lease.ref)}</td></tr><tr><th>Référence de transaction</th><td>${esc(doc.transaction || "—")}</td></tr><tr><th>Observation</th><td>${esc(doc.observation || "—")}</td></tr></tbody></table><div class="signature-grid"><div><h4>LE LOCATAIRE</h4><p>${esc(ctx.tenant.name)}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(ctx.agency.agency)}</p><div class="signature-space">Cachet et signature</div></div><div><h4>RESPONSABLE</h4><p>${esc(ctx.lease.managerName || ctx.agency.adminUser || "—")}</p><div class="signature-space">Signature</div></div></div>`;
+        }
+        printDocument(title, body, `${ctx.tenant.name} · ${ctx.property.ref} · ${ctx.lease.ref}`);
+      }
+
       function deleteTenant(id) {
         const t = data.tenants.find((x) => x.id === id);
         if (
@@ -4421,13 +4781,25 @@
         saveData("Paiement mis à jour.");
       }
       function printReceipt(id) {
-        const p = data.payments.find((x) => x.id === id),
-          t = data.tenants.find((x) => x.id === p.tenantId),
-          pr = data.properties.find((x) => x.id === p.propertyId),
-          l = data.leases.find((x) => x.id === p.leaseId);
+        const payment = data.payments.find((x) => x.id === id);
+        if (!payment) {
+          toast("Paiement introuvable.");
+          return;
+        }
+        const tenant = data.tenants.find((x) => x.id === payment.tenantId),
+          property = data.properties.find((x) => x.id === payment.propertyId),
+          lease = data.leases.find((x) => x.id === payment.leaseId),
+          owner = data.owners.find(
+            (x) => x.id === (lease?.ownerId || property?.ownerId),
+          ),
+          isRent = String(payment.kind || "Loyer").toLowerCase() === "loyer",
+          title = isRent
+            ? "REÇU INDIVIDUEL DE PAIEMENT DE LOYER"
+            : "REÇU DE PAIEMENT";
         printDocument(
-          "REÇU DE PAIEMENT",
-          `<table><tbody><tr><th>N° du reçu</th><td>${p.receipt}</td><th>Date</th><td>${fmtDate(p.date)}</td></tr><tr><th>Locataire</th><td>${esc(t?.name || "—")}</td><th>Téléphone</th><td>${esc(t?.phone || "—")}</td></tr><tr><th>Bien</th><td>${esc(pr?.title || "—")}</td><th>Contrat</th><td>${esc(l?.ref || "—")}</td></tr><tr><th>Période</th><td>${esc(p.period)}</td><th>Mode</th><td>${esc(p.method)}</td></tr></tbody></table><h3>Détail du règlement</h3><table><thead><tr><th>Désignation</th><th>Montant attendu</th><th>Pénalité</th><th>Montant payé</th><th>Reste</th></tr></thead><tbody><tr><td>${esc(p.kind)}</td><td>${money(p.expected)}</td><td>${money(p.penalty)}</td><td><b>${money(p.paid)}</b></td><td>${money(Math.max(0, p.expected + p.penalty - p.paid))}</td></tr></tbody></table><p><b>Référence transaction :</b> ${esc(p.transactionRef || "—")}<br><b>Observation :</b> ${esc(p.observation || "—")}</p><div style="text-align:right;margin-top:60px">Signature et cachet de l’agence</div>`,
+          title,
+          `<table><tbody><tr><th>N° du reçu</th><td>${esc(payment.receipt)}</td><th>Date</th><td>${fmtDate(payment.date)}</td></tr><tr><th>Locataire</th><td>${esc(tenant?.name || "—")} — ${esc(tenant?.ref || "—")}</td><th>Téléphone</th><td>${esc(tenant?.phone || "—")}</td></tr><tr><th>Bien occupé</th><td>${esc(property?.ref || "—")} — ${esc(property?.title || "—")}</td><th>Contrat</th><td>${esc(lease?.ref || "—")}</td></tr><tr><th>Propriétaire</th><td>${esc(owner?.name || "Non renseigné")}</td><th>Période</th><td>${esc(payment.period)}</td></tr></tbody></table><h3>Détail du règlement</h3><table><thead><tr><th>Désignation</th><th>Montant attendu</th><th>Pénalité</th><th>Montant payé</th><th>Reste</th></tr></thead><tbody><tr><td>${esc(payment.kind || "Loyer")}</td><td>${money(payment.expected)}</td><td>${money(payment.penalty)}</td><td><b>${money(payment.paid)}</b></td><td>${money(Math.max(0, payment.expected + Number(payment.penalty || 0) - payment.paid))}</td></tr></tbody></table><p>Arrêté le présent reçu à la somme de : <b>${esc(amountInWords(payment.paid))}</b>.</p><p><b>Mode de paiement :</b> ${esc(payment.method || "—")}<br><b>Référence de transaction :</b> ${esc(payment.transactionRef || "—")}<br><b>Observation :</b> ${esc(payment.observation || "—")}</p><div class="signature-grid"><div><h4>LE LOCATAIRE</h4><p>${esc(tenant?.name || "—")}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(data.settings.agency)}</p><div class="signature-space">Cachet et signature</div></div><div><h4>LE PROPRIÉTAIRE / BAILLEUR</h4><p>${esc(owner?.name || "Non renseigné")}</p><div class="signature-space">Signature</div></div></div>`,
+          `${tenant?.name || "Locataire"} · ${property?.ref || "Bien"} · ${lease?.ref || "Contrat"}`,
         );
       }
       function sendReceiptWhatsApp(id) {
@@ -5130,7 +5502,7 @@
             "Configurez l’agence, la sécurité, les documents, la sauvegarde et la synchronisation.",
             `<button class="btn btn-primary" onclick="saveSettings()">Enregistrer les paramètres</button>`,
           ) +
-          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique de l’entreprise</label><input value="${attr(s.companyCode)}" readonly><div class="help">Ce code est utilisé sur la page de connexion.</div></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(s.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(s.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(s.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(s.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(s.address)}"></div><div class="field"><label>Pied de page des documents</label><input id="setFooter" value="${attr(s.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(s.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${s.taxRate}"></div><div class="field"><label>Commission de gestion par défaut (%)</label><input id="setCommission" type="number" value="${s.defaultCommission}"></div><div class="field"><label>Prix de vente d’un contrat</label><input id="setContractFee" type="number" value="${s.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${s.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${s.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${s.accent}"></div></div><div class="card"><h3>Utilisateurs, rôles et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(s.adminUser)}"></div><div class="field"><label>Mot de passe administrateur</label><input id="setPass" type="password" value="${attr(s.adminPass)}"></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${s.autoLogout}"></div><div class="notice">Chaque entreprise dispose de son propre compte administrateur et de données séparées. La création de plusieurs utilisateurs dans une même entreprise nécessite un service d’authentification côté serveur.</div></div><div class="card"><h3>Sauvegarde et synchronisation</h3><div class="field"><label>Adresse de l’API cloud facultative</label><input id="setApiUrl" value="${attr(s.apiUrl)}" placeholder="https://votre-api.exemple.com/api"></div><div class="actions"><button class="btn btn-primary" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button><button class="btn btn-light" onclick="cloudSave(true)">Synchroniser</button><button class="btn btn-light" onclick="cloudLoad()">Charger le cloud</button></div><div class="warning-box" style="margin-top:12px">Sans API configurée, les données restent enregistrées dans le navigateur de cet appareil. Pour la synchronisation multi-appareils, l’API doit fournir <b>GET /state</b> et <b>POST /state</b>.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
+          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique de l’entreprise</label><input value="${attr(s.companyCode)}" readonly><div class="help">Ce code est utilisé sur la page de connexion.</div></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(s.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(s.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(s.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(s.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(s.address)}"></div><div class="field"><label>Pied de page des documents</label><input id="setFooter" value="${attr(s.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(s.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${s.taxRate}"></div><div class="field"><label>Commission de gestion par défaut (%)</label><input id="setCommission" type="number" value="${s.defaultCommission}"></div><div class="field"><label>Prix de vente d’un contrat</label><input id="setContractFee" type="number" value="${s.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${s.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${s.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${s.accent}"></div></div><div class="card"><h3>Utilisateurs, rôles et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(s.adminUser)}"></div><div class="field"><label>Mot de passe administrateur</label><div class="password-box"><input id="setPass" type="password" value="${attr(s.adminPass)}"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${s.autoLogout}"></div><div class="notice">Chaque entreprise dispose de son propre compte administrateur et de données séparées. La création de plusieurs utilisateurs dans une même entreprise nécessite un service d’authentification côté serveur.</div></div><div class="card"><h3>Sauvegarde et synchronisation</h3><div class="field"><label>Adresse de l’API cloud facultative</label><input id="setApiUrl" value="${attr(s.apiUrl)}" placeholder="https://votre-api.exemple.com/api"></div><div class="actions"><button class="btn btn-primary" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button><button class="btn btn-light" onclick="cloudSave(true)">Synchroniser</button><button class="btn btn-light" onclick="cloudLoad()">Charger le cloud</button></div><div class="warning-box" style="margin-top:12px">Sans API configurée, les données restent enregistrées dans le navigateur de cet appareil. Pour la synchronisation multi-appareils, l’API doit fournir <b>GET /state</b> et <b>POST /state</b>.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
               .map(
@@ -5645,7 +6017,7 @@
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucune entreprise.</td></tr>'
-          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(loadSuperAdmin().username)}"></div><div class="field"><label>Nouveau mot de passe</label><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Règles d’abonnement</h3><div class="kpi-list"><div class="kpi-row"><span>Version Free</span><b>21 jours</b></div><div class="kpi-row"><span>Version Business</span><b>365 jours</b></div><div class="kpi-row"><span>Utilisateurs supplémentaires</span><b>2 maximum</b></div></div><div class="warning-box" style="margin-top:12px">Cette version HTML autonome conserve la console Super Admin et les entreprises dans le navigateur actuel. Une base cloud est nécessaire pour une administration réellement centralisée entre plusieurs appareils.</div></div></div>`;
+          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(loadSuperAdmin().username)}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('superSetPass', this)">Afficher</button></div></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Règles d’abonnement</h3><div class="kpi-list"><div class="kpi-row"><span>Version Free</span><b>21 jours</b></div><div class="kpi-row"><span>Version Business</span><b>365 jours</b></div><div class="kpi-row"><span>Utilisateurs supplémentaires</span><b>2 maximum</b></div></div><div class="warning-box" style="margin-top:12px">Cette version HTML autonome conserve la console Super Admin et les entreprises dans le navigateur actuel. Une base cloud est nécessaire pour une administration réellement centralisée entre plusieurs appareils.</div></div></div>`;
       }
       function saveSuperCredentials() {
         const old = loadSuperAdmin(),
@@ -5699,7 +6071,7 @@
         modalTitle.textContent = u
           ? "Modifier l’utilisateur"
           : "Ajouter un utilisateur";
-        modalBody.innerHTML = `<div class="form-grid"><div class="field span-2"><label>Nom et prénoms *</label><input id="usr_name" value="${attr(u?.name || "")}" required></div><div class="field"><label>Identifiant *</label><input id="usr_username" value="${attr(u?.username || "")}" required></div><div class="field"><label>Mot de passe *</label><input id="usr_password" type="password" value="${attr(u?.password || "")}" required></div><div class="field"><label>Rôle</label><select id="usr_role">${["Gestionnaire", "Comptable", "Agent immobilier"].map((r) => `<option ${u?.role === r ? "selected" : ""}>${r}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="usr_active"><option value="true" ${u?.active !== false ? "selected" : ""}>Actif</option><option value="false" ${u?.active === false ? "selected" : ""}>Désactivé</option></select></div></div><div class="notice">L’utilisateur se connectera uniquement avec son identifiant personnel et son mot de passe. Son identifiant doit être unique dans toute l’application.</div>`;
+        modalBody.innerHTML = `<div class="form-grid"><div class="field span-2"><label>Nom et prénoms *</label><input id="usr_name" value="${attr(u?.name || "")}" required></div><div class="field"><label>Identifiant *</label><input id="usr_username" value="${attr(u?.username || "")}" required></div><div class="field"><label>Mot de passe *</label><div class="password-box"><input id="usr_password" type="password" value="${attr(u?.password || "")}" required><button class="password-toggle" type="button" onclick="togglePassword('usr_password', this)">Afficher</button></div></div><div class="field"><label>Rôle</label><select id="usr_role">${["Gestionnaire", "Comptable", "Agent immobilier"].map((r) => `<option ${u?.role === r ? "selected" : ""}>${r}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="usr_active"><option value="true" ${u?.active !== false ? "selected" : ""}>Actif</option><option value="false" ${u?.active === false ? "selected" : ""}>Désactivé</option></select></div></div><div class="notice">L’utilisateur se connectera uniquement avec son identifiant personnel et son mot de passe. Son identifiant doit être unique dans toute l’application.</div>`;
         modalSave.onclick = saveUser;
         modal.classList.add("show");
       }
@@ -5885,7 +6257,7 @@
           (info.plan === "free"
             ? `<div class="business-upgrade-settings"><div><h3>Activez le plan Business</h3><p>Profitez de toutes les fonctionnalités de GLOBAL IMMOBILIER pendant 365 jours. Après le paiement, contactez le service d’activation pour la validation de votre abonnement.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=105700" target="_blank" rel="noopener noreferrer">Activer le plan Business</a></div>`
             : "") +
-          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique de l’entreprise</label><input value="${attr(s.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(s.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(s.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(s.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(s.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(s.address)}"></div><div class="field"><label>Pied de page des documents</label><input id="setFooter" value="${attr(s.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(s.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${s.taxRate}"></div><div class="field"><label>Commission de gestion par défaut (%)</label><input id="setCommission" type="number" value="${s.defaultCommission}"></div><div class="field"><label>Prix de vente d’un contrat</label><input id="setContractFee" type="number" value="${s.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${s.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${s.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${s.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(s.adminUser)}"></div><div class="field"><label>Mot de passe administrateur</label><input id="setPass" type="password" value="${attr(s.adminPass)}"></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${s.autoLogout}"></div><div class="notice">Vous pouvez créer deux utilisateurs supplémentaires dans le menu <b>Utilisateurs</b>.</div></div><div class="card"><h3>Sauvegarde et synchronisation</h3><div class="field"><label>Adresse de l’API cloud facultative</label><input id="setApiUrl" value="${attr(s.apiUrl)}" placeholder="https://votre-api.exemple.com/api"></div><div class="actions"><button class="btn btn-primary" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button><button class="btn btn-light" onclick="cloudSave(true)">Synchroniser</button><button class="btn btn-light" onclick="cloudLoad()">Charger le cloud</button></div><div class="warning-box" style="margin-top:12px">Sans API configurée, les données et abonnements restent enregistrés uniquement dans le navigateur de cet appareil.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
+          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique de l’entreprise</label><input value="${attr(s.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(s.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(s.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(s.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(s.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(s.address)}"></div><div class="field"><label>Pied de page des documents</label><input id="setFooter" value="${attr(s.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(s.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${s.taxRate}"></div><div class="field"><label>Commission de gestion par défaut (%)</label><input id="setCommission" type="number" value="${s.defaultCommission}"></div><div class="field"><label>Prix de vente d’un contrat</label><input id="setContractFee" type="number" value="${s.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${s.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${s.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${s.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(s.adminUser)}"></div><div class="field"><label>Mot de passe administrateur</label><div class="password-box"><input id="setPass" type="password" value="${attr(s.adminPass)}"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${s.autoLogout}"></div><div class="notice">Vous pouvez créer deux utilisateurs supplémentaires dans le menu <b>Utilisateurs</b>.</div></div><div class="card"><h3>Sauvegarde et synchronisation</h3><div class="field"><label>Adresse de l’API cloud facultative</label><input id="setApiUrl" value="${attr(s.apiUrl)}" placeholder="https://votre-api.exemple.com/api"></div><div class="actions"><button class="btn btn-primary" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button><button class="btn btn-light" onclick="cloudSave(true)">Synchroniser</button><button class="btn btn-light" onclick="cloudLoad()">Charger le cloud</button></div><div class="warning-box" style="margin-top:12px">Sans API configurée, les données et abonnements restent enregistrés uniquement dans le navigateur de cet appareil.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
               .map(
@@ -6559,7 +6931,7 @@
           (info.plan === "free"
             ? '<div class="business-upgrade-settings"><div><h3>Activez le plan Business</h3><p>Profitez de toutes les fonctionnalités pendant 365 jours.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=105700" target="_blank" rel="noopener noreferrer">Activer le plan Business</a></div>'
             : "") +
-          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><input id="setPass" type="password" placeholder="Laisser vide pour conserver"></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${settings.autoLogout}"></div><div class="notice">Les mots de passe sont hachés côté serveur avec PBKDF2 et ne sont jamais renvoyés au navigateur.</div></div><div class="card"><h3>Sauvegarde D1 / sessions KV</h3><div class="actions"><button class="btn btn-primary" onclick="cloudSave(true)">Synchroniser maintenant</button><button class="btn btn-light" onclick="cloudLoad()">Recharger D1</button><button class="btn btn-light" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button></div><div class="notice" style="margin-top:12px">Les données sont enregistrées en ligne dans D1. KV protège les sessions de connexion. Version cloud actuelle : <b>${cloudVersion}</b>.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
+          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${settings.autoLogout}"></div><div class="notice">Les mots de passe sont hachés côté serveur avec PBKDF2 et ne sont jamais renvoyés au navigateur.</div></div><div class="card"><h3>Sauvegarde D1 / sessions KV</h3><div class="actions"><button class="btn btn-primary" onclick="cloudSave(true)">Synchroniser maintenant</button><button class="btn btn-light" onclick="cloudLoad()">Recharger D1</button><button class="btn btn-light" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button></div><div class="notice" style="margin-top:12px">Les données sont enregistrées en ligne dans D1. KV protège les sessions de connexion. Version cloud actuelle : <b>${cloudVersion}</b>.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
               .map(
@@ -6656,7 +7028,7 @@
         modalTitle.textContent = user
           ? "Modifier l’utilisateur"
           : "Ajouter un utilisateur";
-        modalBody.innerHTML = `<div class="form-grid"><div class="field span-2"><label>Nom et prénoms *</label><input id="usr_name" value="${attr(user?.name || "")}" required></div><div class="field"><label>Identifiant *</label><input id="usr_username" value="${attr(user?.username || "")}" required></div><div class="field"><label>${user ? "Nouveau mot de passe (facultatif)" : "Mot de passe *"}</label><input id="usr_password" type="password" ${user ? "" : "required"}></div><div class="field"><label>Rôle</label><select id="usr_role">${["Gestionnaire", "Comptable", "Agent immobilier"].map((role) => `<option ${user?.role === role ? "selected" : ""}>${role}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="usr_active"><option value="true" ${user?.active !== false ? "selected" : ""}>Actif</option><option value="false" ${user?.active === false ? "selected" : ""}>Désactivé</option></select></div></div><div class="notice">Le mot de passe est haché dans D1 et n’est jamais stocké dans les données de l’entreprise.</div>`;
+        modalBody.innerHTML = `<div class="form-grid"><div class="field span-2"><label>Nom et prénoms *</label><input id="usr_name" value="${attr(user?.name || "")}" required></div><div class="field"><label>Identifiant *</label><input id="usr_username" value="${attr(user?.username || "")}" required></div><div class="field"><label>${user ? "Nouveau mot de passe (facultatif)" : "Mot de passe *"}</label><div class="password-box"><input id="usr_password" type="password" ${user ? "" : "required"}><button class="password-toggle" type="button" onclick="togglePassword('usr_password', this)">Afficher</button></div></div><div class="field"><label>Rôle</label><select id="usr_role">${["Gestionnaire", "Comptable", "Agent immobilier"].map((role) => `<option ${user?.role === role ? "selected" : ""}>${role}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="usr_active"><option value="true" ${user?.active !== false ? "selected" : ""}>Actif</option><option value="false" ${user?.active === false ? "selected" : ""}>Désactivé</option></select></div></div><div class="notice">Le mot de passe est haché dans D1 et n’est jamais stocké dans les données de l’entreprise.</div>`;
         modalSave.onclick = saveUser;
         modal.classList.add("show");
       }
@@ -6767,7 +7139,7 @@
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucune entreprise.</td></tr>'
-          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(superAdminUsername)}"></div><div class="field"><label>Nouveau mot de passe</label><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Infrastructure cloud</h3><div class="kpi-list"><div class="kpi-row"><span>Base principale</span><b>D1IM</b></div><div class="kpi-row"><span>Sessions</span><b>KVIM</b></div><div class="kpi-row"><span>État</span><b>Synchronisé</b></div></div><div class="notice" style="margin-top:12px">Les données sont centralisées et accessibles depuis plusieurs appareils.</div></div></div>`;
+          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(superAdminUsername)}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('superSetPass', this)">Afficher</button></div></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Infrastructure cloud</h3><div class="kpi-list"><div class="kpi-row"><span>Base principale</span><b>D1IM</b></div><div class="kpi-row"><span>Sessions</span><b>KVIM</b></div><div class="kpi-row"><span>État</span><b>Synchronisé</b></div></div><div class="notice" style="margin-top:12px">Les données sont centralisées et accessibles depuis plusieurs appareils.</div></div></div>`;
       }
 
       function renderSuperAdminLocal() {
