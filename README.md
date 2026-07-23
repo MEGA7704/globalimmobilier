@@ -159,3 +159,4 @@ README.md
 ## Sécurité
 
 Les fichiers contenant un vrai mot de passe ne sont pas inclus dans cette nouvelle archive. Ne publiez jamais `.dev.vars`, `.env` ou un fichier de secrets dans GitHub.
+Déploiement Cloudflare relancé le 23 juillet 2026.
