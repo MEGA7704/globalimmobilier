@@ -6,7 +6,7 @@
     "nodejs_compat"
   ],
   "vars": {
-    "SKIP_DEPENDENCY_INSTALL": "1",
+    "SKIP_DEPENDENCY_INSTALL": "true",
     "NODE_VERSION": "20.19.4",
     "NPM_VERSION": "10.8.1",
     "SUPER_ADMIN_USERNAME": "megaglobal0777",
