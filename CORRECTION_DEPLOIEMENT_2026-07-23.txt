@@ -1,0 +1,28 @@
+CORRECTION DU DEPLOIEMENT CLOUDFLARE PAGES
+Date : 23 juillet 2026
+
+CAUSE
+Le projet n'a aucune dependance npm, mais Cloudflare Pages executait automatiquement :
+npm clean-install --progress=false
+avec Node.js 22.16.0 et npm 10.9.2.
+Cette installation inutile se terminait par : « Exit handler never called! ».
+
+CORRECTION INTEGREE
+1. SKIP_DEPENDENCY_INSTALL=1 dans wrangler.json.
+2. Node.js fixe a 20.19.4 en secours.
+3. npm fixe a 10.8.1 en secours.
+4. Fichier .node-version ajoute.
+5. Aucun package.json ni package-lock.json n'est necessaire.
+
+REGLAGES CLOUDFLARE PAGES
+Framework : Aucun
+Commande de build : exit 0
+Repertoire de sortie : public
+Repertoire racine : vide
+
+APRES ENVOI SUR GITHUB
+1. Ouvrir Cloudflare > Workers & Pages > globalimmobilier.
+2. Relancer le deploiement de production.
+3. Effacer une fois le cache de build si l'option est disponible.
+4. Verifier que le journal ne lance plus « npm clean-install ».
+5. Tester : https://globalimmobilier.pages.dev/api/health

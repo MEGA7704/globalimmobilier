@@ -46,7 +46,28 @@ Dans Cloudflare Pages, configurez :
 - Répertoire de sortie : `public`
 - Répertoire racine : laisser vide
 
-Ce paquet ne contient plus de `package.json` ni de `package-lock.json`. Cloudflare n’essaiera donc plus d’exécuter automatiquement `npm clean-install`, ce qui évite l’erreur npm « Exit handler never called » rencontrée auparavant.
+Ce projet ne contient aucune dépendance npm. Le fichier `wrangler.json` désactive désormais explicitement l’installation automatique avec `SKIP_DEPENDENCY_INSTALL=1`. Une version de secours est également fixée avec Node.js `20.19.4` et npm `10.8.1`, afin d’éviter le bogue npm 10.9.2 « Exit handler never called! ».
+
+
+
+### Correction de l’erreur npm du 23 juillet 2026
+
+Le déploiement échouait avant l’exécution de la commande de build, pendant cette étape inutile :
+
+```text
+Installing project dependencies: npm clean-install --progress=false
+npm error Exit handler never called!
+```
+
+La correction est intégrée au dépôt :
+
+```text
+SKIP_DEPENDENCY_INSTALL=1
+NODE_VERSION=20.19.4
+NPM_VERSION=10.8.1
+```
+
+Après avoir remplacé les fichiers du dépôt GitHub, ouvrez le projet Cloudflare Pages, effacez une fois le cache de build si cette option est proposée, puis relancez un déploiement de production. Le journal doit passer directement à la commande `exit 0`, sans lancer `npm clean-install`.
 
 ## Secret Super Admin
 
