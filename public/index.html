@@ -3496,7 +3496,7 @@
                   payout = data.payouts
                     .filter((x) => !x.cancelled && x.ownerId === o.id)
                     .reduce((s, x) => s + Number(x.amount || 0), 0);
-                return `<tr><td><b>${esc(o.ref)}</b></td><td>${esc(o.name)}<br><small>${esc(o.address)}</small></td><td>${badge(o.type)}</td><td>${esc(o.phone)}<br>${esc(o.email)}</td><td>${props.length}</td><td>${o.commission}%</td><td>${money(rents)}</td><td><b>${money(Math.max(0, rents - comm - payout))}</b></td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewOwner('${o.id}')">Fiche</button><button class="btn btn-primary btn-sm" onclick="openOwnerForm('${o.id}')">Modifier</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('owners','${o.id}')">Supprimer</button></div></td></tr>`;
+                return `<tr><td><b>${esc(o.ref)}</b></td><td>${esc(o.name)}<br><small>${esc(o.address)}</small></td><td>${badge(o.type)}</td><td>${esc(o.phone)}<br>${esc(o.email)}</td><td>${props.length}</td><td>${o.commission}%</td><td>${money(rents)}</td><td><b>${money(Math.max(0, rents - comm - payout))}</b></td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="viewOwner('${o.id}')">Fiche</button><button class="btn btn-accent btn-sm" onclick="openOwnerMandate('${o.id}')">Mandat de gestion</button><button class="btn btn-primary btn-sm" onclick="openOwnerForm('${o.id}')">Modifier</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('owners','${o.id}')">Supprimer</button></div></td></tr>`;
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucun propriétaire.</td></tr>'
@@ -3590,6 +3590,202 @@
         printDocument(
           "RELEVÉ DU PROPRIÉTAIRE",
           `<p><b>Propriétaire :</b> ${esc(o.name)} — ${esc(o.ref)}<br><b>Téléphone :</b> ${esc(o.phone)}</p><table><thead><tr><th>Date</th><th>Bien</th><th>Locataire</th><th>Période</th><th>Montant encaissé</th></tr></thead><tbody>${rows.map((p) => `<tr><td>${fmtDate(p.date)}</td><td>${esc(nameOf(data.properties, p.propertyId))}</td><td>${esc(nameOf(data.tenants, p.tenantId))}</td><td>${esc(p.period)}</td><td>${money(p.paid)}</td></tr>`).join("")}</tbody></table>`,
+        );
+      }
+
+
+      function ownerMandateDefaults(owner) {
+        const current = owner?.managementMandate || {};
+        return {
+          ref:
+            current.ref ||
+            "MDT-" +
+              String(owner?.ref || Date.now())
+                .replace(/[^A-Za-z0-9]/g, "")
+                .slice(-10),
+          ownerBirthDate: current.ownerBirthDate || "",
+          ownerBirthPlace: current.ownerBirthPlace || "",
+          ownerProfession: current.ownerProfession || "",
+          ownerIdNumber: current.ownerIdNumber || owner?.idNumber || "",
+          ownerAddress: current.ownerAddress || owner?.address || "",
+          ownerPhone: current.ownerPhone || owner?.phone || "",
+          agencyRepresentative:
+            current.agencyRepresentative || data.settings.adminUser || "",
+          legalForm: current.legalForm || "",
+          headquarters: current.headquarters || data.settings.address || "",
+          professionalId: current.professionalId || "",
+          approvalNumber: current.approvalNumber || "",
+          propertyManager: current.propertyManager || "",
+          agencyPhone: current.agencyPhone || data.settings.phone || "",
+          agencyEmail: current.agencyEmail || data.settings.email || "",
+          payoutDay: Number(current.payoutDay || 10),
+          paymentMode: current.paymentMode || owner?.paymentMode || "Espèces",
+          paymentOther: current.paymentOther || "",
+          paymentDetails: current.paymentDetails || owner?.bankInfo || "",
+          commission: Number(
+            current.commission ??
+              owner?.commission ??
+              data.settings.defaultCommission ??
+              10,
+          ),
+          startDate: current.startDate || today(),
+          noticeDays: Number(current.noticeDays || 30),
+          signPlace: current.signPlace || data.settings.address || "",
+          signDate: current.signDate || today(),
+          managerRepresentative:
+            current.managerRepresentative || data.settings.adminUser || "",
+          managerRole: current.managerRole || "Gestionnaire immobilier",
+          additionalClauses: current.additionalClauses || "",
+        };
+      }
+
+      function openOwnerMandate(id) {
+        const owner = data.owners.find((x) => x.id === id);
+        if (!owner) {
+          toast("Propriétaire introuvable.");
+          return;
+        }
+        const mandate = ownerMandateDefaults(owner),
+          properties = data.properties.filter((p) => p.ownerId === id);
+        editing = { type: "ownerMandate", id };
+        modalTitle.textContent = "Mandat de gestion — " + owner.name;
+        modalBody.innerHTML = `<div class="notice">Les informations du propriétaire, de l’entreprise et les <b>${properties.length}</b> bien(s) lié(s) sont récupérés automatiquement. Vous pouvez compléter ou modifier les champs avant l’impression.</div><div class="form-grid" style="margin-top:14px">
+          <div class="section-title">Référence et propriétaire</div>
+          <div class="field"><label>Référence du mandat</label><input id="mg_ref" value="${attr(mandate.ref)}"></div>
+          <div class="field"><label>Nom et prénoms</label><input value="${attr(owner.name)}" readonly></div>
+          <div class="field"><label>Date de naissance</label><input id="mg_ownerBirthDate" type="date" value="${attr(mandate.ownerBirthDate)}"></div>
+          <div class="field"><label>Lieu de naissance</label><input id="mg_ownerBirthPlace" value="${attr(mandate.ownerBirthPlace)}"></div>
+          <div class="field"><label>Profession</label><input id="mg_ownerProfession" value="${attr(mandate.ownerProfession)}"></div>
+          <div class="field"><label>Pièce d’identité n°</label><input id="mg_ownerIdNumber" value="${attr(mandate.ownerIdNumber)}"></div>
+          <div class="field span-2"><label>Adresse du propriétaire</label><input id="mg_ownerAddress" value="${attr(mandate.ownerAddress)}"></div>
+          <div class="field"><label>Téléphone du propriétaire</label><input id="mg_ownerPhone" value="${attr(mandate.ownerPhone)}"></div>
+          <div class="section-title">Gestionnaire immobilier</div>
+          <div class="field"><label>Entreprise immobilière</label><input value="${attr(data.settings.agency)}" readonly></div>
+          <div class="field"><label>Exploitée / représentée par</label><input id="mg_agencyRepresentative" value="${attr(mandate.agencyRepresentative)}"></div>
+          <div class="field"><label>Forme juridique</label><input id="mg_legalForm" value="${attr(mandate.legalForm)}" placeholder="SARL, SARL U, entreprise individuelle…"></div>
+          <div class="field"><label>Siège social</label><input id="mg_headquarters" value="${attr(mandate.headquarters)}"></div>
+          <div class="field"><label>RCCM ou identifiant professionnel</label><input id="mg_professionalId" value="${attr(mandate.professionalId)}"></div>
+          <div class="field"><label>Agrément d’agence immobilière n°</label><input id="mg_approvalNumber" value="${attr(mandate.approvalNumber)}"></div>
+          <div class="field"><label>Administrateur de biens</label><input id="mg_propertyManager" value="${attr(mandate.propertyManager)}"></div>
+          <div class="field"><label>Téléphone de l’entreprise</label><input id="mg_agencyPhone" value="${attr(mandate.agencyPhone)}"></div>
+          <div class="field"><label>E-mail de l’entreprise</label><input id="mg_agencyEmail" value="${attr(mandate.agencyEmail)}"></div>
+          <div class="section-title">Conditions financières et durée</div>
+          <div class="field"><label>Commission de gestion (%)</label><input id="mg_commission" type="number" min="0" step="0.01" value="${mandate.commission}"></div>
+          <div class="field"><label>Jour limite du reversement mensuel</label><input id="mg_payoutDay" type="number" min="1" max="31" value="${mandate.payoutDay}"></div>
+          <div class="field"><label>Mode de reversement</label><select id="mg_paymentMode">${paymentModes.map((x) => `<option ${mandate.paymentMode === x ? "selected" : ""}>${x}</option>`).join("")}<option ${!paymentModes.includes(mandate.paymentMode) ? "selected" : ""}>Autre</option></select></div>
+          <div class="field"><label>Autre moyen de paiement</label><input id="mg_paymentOther" value="${attr(mandate.paymentOther)}"></div>
+          <div class="field span-2"><label>Coordonnées de paiement du propriétaire</label><input id="mg_paymentDetails" value="${attr(mandate.paymentDetails)}"></div>
+          <div class="field"><label>Date de prise d’effet</label><input id="mg_startDate" type="date" value="${attr(mandate.startDate)}"></div>
+          <div class="field"><label>Préavis de résiliation (jours)</label><input id="mg_noticeDays" type="number" min="0" value="${mandate.noticeDays}"></div>
+          <div class="section-title">Signature et clauses particulières</div>
+          <div class="field"><label>Fait à</label><input id="mg_signPlace" value="${attr(mandate.signPlace)}"></div>
+          <div class="field"><label>Date de signature</label><input id="mg_signDate" type="date" value="${attr(mandate.signDate)}"></div>
+          <div class="field"><label>Représentant du mandataire</label><input id="mg_managerRepresentative" value="${attr(mandate.managerRepresentative)}"></div>
+          <div class="field"><label>Qualité</label><input id="mg_managerRole" value="${attr(mandate.managerRole)}"></div>
+          <div class="field span-2"><label>Clauses ou observations complémentaires</label><textarea id="mg_additionalClauses">${esc(mandate.additionalClauses)}</textarea></div>
+        </div><div class="actions" style="margin-top:15px"><button class="btn btn-accent" type="button" onclick="saveOwnerMandate('${id}', true)">Enregistrer et imprimer en A4</button></div>`;
+        modalSave.textContent = "Enregistrer le mandat";
+        modalSave.onclick = () => saveOwnerMandate(id, false);
+        modal.classList.add("show");
+      }
+
+      function saveOwnerMandate(ownerId, printAfter = false) {
+        const owner = data.owners.find((x) => x.id === ownerId);
+        if (!owner) {
+          toast("Propriétaire introuvable.");
+          return;
+        }
+        const mandate = {
+          ref: val("mg_ref").trim() || "MDT-" + Date.now().toString().slice(-8),
+          ownerBirthDate: val("mg_ownerBirthDate"),
+          ownerBirthPlace: val("mg_ownerBirthPlace"),
+          ownerProfession: val("mg_ownerProfession"),
+          ownerIdNumber: val("mg_ownerIdNumber"),
+          ownerAddress: val("mg_ownerAddress"),
+          ownerPhone: val("mg_ownerPhone"),
+          agencyRepresentative: val("mg_agencyRepresentative"),
+          legalForm: val("mg_legalForm"),
+          headquarters: val("mg_headquarters"),
+          professionalId: val("mg_professionalId"),
+          approvalNumber: val("mg_approvalNumber"),
+          propertyManager: val("mg_propertyManager"),
+          agencyPhone: val("mg_agencyPhone"),
+          agencyEmail: val("mg_agencyEmail"),
+          payoutDay: Math.max(1, Math.min(31, Number(val("mg_payoutDay") || 10))),
+          paymentMode: val("mg_paymentMode"),
+          paymentOther: val("mg_paymentOther"),
+          paymentDetails: val("mg_paymentDetails"),
+          commission: Math.max(0, Number(val("mg_commission") || 0)),
+          startDate: val("mg_startDate") || today(),
+          noticeDays: Math.max(0, Number(val("mg_noticeDays") || 30)),
+          signPlace: val("mg_signPlace"),
+          signDate: val("mg_signDate") || today(),
+          managerRepresentative: val("mg_managerRepresentative"),
+          managerRole: val("mg_managerRole"),
+          additionalClauses: val("mg_additionalClauses"),
+          updatedAt: new Date().toISOString(),
+        };
+        owner.managementMandate = mandate;
+        logAction("Enregistrement du mandat de gestion " + mandate.ref + " pour " + owner.ref);
+        closeModal();
+        saveData("Mandat de gestion enregistré.");
+        if (printAfter) setTimeout(() => printOwnerMandate(ownerId), 120);
+      }
+
+      function printOwnerMandate(id) {
+        const owner = data.owners.find((x) => x.id === id);
+        if (!owner) {
+          toast("Propriétaire introuvable.");
+          return;
+        }
+        const mandate = ownerMandateDefaults(owner),
+          agency = data.settings,
+          agencyName = agency.agency || "Entreprise immobilière",
+          properties = data.properties.filter((p) => p.ownerId === id),
+          normalizedMode = /orange|mtn|moov|wave|mobile/i.test(mandate.paymentMode)
+            ? "Mobile Money"
+            : /virement/i.test(mandate.paymentMode)
+              ? "Virement bancaire"
+              : /espèces/i.test(mandate.paymentMode)
+                ? "Espèces"
+                : "Autre moyen";
+        const propertyRows = properties.length
+          ? properties
+              .map(
+                (p, index) =>
+                  `<tr><td>${index + 1}</td><td>${esc(p.ref)}</td><td>${esc(p.title)}</td><td>${esc(p.type)}</td><td>${esc(p.city || p.commune || "—")} / ${esc(p.district || "—")}</td><td>${esc(p.address || "—")}</td><td>${money(p.price)}</td><td>${esc(p.status || "—")}</td></tr>`,
+              )
+              .join("")
+          : '<tr><td colspan="8">Aucun bien lié à ce propriétaire au moment de l’impression.</td></tr>';
+        let body = `<div class="contract-cover"><div class="contract-main-title">MANDAT DE GESTION IMMOBILIÈRE</div><div class="contract-ref">Référence : <b>${esc(mandate.ref)}</b><br>Date de prise d’effet : <b>${fmtDate(mandate.startDate)}</b></div></div>`;
+        body += `<section class="contract-intro"><h3>ENTRE LES SOUSSIGNÉS</h3><h4>1. LE PROPRIÉTAIRE</h4><table class="contract-info"><tr><th>Monsieur / Madame</th><td>${esc(owner.name)}</td></tr><tr><th>Né(e) le / à</th><td>${fmtDate(mandate.ownerBirthDate)} à ${esc(mandate.ownerBirthPlace || "—")}</td></tr><tr><th>Profession</th><td>${esc(mandate.ownerProfession || "—")}</td></tr><tr><th>Pièce d’identité</th><td>${esc(owner.idType || "—")} n° ${esc(mandate.ownerIdNumber || "—")}</td></tr><tr><th>Adresse</th><td>${esc(mandate.ownerAddress || "—")}</td></tr><tr><th>Téléphone</th><td>${esc(mandate.ownerPhone || "—")}</td></tr></table><p>Ci-après désigné(e) « le Mandant » ou « le Propriétaire », <b>d’une part</b>.</p><h4>2. LE GESTIONNAIRE</h4><table class="contract-info"><tr><th>Entreprise immobilière</th><td>${esc(agencyName)}</td></tr><tr><th>Exploitée / représentée par</th><td>${esc(mandate.agencyRepresentative || "—")}</td></tr><tr><th>Forme juridique</th><td>${esc(mandate.legalForm || "—")}</td></tr><tr><th>Siège social</th><td>${esc(mandate.headquarters || "—")}</td></tr><tr><th>RCCM ou identifiant professionnel</th><td>${esc(mandate.professionalId || "—")}</td></tr><tr><th>Agrément d’agence immobilière n°</th><td>${esc(mandate.approvalNumber || "—")}</td></tr><tr><th>Administrateur de biens</th><td>${esc(mandate.propertyManager || "—")}</td></tr><tr><th>Téléphone / E-mail</th><td>${esc(mandate.agencyPhone || "—")} / ${esc(mandate.agencyEmail || "—")}</td></tr></table><p>Ci-après désignée « le Mandataire » ou « ${esc(agencyName)} », <b>d’autre part</b>.</p><p>Il a été convenu ce qui suit :</p></section>`;
+        body += contractArticle(1, "OBJET DU MANDAT", `<p>Le Propriétaire confie à ${esc(agencyName)}, qui accepte, la gestion complète des biens immobiliers désignés dans le présent mandat.</p><p>${esc(agencyName)} est autorisée à accomplir, au nom et pour le compte du Propriétaire, les actes de gestion locative prévus dans le présent mandat.</p>`);
+        body += contractArticle(2, "DÉSIGNATION DES BIENS", `<p>Les biens confiés en gestion et actuellement liés au Propriétaire dans le programme sont les suivants :</p><table><thead><tr><th>N°</th><th>Référence</th><th>Désignation</th><th>Type</th><th>Localisation</th><th>Adresse</th><th>Loyer / prix</th><th>Statut</th></tr></thead><tbody>${propertyRows}</tbody></table><p>Cette liste peut être complétée ou actualisée par une annexe signée par les parties.</p>`);
+        body += contractArticle(3, "DÉCLARATIONS DU PROPRIÉTAIRE", `<p>Le Propriétaire déclare :</p><ul><li>être propriétaire des biens ou disposer du pouvoir nécessaire pour les confier en gestion ;</li><li>que les renseignements et documents remis à ${esc(agencyName)} sont exacts ;</li><li>que les biens peuvent être légalement donnés en location ;</li><li>informer ${esc(agencyName)} de toute hypothèque, saisie, indivision, litige ou restriction concernant les biens ;</li><li>remettre les biens dans un état permettant leur occupation normale et sécurisée.</li></ul><p>Le Propriétaire demeure responsable de la régularité de ses titres de propriété et de ses obligations fiscales liées aux biens.</p>`);
+        body += contractArticle(4, "MISSIONS CONFIÉES À " + agencyName.toUpperCase(), `<p>Dans le cadre de la gestion complète des biens, ${esc(agencyName)} est autorisée à :</p><ol><li>rechercher et sélectionner des locataires ;</li><li>organiser les visites des biens ;</li><li>recueillir et vérifier les dossiers des candidats ;</li><li>négocier le montant des loyers dans les limites fixées par le Propriétaire ;</li><li>préparer et signer les contrats de location au nom du Propriétaire ;</li><li>établir les états des lieux d’entrée et de sortie ;</li><li>établir l’inventaire des équipements, lorsqu’il y a lieu ;</li><li>encaisser les loyers, charges, dépôts de garantie et autres sommes autorisées ;</li><li>délivrer un reçu pour chaque paiement encaissé ;</li><li>suivre les échéances et les retards de paiement ;</li><li>adresser les rappels et mises en demeure nécessaires ;</li><li>recevoir les demandes et réclamations des locataires ;</li><li>organiser les réparations et travaux autorisés ;</li><li>effectuer des visites de contrôle, dans le respect des droits du locataire ;</li><li>accomplir toute démarche administrative nécessaire à la bonne gestion des biens.</li></ol><p>${esc(agencyName)} ne peut vendre, hypothéquer ou transférer la propriété des biens en vertu du présent mandat.</p>`);
+        body += contractArticle(5, "ENCAISSEMENT DES LOYERS", `<p>Le Propriétaire autorise expressément ${esc(agencyName)} à recevoir, en son nom et pour son compte, les loyers, charges, dépôts de garantie et autres sommes dues par les locataires. Chaque paiement donne lieu à la délivrance d’un reçu.</p><p>Les sommes encaissées sont reversées au Propriétaire après déduction :</p><ul><li>de la commission de gestion ;</li><li>des dépenses autorisées ;</li><li>des frais de réparation justifiés ;</li><li>des frais de procédure préalablement autorisés ;</li><li>de toute autre somme prévue au présent mandat.</li></ul>`);
+        body += contractArticle(6, "REVERSEMENT AU PROPRIÉTAIRE", `<p>${esc(agencyName)} reverse au Propriétaire les sommes nettes encaissées au plus tard le <b>${esc(String(mandate.payoutDay))}</b> de chaque mois, par :</p><div class="check-grid">${contractCheck(normalizedMode === "Espèces", "Espèces")}${contractCheck(normalizedMode === "Virement bancaire", "Virement bancaire")}${contractCheck(normalizedMode === "Mobile Money", "Mobile Money", mandate.paymentMode)}${contractCheck(normalizedMode === "Autre moyen", "Autre moyen", mandate.paymentOther || mandate.paymentMode)}</div><p><b>Coordonnées de paiement du Propriétaire :</b> ${esc(mandate.paymentDetails || "—")}</p><p>Le reversement est accompagné d’un relevé présentant les loyers encaissés, la commission retenue, les dépenses effectuées et le solde versé.</p>`);
+        body += contractArticle(7, "RÉMUNÉRATION DE " + agencyName.toUpperCase(), `<p>En contrepartie de sa mission, ${esc(agencyName)} percevra une commission égale à <b>${esc(String(mandate.commission))} %</b> du montant des loyers effectivement encaissés.</p><p>La commission est prélevée directement sur les loyers encaissés avant leur reversement au Propriétaire. Aucune commission de gestion ne sera calculée sur un loyer non encaissé, sauf frais particuliers expressément acceptés par le Propriétaire.</p><p>Les prestations exceptionnelles non comprises dans la gestion courante devront faire l’objet d’un accord préalable entre les parties.</p>`);
+        body += contractArticle(8, "DÉPÔT DE GARANTIE", `<p>${esc(agencyName)} est autorisée à recevoir et à conserver le dépôt de garantie versé par le locataire et à en délivrer reçu.</p><p>À la fin du bail, il est restitué au locataire après l’état des lieux de sortie, sous déduction des sommes légalement justifiées. Toute retenue doit être appuyée par un état des lieux, un devis, une facture ou tout autre justificatif valable.</p>`);
+        body += contractArticle(9, "TRAVAUX ET RÉPARATIONS", `<p>${esc(agencyName)} ne peut faire réaliser des réparations sans autorisation préalable du Propriétaire.</p><p>Toutefois, en cas d’urgence mettant en danger les personnes ou risquant d’aggraver la détérioration d’un bien, ${esc(agencyName)} pourra prendre les mesures conservatoires nécessaires et informer le Propriétaire dans les meilleurs délais.</p><p>Les dépenses sont supportées par la partie légalement ou contractuellement tenue de les payer.</p>`);
+        body += contractArticle(10, "IMPAYÉS ET PROCÉDURES", `<p>En cas de retard de paiement, ${esc(agencyName)} est autorisée à adresser au locataire un rappel ou une mise en demeure.</p><p>À défaut de régularisation, ${esc(agencyName)} pourra, après accord du Propriétaire, transmettre le dossier à un commissaire de justice, un avocat ou tout autre professionnel compétent afin d’engager les procédures légales nécessaires.</p><p>Les frais de procédure sont supportés par le Propriétaire, sauf remboursement obtenu auprès du locataire ou décision contraire de la juridiction compétente. Aucun changement arbitraire de serrure ni retrait des biens du locataire ne pourra être réalisé par le Propriétaire ou ${esc(agencyName)}.</p>`);
+        body += contractArticle(11, "OBLIGATIONS DE " + agencyName.toUpperCase(), `<p>${esc(agencyName)} s’engage à :</p><ul><li>exécuter sa mission avec diligence, loyauté et transparence ;</li><li>respecter les limites du présent mandat ;</li><li>assurer le suivi régulier des biens ;</li><li>conserver les justificatifs des opérations réalisées ;</li><li>rendre compte de sa gestion au Propriétaire ;</li><li>informer le Propriétaire de toute difficulté importante ;</li><li>préserver la confidentialité des informations reçues ;</li><li>remettre au Propriétaire, à la fin du mandat, les documents et fonds lui revenant.</li></ul>`);
+        body += contractArticle(12, "OBLIGATIONS DU PROPRIÉTAIRE", `<p>Le Propriétaire s’engage à :</p><ul><li>remettre à ${esc(agencyName)} les documents nécessaires à la gestion ;</li><li>informer l’agence de toute modification concernant les biens ;</li><li>supporter les grosses réparations et dépenses lui incombant ;</li><li>maintenir les biens dans un état conforme à leur destination ;</li><li>respecter les contrats régulièrement conclus par ${esc(agencyName)} dans les limites du mandat ;</li><li>ne pas encaisser directement les loyers sans en informer ${esc(agencyName)} ;</li><li>payer les impôts, taxes et charges qui lui incombent ;</li><li>ne pas intervenir directement auprès des locataires d’une manière susceptible de perturber la gestion des biens.</li></ul>`);
+        body += contractArticle(13, "ABSENCE DE GARANTIE DES IMPAYÉS", `<p>${esc(agencyName)} est tenue d’assurer le suivi et le recouvrement amiable des loyers, mais elle ne garantit pas le paiement des loyers par les locataires.</p><p>Elle ne pourra être tenue responsable des impayés, dégradations, départs sans préavis ou autres manquements des locataires, sauf faute prouvée dans l’exécution de sa mission.</p>`);
+        body += contractArticle(14, "DURÉE DU MANDAT", `<p>Le présent mandat est conclu pour une durée indéterminée à compter du <b>${fmtDate(mandate.startDate)}</b>. Il reste actif en continu, sauf dénonciation par l’une des parties dans les conditions prévues au présent mandat.</p>`);
+        body += contractArticle(15, "RÉSILIATION DU MANDAT", `<p>Chaque partie peut mettre fin au présent mandat par notification écrite adressée à l’autre partie, en respectant un préavis de <b>${esc(String(mandate.noticeDays))} jours</b>.</p><p>En cas de faute grave, de détournement de fonds, de fausse déclaration, de non-respect des obligations contractuelles ou de perte de l’autorisation professionnelle nécessaire, la résiliation pourra intervenir sans préavis, sous réserve des droits de la partie lésée.</p><p>La fin du mandat ne met pas immédiatement fin aux contrats de location régulièrement conclus avec les locataires.</p>`);
+        body += contractArticle(16, "RESTITUTION DES DOCUMENTS ET DES FONDS", `<p>À la fin du mandat, ${esc(agencyName)} remet au Propriétaire :</p><ul><li>les contrats de location ;</li><li>les états des lieux ;</li><li>les dossiers des locataires ;</li><li>les justificatifs disponibles ;</li><li>les clés détenues ;</li><li>le solde des sommes revenant au Propriétaire.</li></ul><p>Un procès-verbal de remise pourra être établi et signé par les parties.</p>`);
+        body += contractArticle(17, "MODIFICATION DU CONTRAT", `<p>Toute modification du présent mandat doit faire l’objet d’un avenant écrit, daté et signé par les deux parties. Aucune modification verbale ne pourra être opposée à l’une des parties.</p>`);
+        body += contractArticle(18, "RÈGLEMENT DES DIFFÉRENDS", `<p>En cas de difficulté relative à l’interprétation ou à l’exécution du présent mandat, les parties s’engagent à rechercher prioritairement une solution amiable.</p><p>À défaut d’accord amiable, le différend sera porté devant la juridiction ivoirienne territorialement compétente.</p>`);
+        body += contractArticle(19, "ÉLECTION DE DOMICILE", `<p>Pour l’exécution du présent mandat, les parties élisent domicile aux adresses indiquées en tête du document. Tout changement d’adresse ou de coordonnées devra être communiqué par écrit à l’autre partie.</p>`);
+        body += contractArticle(20, "ANNEXES", `<p>Sont annexés au présent mandat, selon le cas :</p><ul><li>la copie de la pièce d’identité du Propriétaire ;</li><li>la copie du titre ou justificatif de propriété ;</li><li>la description des biens ;</li><li>l’inventaire des équipements ;</li><li>les photographies des biens ;</li><li>le barème de rémunération de ${esc(agencyName)} ;</li><li>les coordonnées de versement du Propriétaire.</li></ul>`);
+        if (mandate.additionalClauses)
+          body += contractArticle(21, "CLAUSES OU OBSERVATIONS COMPLÉMENTAIRES", `<p>${esc(mandate.additionalClauses).replace(/\n/g, "<br>")}</p>`);
+        body += `<section class="contract-signatures avoid-break"><p><b>Fait à :</b> ${esc(mandate.signPlace || "—")} &nbsp;&nbsp;&nbsp; <b>Le :</b> ${fmtDate(mandate.signDate)}</p><p>Établi en deux exemplaires originaux, dont un remis à chacune des parties.</p><div class="signature-grid" style="grid-template-columns:repeat(2,1fr)"><div><h4>LE PROPRIÉTAIRE — LE MANDANT</h4><p>Nom et prénoms : ${esc(owner.name)}</p><p>« Lu et approuvé, bon pour mandat »</p><div class="signature-space">Signature</div></div><div><h4>${esc(agencyName)} — LE MANDATAIRE</h4><p>Représentée par : ${esc(mandate.managerRepresentative || mandate.agencyRepresentative || "—")}</p><p>Qualité : ${esc(mandate.managerRole || "—")}</p><p>« Lu et approuvé, mandat accepté »</p><div class="signature-space">Signature et cachet</div></div></div></section>`;
+        printDocument(
+          "MANDAT DE GESTION IMMOBILIÈRE",
+          body,
+          "Mandat " + mandate.ref + " — " + owner.name,
         );
       }
 
@@ -4466,7 +4662,7 @@
         body += contractArticle(
           5,
           "DURÉE DU CONTRAT",
-          `${contractCheck(l.leaseType !== "Indéterminée", "Bail à durée déterminée", duration ? duration + " mois" : "")} ${contractCheck(l.leaseType === "Indéterminée", "Bail à durée indéterminée")}<p>Le présent contrat prend effet le <b>${fmtDate(l.startDate)}</b>${l.leaseType === "Indéterminée" ? " pour une durée indéterminée." : " et prend fin le <b>" + fmtDate(l.endDate) + "</b>."}</p><p>À son échéance, il pourra être renouvelé ou reconduit conformément à la réglementation applicable et à l’accord des parties.</p>`,
+          `<div class="check-grid">${contractCheck(l.leaseType !== "Indéterminée", "Bail à durée déterminée", "13 mois. À son expiration, il sera renouvelé par tacite reconduction pour la même durée, sauf dénonciation par l’une des parties dans les conditions prévues au contrat.")}${contractCheck(l.leaseType === "Indéterminée", "Bail à durée indéterminée", "Le contrat reste actif en continu, sauf dénonciation par l’une des parties dans les conditions prévues au contrat.")}</div><p>Le présent contrat prend effet le <b>${fmtDate(l.startDate)}</b>${l.leaseType === "Indéterminée" ? " pour une durée indéterminée." : " pour une durée de treize (13) mois. La date de fin prévue est le <b>" + fmtDate(l.endDate) + "</b>."}</p>`,
         );
         body += contractArticle(
           6,
@@ -4491,7 +4687,7 @@
         body += contractArticle(
           10,
           "CHARGES ET CONSOMMATIONS",
-          `<p>En plus du loyer, sont à la charge du Locataire : <b>${esc(l.chargeItems || "Électricité, eau et entretien courant")}</b>.</p><p>Le montant des charges communes est fixé à <b>${money(l.commonCharges || 0)}</b>.</p>${contractCheck(l.chargeMode !== "Provisoire avec régularisation", "Montant fixe")}${contractCheck(l.chargeMode === "Provisoire avec régularisation", "Montant provisoire avec régularisation sur justificatifs")}<p>Les consommations antérieures à l’entrée du Locataire restent à la charge du Bailleur ou du précédent occupant.</p>`,
+          `<p>En plus du loyer, le Locataire s’engage à s’acquitter, en même temps que celui-ci, de l’ensemble des charges locatives afférentes au bien loué :</p><ul><li>les frais de gardiennage ;</li><li>les frais d’entretien des parties communes ;</li><li>les consommations d’eau et d’électricité ;</li><li>ainsi que toute autre charge liée à l’usage normal des lieux.</li></ul><p>Lesdites charges sont exigibles et payables simultanément au loyer, selon leurs modalités.</p>`,
         );
         body += contractArticle(
           11,
@@ -4524,20 +4720,6 @@
           `<p>La sous-location, la cession du contrat ou la mise à disposition permanente du bien au profit d’un tiers sont interdites sans l’autorisation préalable et écrite du Bailleur. Le Locataire reste responsable de toute personne qu’il héberge ou autorise à occuper les lieux.</p>`,
         );
         body += contractArticle(
-          17,
-          "OCCUPANTS AUTORISÉS",
-          `<table class="contract-info"><thead><tr><th>N°</th><th>Nom et prénoms</th><th>Lien avec le Locataire</th><th>Contact</th></tr></thead><tbody>${[
-            0, 1, 2, 3, 4,
-          ]
-            .map((_, i) => {
-              const x = occupants[i] || {};
-              return `<tr><td>${i + 1}</td><td>${esc(x.name || "")}</td><td>${esc(x.relation || "")}</td><td>${esc(x.contact || "")}</td></tr>`;
-            })
-            .join(
-              "",
-            )}</tbody></table><p>Nombre total d’occupants autorisés : <b>${occupants.length}</b>. Toute augmentation permanente devra être portée à la connaissance de ${esc(agency.agency)}.</p>`,
-        );
-        body += contractArticle(
           18,
           "VISITE ET CONTRÔLE DU BIEN",
           `<p>Le Bailleur ou ${esc(agency.agency)} peut demander à visiter le bien afin de vérifier son entretien, constater une panne, réaliser des travaux, préparer une relocation ou une vente, ou répondre à une urgence. Sauf urgence, la visite est organisée après information du Locataire et à une date raisonnablement convenue.</p>`,
@@ -4550,7 +4732,7 @@
         body += contractArticle(
           20,
           "RETARD OU DÉFAUT DE PAIEMENT",
-          `<p>En cas de retard, ${esc(agency.agency)} ou le Bailleur adresse au Locataire un rappel ou une mise en demeure. Une pénalité contractuelle de <b>${esc(String(l.penaltyRate || 0))} %</b> peut être appliquée dans les limites permises par la réglementation. À défaut de régularisation, le Bailleur pourra engager les procédures légales nécessaires. Aucune expulsion arbitraire, changement de serrure ou retrait de biens ne peut intervenir en dehors d’une procédure légalement autorisée.</p>`,
+          `<p>Une mise en demeure sera remise au Locataire en cas de retard de paiement supérieur à dix (10) jours et le montant impayé supportera une pénalité de <b>5 %</b>, avec un délai supplémentaire de cinq (5) jours pour régularisation.</p><p>À défaut de paiement, ${esc(agency.agency)} ou le Bailleur pourra engager les procédures légales nécessaires, notamment la résiliation du bail et l’expulsion du Locataire.</p>`,
         );
         body += contractArticle(
           21,
@@ -4585,7 +4767,7 @@
         body += contractArticle(
           27,
           "ANNEXES",
-          `<div class="check-grid">${contractCheck(!!o?.idCopy, "Copie de la pièce d’identité du Bailleur")}${contractCheck(!!t.idCopy, "Copie de la pièce d’identité du Locataire")}${contractCheck(!!l.mandateRef, "Mandat de gestion confié à " + agency.agency)}${contractCheck(true, "État des lieux d’entrée")}${contractCheck(!!l.equipment, "Inventaire des équipements")}${contractCheck(!!p.photo, "Photographies du bien")}${contractCheck(!!p.map, "Plan ou indication de localisation")}${contractCheck(true, "Relevés des compteurs")}${contractCheck(!!t.supportingDocs, "Documents justificatifs")}${contractCheck(Number(l.caution) > 0, "Reçu du dépôt de garantie")}${contractCheck(Number(l.advanceAmount) > 0, "Reçu des loyers d’avance")}${contractCheck(false, "Acte ou certificat d’enregistrement fiscal")}</div><p>Les annexes signées font partie intégrante du présent contrat.</p>`,
+          `<div class="check-grid">${contractCheck(!!t.idCopy, "Copie de la pièce d’identité du Locataire")}${contractCheck(true, "État des lieux d’entrée")}${contractCheck(!!l.equipment || !!p.equipment, "Inventaire des équipements")}${contractCheck(true, "Relevés des compteurs")}${contractCheck(!!t.supportingDocs, "Documents justificatifs")}${contractCheck(Number(l.caution) > 0, "Reçu du dépôt de garantie")}${contractCheck(Number(l.advanceAmount) > 0, "Reçu des loyers d’avance")}</div><p>Les annexes signées font partie intégrante du présent contrat.</p>`,
         );
         body += contractArticle(
           28,
