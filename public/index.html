@@ -4151,7 +4151,10 @@
             const d = loadData(c.id),
               s = d.settings || {},
               count = (d.properties || []).filter(
-                (p) => p.published && !p.archived,
+                (p) =>
+                  p.published &&
+                  !p.archived &&
+                  !isPropertyOccupiedByValidLease(p, d),
               ).length;
             return { ...c, settings: s, count };
           })
@@ -6776,7 +6779,9 @@
         editing = { type: "visit", id, publicMode };
         modalTitle.textContent = v ? "Modifier la visite" : "Demande de visite";
         modalBody.innerHTML = `<div class="form-grid"><div class="field"><label>Référence</label><input id="v_ref" value="${attr(v?.ref || seq("VIS", data.visits))}" readonly></div><div class="field span-2"><label>Bien concerné</label><select id="v_property"><option value="">Choisir un bien</option>${data.properties
-          .filter((p) => p.published || !publicMode)
+          .filter((p) =>
+            publicMode ? isPublicPropertyAvailable(p) : true,
+          )
           .map(
             (p) =>
               `<option value="${p.id}" ${(v?.propertyId || propertyId) === p.id ? "selected" : ""}>${esc(p.ref)} — ${esc(p.title)}</option>`,
@@ -6874,9 +6879,51 @@
       function propertyCard(p, admin = false) {
         return `<article class="property-card"><div class="property-image" style="${p.photo ? `background-image:url('${attr(p.photo)}')` : ""}"><div class="top-badges">${badge(p.transaction)}${badge(p.status)}</div><div class="price">${money(p.price)}</div></div><div class="property-body"><h3>${esc(p.title)}</h3><div class="meta">${esc(p.type)} · ${esc(p.city)}, ${esc(p.district)}<br>${p.rooms || 0} pièce(s) · ${p.bedrooms || 0} chambre(s) · ${p.area || 0} m²<br>Réf. ${esc(p.ref)}</div><div class="property-actions">${admin ? `<button class="btn btn-light btn-sm" onclick="togglePublish('${p.id}')">${p.published ? "Retirer" : "Publier"}</button><button class="btn btn-primary btn-sm" onclick="openPropertyForm('${p.id}')">Modifier</button>` : `<button class="btn btn-primary" onclick="showPropertyDetail('${p.id}')">Voir les détails</button><button class="btn btn-accent" onclick="openPublicVisit('${p.id}')">Demander une visite</button>`}</div></div></article>`;
       }
+      function isLeaseCurrentlyValid(lease) {
+        if (!lease) return false;
+        const status = String(lease.status || "")
+          .trim()
+          .toLowerCase();
+        if (status !== "actif") return false;
+        const currentDate = today();
+        const startDate = String(lease.startDate || "").slice(0, 10);
+        const endDate = String(lease.endDate || "").slice(0, 10);
+        const leaseType = String(lease.leaseType || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+        if (startDate && startDate > currentDate) return false;
+        if (leaseType.includes("indeterminee") || !endDate) return true;
+        return endDate >= currentDate;
+      }
+      function isPropertyOccupiedByValidLease(property, state = data) {
+        if (!property) return false;
+        const leases = Array.isArray(state?.leases) ? state.leases : [];
+        const hasValidLease = leases.some(
+          (lease) =>
+            lease.propertyId === property.id && isLeaseCurrentlyValid(lease),
+        );
+        if (hasValidLease) return true;
+        const propertyStatus = String(property.status || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .toLowerCase();
+        return propertyStatus.startsWith("occup");
+      }
+      function isPublicPropertyAvailable(property, state = data) {
+        return !!(
+          property &&
+          property.published &&
+          !property.archived &&
+          !isPropertyOccupiedByValidLease(property, state)
+        );
+      }
       function renderPublicCatalog() {
         applySettings();
-        let rows = data.properties.filter((p) => p.published && !p.archived);
+        let rows = data.properties.filter((p) =>
+          isPublicPropertyAvailable(p),
+        );
         const search = (val("pubSearch") || "").trim().toLowerCase(),
           transaction = val("pubTransaction"),
           type = val("pubType"),
@@ -6909,6 +6956,14 @@
       function showPropertyDetail(id, admin = false) {
         const p = data.properties.find((x) => x.id === id);
         if (!p) return;
+        if (!admin && !isPublicPropertyAvailable(p)) {
+          professionalAlert(
+            "Ce bien est actuellement occupé ou n’est plus disponible dans le catalogue public.",
+            "Bien indisponible",
+          );
+          renderPublicCatalog();
+          return;
+        }
         if (!admin) {
           p.views = Number(p.views || 0) + 1;
           recordPublicEngagement(id, "view");
@@ -6934,6 +6989,17 @@
         detailModal.classList.remove("show");
       }
       function openPublicVisit(propertyId = "") {
+        if (propertyId) {
+          const property = data.properties.find((x) => x.id === propertyId);
+          if (!isPublicPropertyAvailable(property)) {
+            professionalAlert(
+              "Ce bien est actuellement occupé ou n’est plus disponible pour une demande de visite.",
+              "Visite indisponible",
+            );
+            renderPublicCatalog();
+            return;
+          }
+        }
         openVisitForm("", true, propertyId);
       }
       function contactWhatsApp(id) {
@@ -8350,9 +8416,23 @@
           return;
         }
         const publicMode = !!editing?.publicMode;
+        const selectedPropertyId = val("v_property");
+        if (publicMode) {
+          const selectedProperty = data.properties.find(
+            (property) => property.id === selectedPropertyId,
+          );
+          if (!isPublicPropertyAvailable(selectedProperty)) {
+            professionalAlert(
+              "Le bien sélectionné est actuellement occupé ou n’est plus disponible dans le catalogue public.",
+              "Bien indisponible",
+            );
+            renderPublicCatalog();
+            return;
+          }
+        }
         const payload = {
           ref: val("v_ref"),
-          propertyId: val("v_property"),
+          propertyId: selectedPropertyId,
           name: val("v_name"),
           phone: val("v_phone"),
           whatsapp: val("v_whatsapp"),
