@@ -1616,189 +1616,783 @@
         margin: 0 0 7px;
         color: var(--primary);
       }
+
+
+      /* V12 — Nouvelle interface de connexion GLOBAL IMMOBILIER */
+      #loginPage.login-page {
+        --login-green-dark: #003b34;
+        --login-green: #005b4f;
+        --login-petrol: #064d46;
+        --login-gold: #c9a24b;
+        --login-gold-light: #e5c36a;
+        --login-ivory: #f5f2ea;
+        --login-white: #fcfbf7;
+        --login-line: #dde3df;
+        --login-muted: #7a817e;
+        position: relative;
+        isolation: isolate;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 22px;
+        overflow-x: hidden;
+        background:
+          radial-gradient(circle at 9% 4%, rgba(229, 195, 106, 0.24), transparent 24%),
+          radial-gradient(circle at 91% 12%, rgba(201, 162, 75, 0.18), transparent 22%),
+          radial-gradient(circle at 50% 112%, rgba(0, 91, 79, 0.5), transparent 44%),
+          linear-gradient(135deg, #001f1b 0%, #003b34 42%, #062e2a 72%, #011b18 100%);
+      }
+      #loginPage.login-page::before,
+      #loginPage.login-page::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+      #loginPage.login-page::before {
+        opacity: 0.68;
+        background:
+          radial-gradient(circle at 14% 24%, rgba(229, 195, 106, 0.9) 0 1px, transparent 2px),
+          radial-gradient(circle at 76% 19%, rgba(229, 195, 106, 0.72) 0 1px, transparent 2px),
+          radial-gradient(circle at 86% 72%, rgba(229, 195, 106, 0.72) 0 1px, transparent 2px),
+          radial-gradient(circle at 28% 79%, rgba(229, 195, 106, 0.55) 0 1px, transparent 2px),
+          repeating-linear-gradient(118deg, transparent 0 92px, rgba(201, 162, 75, 0.045) 93px 94px, transparent 95px 188px);
+      }
+      #loginPage.login-page::after {
+        inset: auto 0 0;
+        height: 32%;
+        opacity: 0.18;
+        background:
+          linear-gradient(90deg,
+            transparent 0 2%, #071f1c 2% 7%, transparent 7% 9%,
+            #071f1c 9% 14%, transparent 14% 18%, #071f1c 18% 22%,
+            transparent 22% 77%, #071f1c 77% 82%, transparent 82% 85%,
+            #071f1c 85% 91%, transparent 91% 94%, #071f1c 94% 98%, transparent 98%),
+          linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.58));
+        clip-path: polygon(0 50%, 3% 50%, 3% 22%, 6% 22%, 6% 61%, 10% 61%, 10% 31%, 14% 31%, 14% 72%, 18% 72%, 18% 43%, 22% 43%, 22% 100%, 78% 100%, 78% 50%, 82% 50%, 82% 28%, 86% 28%, 86% 62%, 90% 62%, 90% 38%, 94% 38%, 94% 70%, 98% 70%, 98% 48%, 100% 48%, 100% 100%, 0 100%);
+      }
+      #loginPage .login-shell {
+        position: relative;
+        width: min(1380px, calc(100vw - 44px));
+        min-height: min(820px, calc(100vh - 44px));
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        overflow: hidden;
+        border: 1px solid rgba(229, 195, 106, 0.86);
+        border-radius: 34px;
+        background: var(--login-ivory);
+        box-shadow:
+          0 38px 100px rgba(0, 0, 0, 0.46),
+          0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+      }
+      #loginPage .login-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        box-shadow: inset 0 0 42px rgba(201, 162, 75, 0.08);
+        z-index: 5;
+      }
+      #loginPage .login-visual {
+        position: relative;
+        width: auto;
+        max-width: none;
+        min-width: 0;
+        padding: 40px 46px 32px;
+        color: #fff;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 15%, rgba(229, 195, 106, 0.13), transparent 28%),
+          linear-gradient(145deg, #003b34 0%, #005b4f 52%, #043d38 100%);
+      }
+      #loginPage .login-visual::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.6;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, transparent 49.8%, rgba(229, 195, 106, 0.08) 50%, transparent 50.2%),
+          linear-gradient(0deg, transparent 49.8%, rgba(229, 195, 106, 0.06) 50%, transparent 50.2%),
+          repeating-linear-gradient(125deg, transparent 0 74px, rgba(229, 195, 106, 0.04) 75px 76px, transparent 77px 150px);
+        background-size: 170px 170px, 170px 170px, auto;
+      }
+      #loginPage .login-visual::after {
+        content: "";
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        left: -180px;
+        bottom: -210px;
+        border-radius: 50%;
+        border: 1px solid rgba(229, 195, 106, 0.22);
+        box-shadow:
+          0 0 0 34px rgba(229, 195, 106, 0.035),
+          0 0 0 70px rgba(229, 195, 106, 0.025);
+      }
+      #loginPage .login-visual > * {
+        position: relative;
+        z-index: 1;
+      }
+      #loginPage .login-emblem-row {
+        display: grid;
+        grid-template-columns: minmax(36px, 1fr) auto minmax(36px, 1fr);
+        align-items: center;
+        gap: 18px;
+        width: min(390px, 82%);
+        margin: 0 auto 16px;
+      }
+      #loginPage .login-emblem-row::before,
+      #loginPage .login-emblem-row::after {
+        content: "";
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--login-gold-light));
+      }
+      #loginPage .login-emblem-row::after {
+        background: linear-gradient(90deg, var(--login-gold-light), transparent);
+      }
+      #loginPage .login-building-logo {
+        width: 62px;
+        height: 62px;
+        display: grid;
+        place-items: center;
+        border-radius: 19px;
+        color: var(--login-gold-light);
+        border: 1px solid rgba(229, 195, 106, 0.7);
+        background: rgba(1, 34, 30, 0.5);
+        box-shadow: 0 13px 30px rgba(0, 0, 0, 0.25), inset 0 0 18px rgba(229, 195, 106, 0.08);
+      }
+      #loginPage .login-building-logo svg {
+        width: 38px;
+        height: 38px;
+      }
+      #loginPage .login-title {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: Montserrat, Poppins, "Segoe UI", Arial, sans-serif;
+        font-size: clamp(48px, 4.7vw, 76px);
+        line-height: 0.9;
+        font-weight: 950;
+        letter-spacing: -0.045em;
+        text-transform: uppercase;
+        text-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+      }
+      #loginPage .login-title-global {
+        color: #fcfbf7;
+      }
+      #loginPage .login-title-property {
+        margin-top: 9px;
+        color: var(--login-gold-light);
+        letter-spacing: -0.035em;
+        filter: drop-shadow(0 0 13px rgba(229, 195, 106, 0.17));
+      }
+      #loginPage .login-description {
+        max-width: 590px;
+        margin: 22px auto 25px;
+        color: #edf5f1;
+        font-size: 15px;
+        line-height: 1.65;
+      }
+      #loginPage .login-features {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 13px;
+        margin-top: 2px;
+      }
+      #loginPage .feature {
+        min-width: 0;
+        min-height: 132px;
+        display: grid;
+        grid-template-columns: 43px minmax(0, 1fr);
+        align-content: center;
+        gap: 11px 12px;
+        padding: 16px;
+        text-align: left;
+        color: #fff;
+        border: 1px solid rgba(229, 195, 106, 0.42);
+        border-radius: 17px;
+        background: linear-gradient(145deg, rgba(1, 42, 37, 0.72), rgba(0, 59, 52, 0.46));
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.13);
+        backdrop-filter: blur(8px);
+      }
+      #loginPage .feature-icon {
+        grid-row: 1 / span 2;
+        width: 43px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--login-gold-light);
+        border: 1px solid rgba(229, 195, 106, 0.6);
+        background: rgba(229, 195, 106, 0.08);
+      }
+      #loginPage .feature-icon svg {
+        width: 22px;
+        height: 22px;
+      }
+      #loginPage .feature strong {
+        align-self: end;
+        font-size: 13px;
+        line-height: 1.3;
+      }
+      #loginPage .feature small {
+        align-self: start;
+        color: #d6e6e1;
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      #loginPage .login-city-line {
+        width: min(560px, 96%);
+        height: 58px;
+        margin: 22px auto -4px;
+        color: rgba(229, 195, 106, 0.72);
+      }
+      #loginPage .login-city-line svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      #loginPage .login-wrap {
+        position: relative;
+        width: auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 34px 48px;
+        overflow-y: auto;
+        background:
+          radial-gradient(circle at 88% 6%, rgba(201, 162, 75, 0.13), transparent 22%),
+          repeating-radial-gradient(ellipse at 100% 50%, transparent 0 41px, rgba(0, 91, 79, 0.025) 42px 43px, transparent 44px 84px),
+          linear-gradient(145deg, #fcfbf7, #f5f2ea);
+      }
+      #loginPage .login-wrap::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.28;
+        background: repeating-linear-gradient(110deg, transparent 0 52px, rgba(0, 59, 52, 0.025) 53px 54px, transparent 55px 106px);
+      }
+      #loginPage .login-card,
+      #loginPage .login-card.create-mode {
+        position: relative;
+        z-index: 1;
+        width: min(565px, 100%);
+        max-width: 100%;
+        padding: 0;
+        margin: auto;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        transition: none;
+      }
+      #loginPage .login-card.create-mode {
+        width: min(650px, 100%);
+      }
+      #loginPage .login-security {
+        width: 74px;
+        margin: 0 auto 18px;
+        text-align: center;
+        color: var(--login-gold);
+      }
+      #loginPage .login-security-icon {
+        width: 70px;
+        height: 70px;
+        display: grid;
+        place-items: center;
+        margin: auto;
+        border-radius: 24px;
+        color: var(--login-gold);
+        border: 1px solid rgba(201, 162, 75, 0.48);
+        background: rgba(255, 255, 255, 0.58);
+        box-shadow: 0 14px 34px rgba(0, 59, 52, 0.1);
+      }
+      #loginPage .login-security-icon svg {
+        width: 42px;
+        height: 42px;
+      }
+      #loginPage .login-security-line {
+        display: block;
+        width: 38px;
+        height: 2px;
+        margin: 10px auto 0;
+        border-radius: 99px;
+        background: linear-gradient(90deg, transparent, var(--login-gold), transparent);
+      }
+      #loginPage .auth-choice {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding: 5px;
+        border-radius: 16px;
+        border: 1px solid #e0e5e1;
+        background: rgba(229, 234, 231, 0.62);
+      }
+      #loginPage .auth-choice .btn {
+        min-height: 50px;
+        gap: 9px;
+        border-radius: 12px;
+        font-size: 13px;
+        box-shadow: none;
+      }
+      #loginPage .auth-choice .btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      #loginPage .auth-choice .btn.active,
+      #loginPage .auth-choice .btn.btn-primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--login-green-dark), var(--login-green));
+        box-shadow: 0 10px 22px rgba(0, 59, 52, 0.2);
+      }
+      #loginPage .auth-choice .btn.btn-light {
+        color: var(--login-green-dark);
+        background: transparent;
+      }
+      #loginPage .auth-panel h2 {
+        margin: 0 0 7px;
+        color: #063e37;
+        font-size: clamp(24px, 2.1vw, 31px);
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        text-align: center;
+      }
+      #loginPage .auth-panel > p {
+        position: relative;
+        margin: 0 0 27px;
+        padding-bottom: 15px;
+        color: var(--login-muted);
+        font-size: 13px;
+        line-height: 1.5;
+        text-align: center;
+      }
+      #loginPage .auth-panel > p::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 62px;
+        height: 2px;
+        border-radius: 99px;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, transparent, var(--login-gold), transparent);
+      }
+      #loginPage .field {
+        margin-bottom: 15px;
+      }
+      #loginPage .field label {
+        margin-bottom: 7px;
+        color: #304a44;
+        font-size: 12px;
+        font-weight: 850;
+      }
+      #loginPage .login-field-control {
+        position: relative;
+      }
+      #loginPage .login-input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        z-index: 2;
+        width: 20px;
+        height: 20px;
+        color: #8b9d97;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+      #loginPage .login-field-control input,
+      #loginPage .create-company-grid input {
+        min-height: 49px;
+        color: #173c35;
+        border: 1px solid var(--login-line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 5px 13px rgba(0, 59, 52, 0.035);
+      }
+      #loginPage .login-field-control input {
+        padding-left: 47px;
+      }
+      #loginPage .login-field-control.password-box input {
+        padding-right: 91px;
+      }
+      #loginPage .login-field-control input:focus,
+      #loginPage .create-company-grid input:focus {
+        border-color: var(--login-green);
+        box-shadow: 0 0 0 4px rgba(0, 91, 79, 0.08), 0 7px 17px rgba(0, 59, 52, 0.05);
+      }
+      #loginPage .password-toggle {
+        right: 8px;
+        min-width: 72px;
+        padding: 8px 9px;
+        color: var(--login-green-dark);
+        border: 1px solid rgba(0, 91, 79, 0.12);
+        border-radius: 8px;
+        background: #edf5f1;
+        font-size: 10px;
+        font-weight: 900;
+      }
+      #loginPage .login-primary-action,
+      #loginPage .login-secondary-action,
+      #loginPage .create-submit {
+        min-height: 52px;
+        border-radius: 13px;
+        font-size: 13px;
+        letter-spacing: 0.01em;
+      }
+      #loginPage .login-primary-action {
+        margin-top: 5px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--login-green-dark), var(--login-green));
+        box-shadow: 0 14px 26px rgba(0, 59, 52, 0.2);
+      }
+      #loginPage .login-secondary-action {
+        margin-top: 10px !important;
+        color: var(--login-green-dark);
+        border: 1px solid rgba(0, 91, 79, 0.12);
+        background: #eaf3ef;
+      }
+      #loginPage .login-primary-action svg,
+      #loginPage .login-secondary-action svg,
+      #loginPage .create-submit svg {
+        width: 18px;
+        height: 18px;
+      }
+      #loginPage .create-submit {
+        color: #17331e;
+        background: linear-gradient(135deg, var(--login-gold), var(--login-gold-light));
+        box-shadow: 0 13px 25px rgba(201, 162, 75, 0.2);
+      }
+      #loginPage .auth-note {
+        margin-top: 18px;
+        padding: 0;
+        color: var(--login-muted);
+        border: 0;
+        background: transparent;
+        font-size: 11px;
+        line-height: 1.5;
+        text-align: center;
+      }
+      #loginPage .create-company-grid {
+        gap: 12px 14px;
+      }
+      #loginPage .create-company-grid .field {
+        margin: 0;
+      }
+      #loginPage .create-company-grid .password-box input {
+        padding-right: 88px;
+      }
+      #loginPage .create-company-grid .create-submit {
+        margin-top: 5px;
+      }
+      @media (max-width: 1120px) {
+        #loginPage .login-shell {
+          width: min(1040px, calc(100vw - 30px));
+          grid-template-columns: 0.92fr 1.08fr;
+        }
+        #loginPage .login-visual {
+          padding: 34px 28px 27px;
+        }
+        #loginPage .login-wrap {
+          padding: 32px 34px;
+        }
+        #loginPage .login-title {
+          font-size: clamp(44px, 5vw, 64px);
+        }
+        #loginPage .feature {
+          grid-template-columns: 38px minmax(0, 1fr);
+          min-height: 120px;
+          padding: 13px;
+        }
+        #loginPage .feature-icon {
+          width: 38px;
+          height: 38px;
+        }
+      }
+      @media (max-width: 880px) {
+        #loginPage.login-page {
+          display: block;
+          padding: 16px;
+          overflow: visible;
+        }
+        #loginPage .login-shell {
+          width: 100%;
+          min-height: auto;
+          grid-template-columns: 1fr;
+          border-radius: 27px;
+        }
+        #loginPage .login-visual {
+          padding: 36px 30px 29px;
+        }
+        #loginPage .login-title {
+          font-size: clamp(44px, 9vw, 68px);
+        }
+        #loginPage .login-description {
+          margin-bottom: 22px;
+        }
+        #loginPage .login-wrap {
+          min-height: 620px;
+          padding: 37px 34px 40px;
+          overflow: visible;
+        }
+        #loginPage .login-city-line {
+          margin-bottom: -5px;
+        }
+      }
+      @media (max-width: 600px) {
+        #loginPage.login-page {
+          padding: 8px;
+        }
+        #loginPage .login-shell {
+          border-radius: 22px;
+        }
+        #loginPage .login-visual {
+          padding: 29px 17px 23px;
+        }
+        #loginPage .login-emblem-row {
+          width: 90%;
+          gap: 10px;
+        }
+        #loginPage .login-building-logo {
+          width: 54px;
+          height: 54px;
+          border-radius: 16px;
+        }
+        #loginPage .login-title {
+          font-size: clamp(38px, 13vw, 56px);
+        }
+        #loginPage .login-description {
+          margin: 17px auto 20px;
+          font-size: 13px;
+        }
+        #loginPage .login-features {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        #loginPage .feature {
+          min-height: 0;
+          padding: 13px;
+        }
+        #loginPage .login-city-line {
+          height: 44px;
+          margin-top: 16px;
+        }
+        #loginPage .login-wrap {
+          min-height: 0;
+          padding: 29px 17px 32px;
+        }
+        #loginPage .login-security {
+          margin-bottom: 14px;
+        }
+        #loginPage .login-security-icon {
+          width: 62px;
+          height: 62px;
+          border-radius: 20px;
+        }
+        #loginPage .auth-choice {
+          gap: 5px;
+          padding: 4px;
+        }
+        #loginPage .auth-choice .btn {
+          min-height: 47px;
+          padding: 9px 7px;
+          font-size: 11px;
+        }
+        #loginPage .auth-panel h2 {
+          font-size: 23px;
+        }
+        #loginPage .create-company-grid {
+          grid-template-columns: 1fr;
+        }
+        #loginPage .create-company-grid .create-submit {
+          grid-column: 1;
+        }
+      }
+
     </style>
   </head>
   <body>
     <section id="loginPage" class="login-page">
-      <div class="login-visual">
-        <h1 class="login-title">GLOBAL <span>IMMOBILIER</span></h1>
-        <p>
-          Plateforme complète de gestion immobilière : locations, ventes, services et catalogue public.
-        </p>
-      </div>
-
-      <div class="login-wrap">
-        <div class="login-card">
-          <div class="auth-choice">
-            <button
-              id="authLoginBtn"
-              class="btn btn-primary active"
-              type="button"
-              onclick="setAuthMode('login')"
-            >
-              Se connecter
-            </button>
-            <button
-              id="authCreateBtn"
-              class="btn btn-light"
-              type="button"
-              onclick="setAuthMode('create')"
-            >
-              Créer une entreprise
-            </button>
+      <div class="login-shell">
+        <div class="login-visual">
+          <div class="login-emblem-row" aria-hidden="true">
+            <div class="login-building-logo">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 41V20l10-5v26M17 41V8l14 5v28M31 41V21l10 4v16M4 41h40"/>
+                <path d="M11 24h2M11 29h2M11 34h2M22 17h4M22 23h4M22 29h4M22 35h4M35 28h2M35 33h2"/>
+              </svg>
+            </div>
           </div>
 
-          <div id="loginPanel" class="auth-panel active">
-            <h2>Connexion à l’application</h2>
-            <p>
-              Administrateur, utilisateur d’entreprise
-            </p>
-            <form id="loginForm">
-              <div class="field">
-                <label>Identifiant</label
-                ><input
-                  id="loginUser"
-                  autocomplete="username"
-                  placeholder="Votre identifiant"
-                  required
-                />
+          <h1 class="login-title">
+            <span class="login-title-global">GLOBAL</span>
+            <span class="login-title-property">IMMOBILIER</span>
+          </h1>
+          <p class="login-description">
+            Plateforme complète de gestion immobilière : locations, ventes,<br class="desktop-break" />
+            services et catalogue public.
+          </p>
+
+          <div class="login-features">
+            <div class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 21V7l8-4 8 4v14M8 10h2M8 14h2M8 18h2M14 10h2M14 14h2M14 18h2M2 21h20"/>
+                </svg>
+              </span>
+              <strong>Gestion centralisée</strong>
+              <small>Suivez les biens, contrats et paiements depuis un seul espace.</small>
+            </div>
+            <div class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 11 9-8 9 8M5 10v11h14V10M9 21v-7h6v7"/>
+                </svg>
+              </span>
+              <strong>Catalogue public</strong>
+              <small>Publiez les biens disponibles et recevez les demandes de visite.</small>
+            </div>
+            <div class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 20V10M10 20V4M16 20v-7M22 20H2M15 7l3-3 3 3"/>
+                </svg>
+              </span>
+              <strong>Comptabilité automatique</strong>
+              <small>Revenus, commissions, dépenses, reversements et trésorerie.</small>
+            </div>
+            <div class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2h9l4 4v16H6zM14 2v5h5M9 12h7M9 16h7M9 8h2"/>
+                </svg>
+              </span>
+              <strong>Documents professionnels</strong>
+              <small>Contrats, reçus, quittances, fiches et rapports imprimables.</small>
+            </div>
+          </div>
+
+          <div class="login-city-line" aria-hidden="true">
+            <svg viewBox="0 0 620 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 65h616M22 65V43h22v22M48 65V30h29v35M83 65V47h18v18M108 65V21h38v44M152 65V39h25v26M185 65V26h31v39M224 65V45h19v20M252 65V15h43v50M302 65V34h26v31M337 65V23h34v42M379 65V43h21v22M408 65V29h35v36M451 65V47h20v18M480 65V18h42v47M530 65V38h27v27M564 65V27h33v38"/>
+              <path d="M30 50h7M56 38h12M117 31h20M194 35h13M263 25h20M346 32h16M416 38h18M492 27h18M573 37h15" opacity=".7"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="login-wrap">
+          <div class="login-card">
+            <div class="login-security" aria-hidden="true">
+              <div class="login-security-icon">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M24 4 39 10v11c0 10-6.2 18.1-15 23-8.8-4.9-15-13-15-23V10z"/>
+                  <circle cx="24" cy="20" r="5"/>
+                  <path d="M15.5 34c1.8-5 5-7.5 8.5-7.5s6.7 2.5 8.5 7.5"/>
+                </svg>
               </div>
-              <div class="field">
-                <label>Mot de passe</label>
-                <div class="password-box">
-                  <input
-                    id="loginPass"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Votre mot de passe"
-                    required
-                  />
-                  <button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button>
-                </div>
-              </div>
-              <button class="btn btn-primary full" type="submit">
+              <span class="login-security-line"></span>
+            </div>
+
+            <div class="auth-choice">
+              <button id="authLoginBtn" class="btn btn-primary active" type="button" onclick="setAuthMode('login')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-5 4.2-7 8-7s6.5 2 8 7"/></svg>
                 Se connecter
               </button>
-            </form>
-            <button
-              class="btn btn-light full"
-              style="margin-top: 9px"
-              type="button"
-              onclick="openPublicFromLogin()"
-            >
-              Ouvrir le catalogue public
-            </button>
-            <div class="auth-note">
-              Identifiant unique dans toute l’application.
-            </div>
-          </div>
-
-          <div id="createPanel" class="auth-panel">
-            <h2>Créer une entreprise immobilière</h2>
-            <p>Créez un nouvel espace de gestion entièrement séparé.</p>
-            <form id="createCompanyForm" class="create-company-grid">
-              <div class="field">
-                <label>Nom de l’entreprise *</label
-                ><input
-                  id="createAgency"
-                  autocomplete="organization"
-                  placeholder="Nom de la société immobilière"
-                  required
-                />
-              </div>
-              <div class="field">
-                <label>Téléphone</label
-                ><input
-                  id="createPhone"
-                  autocomplete="tel"
-                  placeholder="Ex. 0777041790"
-                />
-              </div>
-              <div class="field">
-                <label>Adresse e-mail</label
-                ><input
-                  id="createEmail"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="contact@entreprise.ci"
-                />
-              </div>
-              <div class="field">
-                <label>Adresse</label
-                ><input
-                  id="createAddress"
-                  placeholder="Ville, commune ou quartier"
-                />
-              </div>
-              <div class="field">
-                <label>Identifiant administrateur *</label
-                ><input
-                  id="createUser"
-                  autocomplete="username"
-                  placeholder="Choisissez un identifiant unique"
-                  required
-                />
-              </div>
-              <div class="field">
-                <label>Mot de passe *</label>
-                <div class="password-box">
-                  <input
-                    id="createPass"
-                    type="password"
-                    autocomplete="new-password"
-                    minlength="4"
-                    required
-                  />
-                  <button class="password-toggle" type="button" onclick="togglePassword('createPass', this)">Afficher</button>
-                </div>
-              </div>
-              <div class="field">
-                <label>Confirmer le mot de passe *</label>
-                <div class="password-box">
-                  <input
-                    id="createPass2"
-                    type="password"
-                    autocomplete="new-password"
-                    minlength="4"
-                    required
-                  />
-                  <button class="password-toggle" type="button" onclick="togglePassword('createPass2', this)">Afficher</button>
-                </div>
-              </div>
-              <button class="btn btn-accent full create-submit" type="submit">
-                Créer l’entreprise
+              <button id="authCreateBtn" class="btn btn-light" type="button" onclick="setAuthMode('create')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13M8 11h2M8 15h2M14 11h2M14 15h2M2 21h20"/></svg>
+                Créer une entreprise
               </button>
-            </form>
-            <div class="auth-note">
-              La connexion se fait uniquement avec l’identifiant et le mot de
-              passe. La version Free est active pendant 21 jours.
+            </div>
+
+            <div id="loginPanel" class="auth-panel active">
+              <h2>Connexion à l’application</h2>
+              <p>Administrateur, utilisateur d’entreprise</p>
+              <form id="loginForm">
+                <div class="field">
+                  <label for="loginUser">Identifiant</label>
+                  <div class="login-field-control">
+                    <svg class="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-5 4.2-7 8-7s6.5 2 8 7"/></svg>
+                    <input id="loginUser" autocomplete="username" placeholder="mon@adresse.com" required />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="loginPass">Mot de passe</label>
+                  <div class="password-box login-field-control">
+                    <svg class="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/></svg>
+                    <input id="loginPass" type="password" autocomplete="current-password" placeholder="A2Bj587@" required />
+                    <button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button>
+                  </div>
+                </div>
+                <button class="btn full login-primary-action" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 8l4 4-4 4M18 12H7M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/></svg>
+                  Se connecter
+                </button>
+              </form>
+              <button class="btn full login-secondary-action" type="button" onclick="openPublicFromLogin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 4.4 6.2 4.4 9S15 17.8 12 21M12 3C9 6.2 7.6 9.2 7.6 12S9 17.8 12 21"/></svg>
+                Ouvrir le catalogue public
+              </button>
+              <div class="auth-note">Identifiant unique dans toute l’application.</div>
+            </div>
+
+            <div id="createPanel" class="auth-panel">
+              <h2>Créer une entreprise immobilière</h2>
+              <p>Créez un espace professionnel entièrement séparé.</p>
+              <form id="createCompanyForm" class="create-company-grid">
+                <div class="field">
+                  <label for="createAgency">Nom de l’entreprise *</label>
+                  <input id="createAgency" autocomplete="organization" placeholder="Nom de la société immobilière" required />
+                </div>
+                <div class="field">
+                  <label for="createPhone">Téléphone</label>
+                  <input id="createPhone" autocomplete="tel" placeholder="Ex. 0777041790" />
+                </div>
+                <div class="field">
+                  <label for="createEmail">Adresse e-mail</label>
+                  <input id="createEmail" type="email" autocomplete="email" placeholder="contact@entreprise.ci" />
+                </div>
+                <div class="field">
+                  <label for="createAddress">Adresse</label>
+                  <input id="createAddress" placeholder="Ville, commune ou quartier" />
+                </div>
+                <div class="field">
+                  <label for="createUser">Identifiant administrateur *</label>
+                  <input id="createUser" autocomplete="username" placeholder="Choisissez un identifiant unique" required />
+                </div>
+                <div class="field">
+                  <label for="createPass">Mot de passe *</label>
+                  <div class="password-box">
+                    <input id="createPass" type="password" autocomplete="new-password" minlength="4" placeholder="Créez un mot de passe" required />
+                    <button class="password-toggle" type="button" onclick="togglePassword('createPass', this)">Afficher</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="createPass2">Confirmer le mot de passe *</label>
+                  <div class="password-box">
+                    <input id="createPass2" type="password" autocomplete="new-password" minlength="4" placeholder="Confirmez le mot de passe" required />
+                    <button class="password-toggle" type="button" onclick="togglePassword('createPass2', this)">Afficher</button>
+                  </div>
+                </div>
+                <button class="btn full create-submit" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13M8 11h2M8 15h2M14 11h2M14 15h2M2 21h20"/></svg>
+                  Créer l’entreprise
+                </button>
+              </form>
+              <div class="auth-note">La version Free est active pendant 21 jours.</div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="login-features">
-        <div class="feature">
-          <strong>Gestion centralisée</strong><br /><small
-            >Suivez les biens, contrats et paiements depuis un seul
-            espace.</small
-          >
-        </div>
-        <div class="feature">
-          <strong>Catalogue public</strong><br /><small
-            >Publiez les biens disponibles et recevez les demandes de
-            visite.</small
-          >
-        </div>
-        <div class="feature">
-          <strong>Comptabilité automatique</strong><br /><small
-            >Revenus, commissions, dépenses, reversements et trésorerie.</small
-          >
-        </div>
-        <div class="feature">
-          <strong>Documents professionnels</strong><br /><small
-            >Contrats, reçus, quittances, fiches et rapports imprimables.</small
-          >
         </div>
       </div>
     </section>
