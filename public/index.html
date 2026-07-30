@@ -1042,22 +1042,224 @@
       }
       .toast {
         position: fixed;
-        right: 18px;
-        bottom: 18px;
-        background: #102f28;
-        color: #fff;
-        padding: 12px 15px;
-        border-radius: 11px;
-        box-shadow: var(--shadow);
-        z-index: 150;
+        right: 22px;
+        bottom: 22px;
+        width: min(390px, calc(100vw - 28px));
+        color: #17332d;
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid #dfe9e5;
+        border-left: 5px solid #005b4f;
+        border-radius: 16px;
+        box-shadow: 0 22px 55px rgba(0, 35, 30, 0.22);
+        z-index: 260;
         opacity: 0;
-        transform: translateY(12px);
-        transition: 0.22s;
-        max-width: 360px;
+        visibility: hidden;
+        transform: translateY(18px) scale(0.98);
+        transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s;
+        overflow: hidden;
       }
       .toast.show {
         opacity: 1;
-        transform: translateY(0);
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+      .toast.success { border-left-color: #16845f; }
+      .toast.warning { border-left-color: #c58a18; }
+      .toast.error { border-left-color: #c43b3b; }
+      .toast.info { border-left-color: #2671a7; }
+      .toast-content {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 14px 16px 15px 14px;
+      }
+      .toast-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 19px;
+        font-weight: 900;
+        background: #2671a7;
+      }
+      .toast.success .toast-icon { background: #16845f; }
+      .toast.warning .toast-icon { background: #c58a18; }
+      .toast.error .toast-icon { background: #c43b3b; }
+      .toast-title {
+        margin: 0 0 3px;
+        color: #123b33;
+        font-size: 13px;
+        font-weight: 900;
+      }
+      .toast-message {
+        color: #5f706b;
+        font-size: 12px;
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+      .toast.show::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 100%;
+        background: currentColor;
+        opacity: 0.28;
+        transform-origin: left;
+        animation: toastProgress 3.8s linear forwards;
+      }
+      @keyframes toastProgress { to { transform: scaleX(0); } }
+
+      .app-dialog {
+        position: fixed;
+        inset: 0;
+        z-index: 400;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(0, 28, 25, 0.58);
+        backdrop-filter: blur(7px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s;
+      }
+      .app-dialog.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .app-dialog-card {
+        width: min(470px, 100%);
+        overflow: hidden;
+        border: 1px solid rgba(201, 162, 75, 0.55);
+        border-radius: 22px;
+        background: #fcfbf7;
+        box-shadow: 0 28px 80px rgba(0, 25, 22, 0.34);
+        transform: translateY(16px) scale(0.97);
+        transition: transform 0.22s ease;
+      }
+      .app-dialog.show .app-dialog-card {
+        transform: translateY(0) scale(1);
+      }
+      .app-dialog-main {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 16px;
+        padding: 24px 24px 18px;
+      }
+      .app-dialog-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 17px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: linear-gradient(135deg, #2671a7, #164d73);
+        box-shadow: 0 10px 22px rgba(38, 113, 167, 0.24);
+        font-size: 24px;
+        font-weight: 900;
+      }
+      .app-dialog-card.danger .app-dialog-icon {
+        background: linear-gradient(135deg, #d64b4b, #a42121);
+        box-shadow: 0 10px 22px rgba(180, 35, 35, 0.24);
+      }
+      .app-dialog-card.warning .app-dialog-icon {
+        background: linear-gradient(135deg, #d3a029, #9e6d0a);
+        box-shadow: 0 10px 22px rgba(183, 127, 14, 0.24);
+      }
+      .app-dialog-card.success .app-dialog-icon {
+        background: linear-gradient(135deg, #1d9a71, #0d6c4d);
+        box-shadow: 0 10px 22px rgba(17, 126, 90, 0.24);
+      }
+      .app-dialog-title {
+        margin: 1px 0 7px;
+        color: #123b33;
+        font-size: 19px;
+        font-weight: 950;
+      }
+      .app-dialog-message {
+        margin: 0;
+        color: #5f6f6a;
+        font-size: 13px;
+        line-height: 1.65;
+        white-space: pre-line;
+      }
+      .app-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 15px 24px 20px;
+        border-top: 1px solid #e4ebe8;
+        background: #f7f6f1;
+      }
+      .app-dialog-confirm {
+        min-width: 122px;
+        color: #fff;
+        background: #005b4f;
+        border-color: #005b4f;
+      }
+      .app-dialog-card.danger .app-dialog-confirm {
+        background: #b52626;
+        border-color: #b52626;
+      }
+      .app-dialog-card.warning .app-dialog-confirm {
+        background: #9e6d0a;
+        border-color: #9e6d0a;
+      }
+      .app-dialog-card.success .app-dialog-confirm {
+        background: #147c5b;
+        border-color: #147c5b;
+      }
+
+      .catalog-filter.catalog-filter-four {
+        grid-template-columns: minmax(240px, 2fr) repeat(3, minmax(145px, 1fr));
+      }
+      .property-request-toolbar {
+        align-items: flex-start;
+      }
+      .property-request-title-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 42px;
+        color: #fff !important;
+        border: 1px solid #9d1d1d !important;
+        background: linear-gradient(135deg, #cf2f2f, #a51515) !important;
+        box-shadow: 0 9px 22px rgba(173, 24, 24, 0.22);
+        font-weight: 900;
+      }
+      .property-request-title-button:hover {
+        background: linear-gradient(135deg, #bb2525, #8e1010) !important;
+      }
+      .property-request-count {
+        display: inline-grid;
+        place-items: center;
+        min-width: 25px;
+        height: 25px;
+        padding: 0 7px;
+        border-radius: 999px;
+        color: #9d1d1d;
+        background: #fff;
+        font-size: 11px;
+      }
+      @media (max-width: 1180px) {
+        .catalog-filter.catalog-filter-four {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 600px) {
+        .toast { right: 14px; bottom: 14px; }
+        .app-dialog-main {
+          grid-template-columns: 46px minmax(0, 1fr);
+          gap: 12px;
+          padding: 20px 18px 15px;
+        }
+        .app-dialog-icon { width: 46px; height: 46px; border-radius: 14px; }
+        .app-dialog-actions { padding: 13px 18px 18px; }
+        .catalog-filter.catalog-filter-four { grid-template-columns: 1fr; }
       }
       @media print {
         .sidebar,
@@ -2794,90 +2996,31 @@
               Maisons, appartements, terrains, magasins et bureaux disponibles à
               la location ou à la vente.
             </p>
-            <div class="catalog-filter">
+            <div class="catalog-filter catalog-filter-four">
               <input
                 id="pubSearch"
-                placeholder="Ville, quartier, titre ou référence"
+                placeholder="Localisation, titre ou référence"
+                aria-label="Rechercher par localisation, titre ou référence"
                 oninput="renderPublicCatalog()"
               />
-              <select id="pubTransaction" onchange="renderPublicCatalog()">
+              <select id="pubTransaction" aria-label="Type de transaction" onchange="renderPublicCatalog()">
                 <option value="">Location ou vente</option>
                 <option>Location</option>
                 <option>Vente</option>
                 <option>Location-vente</option>
                 <option>Location saisonnière</option>
               </select>
-              <select id="pubType" onchange="renderPublicCatalog()">
-                <option value="">Tous les types</option>
+              <select id="pubType" aria-label="Type de bien" onchange="renderPublicCatalog()">
+                <option value="">Tous les types de biens</option>
               </select>
-              <input
-                id="pubMin"
-                type="number"
-                placeholder="Prix minimum"
-                oninput="renderPublicCatalog()"
-              />
               <input
                 id="pubMax"
                 type="number"
-                placeholder="Prix maximum"
+                min="0"
+                placeholder="Budget maximum"
+                aria-label="Budget maximum"
                 oninput="renderPublicCatalog()"
               />
-            </div>
-            <div class="advanced-filter">
-              <input
-                id="pubCity"
-                placeholder="Ville"
-                oninput="renderPublicCatalog()"
-              />
-              <input
-                id="pubCommune"
-                placeholder="Commune"
-                oninput="renderPublicCatalog()"
-              />
-              <input
-                id="pubDistrict"
-                placeholder="Quartier"
-                oninput="renderPublicCatalog()"
-              />
-              <input
-                id="pubRooms"
-                type="number"
-                placeholder="Pièces min."
-                oninput="renderPublicCatalog()"
-              />
-              <input
-                id="pubBedrooms"
-                type="number"
-                placeholder="Chambres min."
-                oninput="renderPublicCatalog()"
-              />
-              <input
-                id="pubArea"
-                type="number"
-                placeholder="Superficie min. m²"
-                oninput="renderPublicCatalog()"
-              />
-              <select id="pubFurnished" onchange="renderPublicCatalog()">
-                <option value="">Meublé ou non</option>
-                <option value="Oui">Meublé</option>
-                <option value="Non">Non meublé</option>
-              </select>
-              <select id="pubAvailable" onchange="renderPublicCatalog()">
-                <option value="Disponible">Biens disponibles</option>
-                <option value="">Tous les statuts publics</option>
-              </select>
-              <input
-                id="pubRef"
-                placeholder="Référence"
-                oninput="renderPublicCatalog()"
-              />
-              <select id="pubSort" onchange="renderPublicCatalog()">
-                <option value="new">Plus récent</option>
-                <option value="priceAsc">Prix croissant</option>
-                <option value="priceDesc">Prix décroissant</option>
-                <option value="views">Plus consulté</option>
-                <option value="popular">Plus populaire</option>
-              </select>
             </div>
             <div class="public-owner-offer-bar">
               <button class="btn public-owner-offer-button" type="button" onclick="openCatalogPropertyOffer()">
@@ -2980,7 +3123,23 @@
       accept=".json,.csv"
       class="hidden"
     />
-    <div id="toast" class="toast"></div>
+
+    <div id="appDialog" class="app-dialog" role="dialog" aria-modal="true" aria-labelledby="appDialogTitle" aria-describedby="appDialogMessage">
+      <div id="appDialogCard" class="app-dialog-card info">
+        <div class="app-dialog-main">
+          <div id="appDialogIcon" class="app-dialog-icon" aria-hidden="true">i</div>
+          <div>
+            <h3 id="appDialogTitle" class="app-dialog-title">Confirmation</h3>
+            <p id="appDialogMessage" class="app-dialog-message"></p>
+          </div>
+        </div>
+        <div class="app-dialog-actions">
+          <button id="appDialogCancel" type="button" class="btn btn-light">Annuler</button>
+          <button id="appDialogConfirm" type="button" class="btn app-dialog-confirm">Confirmer</button>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script>
       "use strict";
@@ -3496,12 +3655,139 @@
         });
         data.notifications = data.notifications.slice(0, 100);
       }
-      function toast(message) {
-        toastEl.textContent = message;
-        toastEl.classList.add("show");
-        clearTimeout(toastEl._t);
-        toastEl._t = setTimeout(() => toastEl.classList.remove("show"), 2800);
+      function notificationProfile(message, requestedType = "") {
+        const value = String(message || "");
+        const lower = value.toLowerCase();
+        let type = requestedType;
+        if (!type) {
+          if (/impossible|erreur|échec|échoué|incorrect|introuvable|obligatoire|indisponible/.test(lower)) type = "error";
+          else if (/attention|désactivé|suspendu|retard|annulé|résilié|limite|configurez/.test(lower)) type = "warning";
+          else if (/succès|enregistr|synchronis|envoy|supprim|activé|restaur|créé|mise? à jour|mis à jour/.test(lower)) type = "success";
+          else type = "info";
+        }
+        const profiles = {
+          success: { title: "Opération réussie", icon: "✓" },
+          warning: { title: "Attention", icon: "!" },
+          error: { title: "Action impossible", icon: "×" },
+          info: { title: "Information", icon: "i" },
+        };
+        return { type, ...(profiles[type] || profiles.info) };
       }
+
+      function toast(message, type = "") {
+        if (!toastEl) return;
+        const profile = notificationProfile(message, type);
+        toastEl.className = `toast ${profile.type}`;
+        toastEl.innerHTML = `<div class="toast-content"><div class="toast-icon" aria-hidden="true">${profile.icon}</div><div><div class="toast-title">${profile.title}</div><div class="toast-message">${esc(message)}</div></div></div>`;
+        requestAnimationFrame(() => toastEl.classList.add("show"));
+        clearTimeout(toastEl._t);
+        toastEl._t = setTimeout(() => toastEl.classList.remove("show"), 3800);
+      }
+
+      let appDialogResolver = null;
+      function dialogProfile(message, options = {}) {
+        const lower = String(message || "").toLowerCase();
+        let type = options.type || "info";
+        let title = options.title || "Confirmation requise";
+        let confirmText = options.confirmText || "Confirmer";
+        let icon = "?";
+        if (/supprimer/.test(lower)) {
+          type = options.type || "danger";
+          title = options.title || "Confirmer la suppression";
+          confirmText = options.confirmText || "Supprimer";
+          icon = "!";
+        } else if (/effacer|réinitialiser/.test(lower)) {
+          type = options.type || "danger";
+          title = options.title || "Confirmer la réinitialisation";
+          confirmText = options.confirmText || "Effacer";
+          icon = "!";
+        } else if (/résilier/.test(lower)) {
+          type = options.type || "danger";
+          title = options.title || "Confirmer la résiliation";
+          confirmText = options.confirmText || "Résilier";
+          icon = "!";
+        } else if (/annuler/.test(lower)) {
+          type = options.type || "warning";
+          title = options.title || "Confirmer l’annulation";
+          confirmText = options.confirmText || "Annuler l’opération";
+          icon = "!";
+        } else if (/archiver/.test(lower)) {
+          type = options.type || "warning";
+          title = options.title || "Confirmer l’archivage";
+          confirmText = options.confirmText || "Archiver";
+          icon = "!";
+        } else if (/restaurer|rétablir/.test(lower)) {
+          type = options.type || "success";
+          title = options.title || "Confirmer la restauration";
+          confirmText = options.confirmText || "Restaurer";
+          icon = "↺";
+        } else if (/importer/.test(lower)) {
+          type = options.type || "info";
+          title = options.title || "Confirmer l’importation";
+          confirmText = options.confirmText || "Importer";
+          icon = "⇩";
+        }
+        return { type, title, confirmText, icon };
+      }
+
+      function closeProfessionalDialog(result = false) {
+        const dialog = $("appDialog");
+        if (!dialog?.classList.contains("show")) return;
+        dialog.classList.remove("show");
+        const resolver = appDialogResolver;
+        appDialogResolver = null;
+        setTimeout(() => resolver?.(result), 120);
+      }
+
+      function openProfessionalDialog(message, options = {}) {
+        const dialog = $("appDialog"),
+          card = $("appDialogCard"),
+          title = $("appDialogTitle"),
+          content = $("appDialogMessage"),
+          icon = $("appDialogIcon"),
+          cancel = $("appDialogCancel"),
+          confirmButton = $("appDialogConfirm");
+        if (!dialog || !card || !title || !content || !confirmButton) {
+          return Promise.resolve(options.showCancel ? false : true);
+        }
+        if (appDialogResolver) appDialogResolver(false);
+        const profile = options.showCancel
+          ? dialogProfile(message, options)
+          : {
+              ...notificationProfile(message, options.type),
+              title: options.title || notificationProfile(message, options.type).title,
+              confirmText: options.confirmText || "J’ai compris",
+            };
+        card.className = `app-dialog-card ${profile.type}`;
+        title.textContent = profile.title;
+        content.textContent = String(message || "");
+        icon.textContent = profile.icon || (profile.type === "success" ? "✓" : profile.type === "error" ? "×" : profile.type === "warning" ? "!" : "i");
+        cancel.classList.toggle("hidden", !options.showCancel);
+        cancel.textContent = options.cancelText || "Annuler";
+        confirmButton.textContent = profile.confirmText;
+        return new Promise((resolve) => {
+          appDialogResolver = resolve;
+          cancel.onclick = () => closeProfessionalDialog(false);
+          confirmButton.onclick = () => closeProfessionalDialog(true);
+          dialog.onclick = (event) => {
+            if (event.target === dialog && options.showCancel) closeProfessionalDialog(false);
+          };
+          dialog.classList.add("show");
+          setTimeout(() => confirmButton.focus(), 80);
+        });
+      }
+
+      function professionalConfirm(message, options = {}) {
+        return openProfessionalDialog(message, { ...options, showCancel: true });
+      }
+      function professionalAlert(message, options = {}) {
+        return openProfessionalDialog(message, { ...options, showCancel: false });
+      }
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && $("appDialog")?.classList.contains("show")) {
+          closeProfessionalDialog(false);
+        }
+      });
       function pageHead(title, subtitle, actions = "") {
         return `<div class="page-head"><div><h2>${title}</h2><p>${subtitle}</p></div><div class="actions">${actions}</div></div>`;
       }
@@ -3732,7 +4018,7 @@
           return;
         }
         if (matches.length > 1) {
-          alert(
+          professionalAlert(
             "Connexion impossible : ces mêmes identifiants sont utilisés par plusieurs comptes. Modifiez l’un des identifiants depuis les paramètres ou l’espace Super Admin.",
           );
           return;
@@ -3744,7 +4030,7 @@
         }
         const sub = subscriptionInfo(c);
         if (sub.state !== "active") {
-          alert(
+          professionalAlert(
             "Accès impossible : l’abonnement de cette entreprise est " +
               sub.label.toLowerCase() +
               ".\n\nContactez le Super Administrateur pour activer ou renouveler le compte.",
@@ -3809,7 +4095,7 @@
           JSON.stringify(blankCompanyData(info)),
         );
         renderEnterpriseOptions();
-        alert(
+        professionalAlert(
           "Entreprise créée avec succès.\n\nVersion : FREE — 21 jours\nIdentifiant : " +
             user +
             "\nFin de la période gratuite : " +
@@ -4179,10 +4465,10 @@
         closeModal();
         saveData("Bien enregistré avec succès.");
       }
-      function archiveProperty(id) {
+      async function archiveProperty(id) {
         const p = data.properties.find((x) => x.id === id);
         if (!p) return;
-        if (!confirm(`${p.archived ? "Restaurer" : "Archiver"} ce bien ?`))
+        if (!(await professionalConfirm(`${p.archived ? "Restaurer" : "Archiver"} le bien « ${p.title || p.ref} » ?`)))
           return;
         p.archived = !p.archived;
         if (p.archived) {
@@ -5347,14 +5633,11 @@
         printDocument(title, body, `${ctx.tenant.name} · ${ctx.property.ref} · ${ctx.lease.ref}`);
       }
 
-      function deleteTenant(id) {
+      async function deleteTenant(id) {
         const t = data.tenants.find((x) => x.id === id);
-        if (
-          !confirm(
-            "Supprimer ce locataire ? Son historique de paiement sera conservé.",
-          )
-        )
-          return;
+        if (!(await professionalConfirm(
+          "Supprimer ce locataire ? Son historique de paiement sera conservé, mais sa fiche ne sera plus disponible.",
+        ))) return;
         const p = data.properties.find((x) => x.id === t.propertyId);
         if (p) p.status = "Disponible";
         const l = data.leases.find((x) => x.id === t.leaseId);
@@ -5391,9 +5674,9 @@
           ) +
           `<div class="toolbar"><input id="leaseSearch" placeholder="Contrat, locataire ou bien…" oninput="renderLeases()"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Contrat</th><th>Locataire</th><th>Bien</th><th>Propriétaire</th><th>Période</th><th>Loyer</th><th>Échéance</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${rows.map((l) => `<tr><td><b>${l.ref}</b></td><td>${esc(nameOf(data.tenants, l.tenantId))}</td><td>${esc(nameOf(data.properties, l.propertyId))}</td><td>${esc(nameOf(data.owners, l.ownerId))}</td><td>${fmtDate(l.startDate)} → ${fmtDate(l.endDate)}</td><td>${money(l.rent)}</td><td>Jour ${l.dueDay}</td><td>${badge(l.status)}</td><td><div class="actions"><button class="btn btn-light btn-sm" onclick="printContract('${l.id}')">Imprimer</button><button class="btn btn-primary btn-sm" onclick="openTenantForm('${l.tenantId}')">Modifier</button><button class="btn btn-danger btn-sm" onclick="terminateLease('${l.id}')">Résilier</button></div></td></tr>`).join("") || '<tr><td colspan="9" class="empty">Aucun contrat.</td></tr>'}</tbody></table></div>`;
       }
-      function terminateLease(id) {
+      async function terminateLease(id) {
         const l = data.leases.find((x) => x.id === id);
-        if (!l || !confirm("Résilier ce contrat ?")) return;
+        if (!l || !(await professionalConfirm(`Résilier le contrat « ${l.ref} » ? Le bien concerné redeviendra disponible.`))) return;
         l.status = "Résilié";
         const p = data.properties.find((x) => x.id === l.propertyId);
         if (p) p.status = "Disponible";
@@ -5762,10 +6045,10 @@
         saveData("Paiement enregistré et comptabilité mise à jour.");
         setTimeout(() => printReceipt(obj.id), 150);
       }
-      function cancelPayment(id) {
+      async function cancelPayment(id) {
         const p = data.payments.find((x) => x.id === id);
         if (!p) return;
-        if (!confirm(`${p.cancelled ? "Rétablir" : "Annuler"} ce paiement ?`))
+        if (!(await professionalConfirm(`${p.cancelled ? "Rétablir" : "Annuler"} le paiement « ${p.receipt || "sans référence"} » ?`)))
           return;
         p.cancelled = !p.cancelled;
         logAction(
@@ -6376,50 +6659,30 @@
       function renderPublicCatalog() {
         applySettings();
         let rows = data.properties.filter((p) => p.published && !p.archived);
-        const search = (val("pubSearch") || "").toLowerCase(),
+        const search = (val("pubSearch") || "").trim().toLowerCase(),
           transaction = val("pubTransaction"),
           type = val("pubType"),
-          min = Number(val("pubMin") || 0),
-          max = Number(val("pubMax") || Infinity),
-          city = (val("pubCity") || "").toLowerCase(),
-          commune = (val("pubCommune") || "").toLowerCase(),
-          district = (val("pubDistrict") || "").toLowerCase(),
-          rooms = Number(val("pubRooms") || 0),
-          bedrooms = Number(val("pubBedrooms") || 0),
-          area = Number(val("pubArea") || 0),
-          furnished = val("pubFurnished"),
-          available = val("pubAvailable"),
-          ref = (val("pubRef") || "").toLowerCase(),
-          sort = val("pubSort") || "new";
-        rows = rows.filter(
-          (p) =>
-            (p.title + " " + p.city + " " + p.district + " " + p.ref)
-              .toLowerCase()
-              .includes(search) &&
+          max = Number(val("pubMax") || Infinity);
+        rows = rows.filter((p) => {
+          const searchableText = [
+            p.title,
+            p.city,
+            p.commune,
+            p.district,
+            p.ref,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return (
+            searchableText.includes(search) &&
             (!transaction || p.transaction === transaction) &&
             (!type || p.type === type) &&
-            p.price >= min &&
-            p.price <= max &&
-            (!city || p.city.toLowerCase().includes(city)) &&
-            (!commune || p.commune.toLowerCase().includes(commune)) &&
-            (!district || p.district.toLowerCase().includes(district)) &&
-            p.rooms >= rooms &&
-            p.bedrooms >= bedrooms &&
-            p.area >= area &&
-            (!furnished || p.furnished === furnished) &&
-            (!available || p.status === available) &&
-            (!ref || p.ref.toLowerCase().includes(ref)),
-        );
+            Number(p.price || 0) <= max
+          );
+        });
         rows.sort((a, b) =>
-          sort === "priceAsc"
-            ? a.price - b.price
-            : sort === "priceDesc"
-              ? b.price - a.price
-              : sort === "views"
-                ? b.views - a.views
-                : sort === "popular"
-                  ? b.favorites - a.favorites
-                  : String(b.createdAt).localeCompare(String(a.createdAt)),
+          String(b.createdAt || "").localeCompare(String(a.createdAt || "")),
         );
         $("publicCatalogGrid").innerHTML =
           rows.map((p) => propertyCard(p, false)).join("") ||
@@ -6588,13 +6851,10 @@
         r.readAsText(f);
         e.target.value = "";
       }
-      function resetApp() {
-        if (
-          !confirm(
-            "Effacer toutes les opérations de cette entreprise ? Les autres entreprises ne seront pas touchées.",
-          )
-        )
-          return;
+      async function resetApp() {
+        if (!(await professionalConfirm(
+          "Effacer toutes les opérations de cette entreprise ? Les autres entreprises ne seront pas touchées. Cette action est irréversible.",
+        ))) return;
         const s = clone(data.settings);
         data = blankCompanyData({
           id: activeCompanyId,
@@ -6620,8 +6880,8 @@
         modalSave.textContent = "Enregistrer";
         editing = null;
       }
-      function deleteRecord(module, id) {
-        if (!confirm("Supprimer définitivement cet élément ?")) return;
+      async function deleteRecord(module, id) {
+        if (!(await professionalConfirm("Supprimer définitivement cet élément ? Cette action ne pourra pas être annulée."))) return;
         const item = data[module].find((x) => x.id === id);
         data[module] = data[module].filter((x) => x.id !== id);
         logAction("Suppression " + module + " " + (item?.ref || id));
@@ -6953,7 +7213,7 @@
         const sub = subscriptionInfo(currentEnterprise());
         if (sub.state !== "active") {
           logout();
-          alert(
+          professionalAlert(
             "L’abonnement de cette entreprise est " +
               sub.label.toLowerCase() +
               ". Contactez le Super Administrateur.",
@@ -6989,7 +7249,7 @@
         showLogin("login");
         toast("Session Super Admin fermée.");
       }
-      function deleteEnterpriseAccount(id) {
+      async function deleteEnterpriseAccount(id) {
         if (sessionStorage.getItem(SUPER_SESSION_KEY) !== "1") {
           toast("Accès réservé au Super Administrateur.");
           return;
@@ -7000,7 +7260,7 @@
           "Supprimer définitivement le compte « " +
           c.name +
           " » ?\n\nCette action effacera les utilisateurs, biens, propriétaires, locataires, contrats, paiements, rapports et paramètres de cette entreprise. Elle est irréversible.";
-        if (!confirm(message)) return;
+        if (!(await professionalConfirm(message))) return;
         localStorage.removeItem(companyStorageKey(id));
         enterprises = enterprises.filter((x) => x.id !== id);
         saveRegistry();
@@ -7217,11 +7477,8 @@
         u.updatedAt = new Date().toISOString();
         saveData("Statut utilisateur modifié.");
       }
-      function deleteUser(id) {
-        if (
-          !requireAdmin() ||
-          !confirm("Supprimer définitivement cet utilisateur ?")
-        )
+      async function deleteUser(id) {
+        if (!requireAdmin() || !(await professionalConfirm("Supprimer définitivement cet utilisateur ? Son accès à l’application sera immédiatement retiré.")))
           return;
         data.users = data.users.filter((x) => x.id !== id);
         saveData("Utilisateur supprimé.");
@@ -7701,7 +7958,7 @@
           });
           form.reset();
           applyBootstrap(result);
-          alert(
+          professionalAlert(
             `Entreprise créée avec succès.\n\nVersion : FREE — 21 jours\nIdentifiant : ${username}\nFin de la période gratuite : ${fmtDate(result.company.subscriptionEnd)}`,
           );
         } catch (error) {
@@ -8084,8 +8341,8 @@
         }
       }
 
-      function resetApp() {
-        if (!confirm("Effacer toutes les opérations de cette entreprise ?"))
+      async function resetApp() {
+        if (!(await professionalConfirm("Effacer toutes les opérations de cette entreprise ? Cette action est irréversible et ne concerne que l’entreprise active.")))
           return;
         const settings = clone(data.settings);
         data = blankCompanyData({
@@ -8182,7 +8439,7 @@
       }
 
       async function deleteUser(id) {
-        if (!requireAdmin() || !confirm("Supprimer cet utilisateur ?")) return;
+        if (!requireAdmin() || !(await professionalConfirm("Supprimer cet utilisateur ? Son accès à l’entreprise sera immédiatement retiré."))) return;
         try {
           await apiFetch(`users/${encodeURIComponent(id)}`, {
             method: "DELETE",
@@ -8295,7 +8552,7 @@
         const company = enterprises.find((x) => x.id === id);
         if (
           !company ||
-          !confirm(`Supprimer définitivement le compte « ${company.name} » ?`)
+          !(await professionalConfirm(`Supprimer définitivement le compte « ${company.name} » ? Toutes les données liées à cette entreprise seront effacées de manière irréversible.`))
         )
           return;
         try {
@@ -8342,9 +8599,9 @@
           return;
         }
         if (
-          !confirm(
-            `Importer ${registry.length} entreprise(s) locales vers D1 ?`,
-          )
+          !(await professionalConfirm(
+            `Importer ${registry.length} entreprise(s) locales vers D1 ? Les données existantes seront analysées avant l’importation.`,
+          ))
         )
           return;
         const states = {};
@@ -8363,7 +8620,7 @@
           });
           enterprises = (result.companies || []).map(normalizeEnterpriseRecord);
           await renderSuperAdmin();
-          alert(
+          professionalAlert(
             `Migration terminée.\n\nImportées : ${result.imported}\nIgnorées : ${result.skipped}\nErreurs : ${(result.errors || []).length}`,
           );
         } catch (error) {
@@ -8499,9 +8756,17 @@
           </div>`;
         }).join("");
         return `<div class="card" style="margin-top:16px">
-          <div class="toolbar"><div><h3 style="margin:0 0 4px">Demandes de mise en location</h3><div class="muted" style="font-size:12px">Demandes envoyées depuis le catalogue public de cette entreprise.</div></div><span class="pill">${offers.length} demande${offers.length > 1 ? "s" : ""}</span></div>
-          <div class="special-request-grid">${cards || '<div class="empty">Aucune demande de mise en location.</div>'}</div>
+          <div class="toolbar property-request-toolbar"><div><button type="button" class="btn property-request-title-button" aria-expanded="true" onclick="togglePropertyOfferRequests(this)">Demandes de mise en location <span class="property-request-count">${offers.length}</span></button><div class="muted" style="font-size:12px;margin-top:7px">Demandes envoyées depuis le catalogue public de cette entreprise. Cliquez sur le bouton pour afficher ou masquer la liste.</div></div></div>
+          <div id="propertyOfferRequestList" class="special-request-grid">${cards || '<div class="empty">Aucune demande de mise en location.</div>'}</div>
         </div>`;
+      }
+
+      function togglePropertyOfferRequests(button) {
+        const list = $("propertyOfferRequestList");
+        if (!list) return;
+        const willHide = !list.classList.contains("hidden");
+        list.classList.toggle("hidden", willHide);
+        button?.setAttribute("aria-expanded", String(!willHide));
       }
 
       function saveCatalogOfferObservation(id) {
@@ -8515,8 +8780,11 @@
         saveData("Note d’observation enregistrée.");
       }
 
-      function deleteCatalogOffer(id) {
-        if (!confirm("Supprimer cette demande de mise en location ?")) return;
+      async function deleteCatalogOffer(id) {
+        if (!(await professionalConfirm(
+          "Supprimer cette demande de mise en location ? La localisation, le contact et la note d’observation seront définitivement effacés.",
+          { title: "Supprimer la demande de mise en location", confirmText: "Supprimer la demande", type: "danger" },
+        ))) return;
         data.visits = data.visits.filter((item) => String(item.id) !== String(id));
         saveData("Demande de mise en location supprimée.");
       }
@@ -8570,8 +8838,11 @@
         ) + `<div class="company-message-grid">${cards || '<div class="empty card">Aucune note ou notification reçue.</div>'}</div>`;
       }
 
-      function deleteCompanyAdminMessage(id) {
-        if (!confirm("Supprimer cette note ou notification ?")) return;
+      async function deleteCompanyAdminMessage(id) {
+        if (!(await professionalConfirm(
+          "Supprimer cette note ou notification de votre espace privé ? Cette action est définitive.",
+          { title: "Supprimer le message", confirmText: "Supprimer", type: "danger" },
+        ))) return;
         data.visits = data.visits.filter((item) => String(item.id) !== String(id));
         saveData("Message supprimé.");
       }
@@ -8690,7 +8961,7 @@
           toast(`${sent} entreprise${sent > 1 ? "s" : ""} destinataire${sent > 1 ? "s" : ""}.`);
         }
         if (failures.length) {
-          alert(`Le message n’a pas pu être envoyé à : ${failures.join(", ")}.`);
+          professionalAlert(`Le message n’a pas pu être envoyé à : ${failures.join(", ")}.`);
         }
       }
 
