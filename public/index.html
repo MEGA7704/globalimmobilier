@@ -2647,7 +2647,132 @@
         }
       }
 
-    </style>
+    
+
+      /* Assistance entreprise et messagerie Super Admin */
+      .support-contact-btn {
+        background: linear-gradient(135deg, #005b4f, #003b34);
+        color: #fff;
+        border: 1px solid rgba(201, 162, 75, 0.72);
+        box-shadow: 0 8px 20px rgba(0, 59, 52, 0.18);
+      }
+      .support-contact-btn:hover { color: #fff; transform: translateY(-1px); }
+      .support-company-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 13px;
+        margin-bottom: 14px;
+        border: 1px solid #dbe6e1;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #f8fbf9, #f2f7f4);
+      }
+      .support-company-summary div { min-width: 0; }
+      .support-company-summary small {
+        display: block;
+        color: #73817b;
+        margin-bottom: 3px;
+      }
+      .support-company-summary strong {
+        display: block;
+        color: #003b34;
+        overflow-wrap: anywhere;
+      }
+      .support-file-box {
+        border: 1px dashed #a9bbb4;
+        border-radius: 12px;
+        padding: 12px;
+        background: #f8fbf9;
+      }
+      .support-file-box input[type="file"] { width: 100%; }
+      .support-file-note { margin-top: 6px; color: #7a817e; font-size: 11px; }
+      .support-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 22px 0 10px;
+      }
+      .support-section-head h3 { margin: 0; color: #003b34; }
+      .support-outbox-grid,
+      .super-support-grid { display: grid; gap: 12px; }
+      .support-outbox-card,
+      .super-support-card {
+        border: 1px solid #dce7e2;
+        border-radius: 15px;
+        background: #fff;
+        padding: 15px;
+        box-shadow: 0 7px 20px rgba(0, 59, 52, 0.07);
+      }
+      .support-outbox-card { border-left: 5px solid #c9a24b; }
+      .super-support-card.new { border-left: 5px solid #c62828; }
+      .super-support-card.progress { border-left: 5px solid #c9a24b; }
+      .super-support-card.done { border-left: 5px solid #16805f; }
+      .support-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .support-card-top h3 { margin: 2px 0 5px; color: #003b34; }
+      .support-card-meta { color: #71807a; font-size: 11px; line-height: 1.5; }
+      .support-card-body { white-space: pre-wrap; line-height: 1.6; margin: 11px 0 0; }
+      .support-card-observation {
+        margin-top: 11px;
+        padding: 9px 11px;
+        border-radius: 10px;
+        background: #f7f3e8;
+        color: #5d5132;
+        font-size: 12px;
+      }
+      .support-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 13px;
+      }
+      .support-status {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .support-status.new { background: #fde9e8; color: #9e1c1c; }
+      .support-status.progress { background: #fff3d4; color: #806000; }
+      .support-status.done { background: #dff4eb; color: #086044; }
+      .super-support-toolbar {
+        display: grid;
+        grid-template-columns: minmax(200px, 1fr) minmax(160px, .35fr) auto;
+        gap: 10px;
+        margin: 12px 0 14px;
+      }
+      .super-support-section { margin-top: 18px; }
+      .super-support-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .super-support-summary .mini-stat {
+        border: 1px solid #e0e8e4;
+        border-radius: 12px;
+        padding: 11px;
+        background: #f8fbf9;
+      }
+      .super-support-summary small { color: #71807a; }
+      .super-support-summary strong { display: block; font-size: 22px; color: #003b34; margin-top: 2px; }
+      @media (max-width: 760px) {
+        .support-company-summary,
+        .super-support-summary { grid-template-columns: 1fr; }
+        .super-support-toolbar { grid-template-columns: 1fr; }
+        .support-card-top { flex-direction: column; }
+        .support-card-actions .btn { flex: 1 1 150px; }
+      }
+</style>
   </head>
   <body>
     <section id="loginPage" class="login-page">
@@ -6877,6 +7002,7 @@
 
       function closeModal() {
         modal.classList.remove("show");
+        modalSave.disabled = false;
         modalSave.textContent = "Enregistrer";
         editing = null;
       }
@@ -8971,6 +9097,484 @@
         if (sessionKind === "super") renderSuperAdminMessageComposer();
       };
       /* ========== FIN DEMANDES CATALOGUE ET MESSAGES SUPER ADMIN ========== */
+
+
+      /* ========== ASSISTANCE ENTREPRISE ET BOÎTE DE RÉCEPTION SUPER ADMIN ========== */
+      const SUPPORT_MESSAGE_MARKER = "[[SUPPORT_MESSAGE]]";
+      const SUPPORT_ACTION_MARKER = "[[SUPPORT_ACTION]]";
+      const SUPPORT_FILE_MAX_BYTES = 500 * 1024;
+      let superSupportInboxCache = [];
+
+      function isSupportMessageVisit(visit) {
+        return !!decodeSpecialVisit(visit, SUPPORT_MESSAGE_MARKER);
+      }
+
+      function isSupportActionVisit(visit) {
+        return !!decodeSpecialVisit(visit, SUPPORT_ACTION_MARKER);
+      }
+
+      const isSpecialSystemVisitBeforeSupport = isSpecialSystemVisit;
+      isSpecialSystemVisit = function (visit) {
+        return isSpecialSystemVisitBeforeSupport(visit) || isSupportMessageVisit(visit) || isSupportActionVisit(visit);
+      };
+
+      function supportStatusClass(status) {
+        const normalized = String(status || "Nouveau").toLowerCase();
+        if (normalized.includes("trait")) return "done";
+        if (normalized.includes("cours")) return "progress";
+        return "new";
+      }
+
+      function supportStatusLabel(status) {
+        const value = String(status || "Nouveau");
+        return ["Nouveau", "En cours", "Traité"].includes(value) ? value : "Nouveau";
+      }
+
+      function formatSupportBytes(bytes) {
+        const size = Number(bytes || 0);
+        if (!size) return "0 octet";
+        if (size < 1024) return `${size} octets`;
+        if (size < 1024 * 1024) return `${Math.round(size / 1024)} Ko`;
+        return `${(size / (1024 * 1024)).toFixed(1)} Mo`;
+      }
+
+      function supportAttachmentButton(attachment, key = "") {
+        if (!attachment?.dataUrl) return "";
+        return `<button class="btn btn-light btn-sm" type="button" onclick="downloadSupportAttachment('${attr(key)}')">Télécharger : ${esc(attachment.name || "pièce jointe")} (${esc(formatSupportBytes(attachment.size))})</button>`;
+      }
+
+      function updateSupportFileLabel(input) {
+        const file = input?.files?.[0];
+        const label = $("supportFileLabel");
+        if (!label) return;
+        label.textContent = file
+          ? `${file.name} — ${formatSupportBytes(file.size)}`
+          : "Aucun fichier sélectionné";
+      }
+
+      function openSupportContact() {
+        if (sessionKind !== "company" || !activeCompanyId) {
+          toast("Connectez-vous à une entreprise pour contacter le support.");
+          return;
+        }
+        const company = currentEnterprise() || {};
+        editing = { type: "supportMessage" };
+        modalTitle.textContent = "Contacter le Support";
+        modalBody.innerHTML = `
+          <div class="support-company-summary">
+            <div><small>Entreprise immobilière</small><strong>${esc(data.settings.agency || company.name || "—")}</strong></div>
+            <div><small>Code entreprise</small><strong>${esc(data.settings.companyCode || company.code || "—")}</strong></div>
+            <div><small>Téléphone</small><strong>${esc(data.settings.phone || company.phone || "—")}</strong></div>
+            <div><small>Adresse e-mail</small><strong>${esc(data.settings.email || company.email || "—")}</strong></div>
+          </div>
+          <div class="form-grid">
+            <div class="field span-2"><label>Objet *</label><input id="supportObject" maxlength="140" placeholder="Exemple : Problème d’accès, demande d’assistance, anomalie…"></div>
+            <div class="field span-2"><label>Message *</label><textarea id="supportBody" maxlength="3000" style="min-height:150px" placeholder="Décrivez clairement votre demande afin de faciliter son traitement."></textarea></div>
+            <div class="field span-2"><label>Pièce jointe facultative</label><div class="support-file-box"><input id="supportFile" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" onchange="updateSupportFileLabel(this)"><div id="supportFileLabel" class="support-file-note">Aucun fichier sélectionné</div><div class="support-file-note">Taille maximale : 500 Ko. Formats courants : image, PDF, Word, Excel ou texte.</div></div></div>
+          </div>`;
+        modalSave.textContent = "Envoyer";
+        modalSave.onclick = sendSupportMessage;
+        modal.classList.add("show");
+        setTimeout(() => $("supportObject")?.focus(), 80);
+      }
+
+      async function refreshCompanyStateAfterSupport() {
+        try {
+          const result = await apiFetch("state");
+          cloudVersion = Number(result.version || cloudVersion);
+          data = migrate(result.state || data);
+          renderAll();
+          if (currentPage === "adminMessages") renderCompanyAdminMessages();
+        } catch (error) {
+          // Le message est déjà enregistré par l’API publique. Un rechargement ultérieur actualisera l’historique.
+        }
+      }
+
+      async function sendSupportMessage() {
+        if (sessionKind !== "company" || editing?.type !== "supportMessage") return;
+        const object = val("supportObject").trim();
+        const body = val("supportBody").trim();
+        const file = $("supportFile")?.files?.[0] || null;
+        if (!object || !body) {
+          toast("L’objet et le message sont obligatoires.", "warning");
+          return;
+        }
+        if (file && file.size > SUPPORT_FILE_MAX_BYTES) {
+          await professionalAlert(
+            `La pièce jointe « ${file.name} » dépasse la taille maximale autorisée de 500 Ko. Choisissez un fichier plus léger.`,
+            { title: "Fichier trop volumineux", type: "warning" },
+          );
+          return;
+        }
+        const button = modalSave;
+        button.disabled = true;
+        button.textContent = "Envoi en cours…";
+        try {
+          let attachment = null;
+          if (file) {
+            attachment = {
+              name: file.name,
+              type: file.type || "application/octet-stream",
+              size: file.size,
+              dataUrl: await fileData(file),
+            };
+          }
+          const now = new Date();
+          const company = currentEnterprise() || {};
+          const supportId = uid("sup");
+          const details = {
+            id: supportId,
+            companyId: activeCompanyId,
+            companyName: data.settings.agency || company.name || "Entreprise immobilière",
+            companyCode: data.settings.companyCode || company.code || "",
+            companyPhone: data.settings.phone || company.phone || "",
+            companyEmail: data.settings.email || company.email || "",
+            companyAddress: data.settings.address || company.address || "",
+            object,
+            body,
+            attachment,
+            status: "Nouveau",
+            createdAt: now.toISOString(),
+          };
+          await apiFetch(`public/visits/${encodeURIComponent(activeCompanyId)}`, {
+            method: "POST",
+            body: JSON.stringify({
+              ref: `SUP-${Date.now()}`,
+              propertyId: "",
+              name: details.companyName,
+              phone: details.companyPhone || "0000000000",
+              whatsapp: data.settings.whatsapp || "",
+              email: details.companyEmail,
+              date: today(),
+              time: now.toTimeString().slice(0, 5),
+              message: encodeSpecialVisit(SUPPORT_MESSAGE_MARKER, details),
+              contactMethod: "Application",
+            }),
+          });
+          closeModal();
+          toast("Votre message a été transmis au Super Administrateur.", "success");
+          await refreshCompanyStateAfterSupport();
+        } catch (error) {
+          cloudError(error, "Message non envoyé");
+          button.disabled = false;
+          button.textContent = "Envoyer";
+        }
+      }
+
+      function companySupportHistory() {
+        const actions = new Map();
+        (data.visits || []).filter(isSupportActionVisit).forEach((visit) => {
+          const details = decodeSpecialVisit(visit, SUPPORT_ACTION_MARKER) || {};
+          if (!details.supportId) return;
+          const previous = actions.get(details.supportId);
+          const date = String(details.updatedAt || visit.createdAt || visit.date || "");
+          if (!previous || date >= previous._date) actions.set(details.supportId, { ...details, _date: date });
+        });
+        return (data.visits || [])
+          .filter(isSupportMessageVisit)
+          .map((visit) => {
+            const details = decodeSpecialVisit(visit, SUPPORT_MESSAGE_MARKER) || {};
+            const action = actions.get(details.id) || {};
+            return { visit, details, action, status: supportStatusLabel(action.status || details.status) };
+          })
+          .filter((item) => !item.action.deleted)
+          .sort((a, b) => String(b.details.createdAt || b.visit.createdAt || "").localeCompare(String(a.details.createdAt || a.visit.createdAt || "")));
+      }
+
+      function renderCompanyAdminMessagesWithSupport() {
+        const messages = data.visits
+          .filter(isSuperAdminMessageVisit)
+          .sort((a, b) => String(b.createdAt || b.date || "").localeCompare(String(a.createdAt || a.date || "")));
+        const cards = messages.map((visit) => {
+          const details = decodeSpecialVisit(visit, SUPER_MESSAGE_MARKER) || {};
+          const type = details.type === "note" ? "note" : "notification";
+          const label = type === "note" ? "Note" : "Notification";
+          return `<article class="company-message-card ${type}">
+            <div class="message-meta">${esc(label)} du Super Administrateur · ${esc(specialVisitDate(visit))}</div>
+            <h3>${esc(details.title || label)}</h3>
+            <p>${esc(details.body || "")}</p>
+            <div class="message-actions"><button class="btn btn-danger btn-sm" type="button" onclick="deleteCompanyAdminMessage('${attr(visit.id)}')">Supprimer</button></div>
+          </article>`;
+        }).join("");
+        const supportHistory = companySupportHistory();
+        const supportCards = supportHistory.map((item) => {
+          const details = item.details;
+          const cls = supportStatusClass(item.status);
+          return `<article class="support-outbox-card">
+            <div class="support-card-top"><div><div class="support-card-meta">Demande envoyée le ${esc(specialVisitDate(item.visit))}</div><h3>${esc(details.object || "Demande d’assistance")}</h3></div><span class="support-status ${cls}">${esc(item.status)}</span></div>
+            <p class="support-card-body">${esc(details.body || "")}</p>
+            ${details.attachment?.name ? `<div class="support-card-observation">Pièce jointe : ${esc(details.attachment.name)} — ${esc(formatSupportBytes(details.attachment.size))}</div>` : ""}
+            ${item.action.observation ? `<div class="support-card-observation"><b>Suivi du support :</b> ${esc(item.action.observation)}</div>` : ""}
+          </article>`;
+        }).join("");
+        $("adminMessages").innerHTML = pageHead(
+          "Notes et notifications",
+          "Consultez les messages reçus et contactez directement le support de GLOBAL IMMOBILIER.",
+          `<button class="btn support-contact-btn" type="button" onclick="openSupportContact()">Contacter le Support</button><span class="pill">${messages.length} message${messages.length > 1 ? "s" : ""}</span>`,
+        ) + `<div class="company-message-grid">${cards || '<div class="empty card">Aucune note ou notification reçue.</div>'}</div>
+          <div class="support-section-head"><h3>Mes messages au support</h3><span class="pill">${supportHistory.length}</span></div>
+          <div class="support-outbox-grid">${supportCards || '<div class="empty card">Aucune demande d’assistance envoyée.</div>'}</div>`;
+      }
+
+      renderCompanyAdminMessages = renderCompanyAdminMessagesWithSupport;
+
+      async function fetchCompanySupportVisits(company) {
+        if (Array.isArray(company?.visits)) return company.visits;
+        const id = company?.id;
+        if (!id) return [];
+        const paths = [
+          `super/companies/${encodeURIComponent(id)}/state`,
+          `super/companies/${encodeURIComponent(id)}`,
+          `public/companies/${encodeURIComponent(id)}`,
+        ];
+        for (const path of paths) {
+          try {
+            const result = await apiFetch(path);
+            const candidates = [
+              result?.state?.visits,
+              result?.companyState?.visits,
+              result?.data?.visits,
+              result?.visits,
+              result?.company?.state?.visits,
+            ];
+            const visits = candidates.find(Array.isArray);
+            if (visits) return visits;
+          } catch (error) {}
+        }
+        return [];
+      }
+
+      async function loadSuperSupportInbox() {
+        const results = await Promise.all((enterprises || []).map(async (company) => ({
+          company,
+          visits: await fetchCompanySupportVisits(company),
+        })));
+        const inbox = [];
+        results.forEach(({ company, visits }) => {
+          const actions = new Map();
+          visits.filter(isSupportActionVisit).forEach((visit) => {
+            const details = decodeSpecialVisit(visit, SUPPORT_ACTION_MARKER) || {};
+            if (!details.supportId) return;
+            const date = String(details.updatedAt || visit.createdAt || visit.date || "");
+            const previous = actions.get(details.supportId);
+            if (!previous || date >= previous._date) actions.set(details.supportId, { ...details, _date: date });
+          });
+          visits.filter(isSupportMessageVisit).forEach((visit) => {
+            const details = decodeSpecialVisit(visit, SUPPORT_MESSAGE_MARKER) || {};
+            const supportId = details.id || visit.id || visit.ref;
+            const action = actions.get(supportId) || {};
+            if (action.deleted) return;
+            inbox.push({
+              key: `${company.id}::${supportId}`,
+              company,
+              visit,
+              details,
+              action,
+              supportId,
+              status: supportStatusLabel(action.status || details.status),
+            });
+          });
+        });
+        superSupportInboxCache = inbox.sort((a, b) => String(b.details.createdAt || b.visit.createdAt || "").localeCompare(String(a.details.createdAt || a.visit.createdAt || "")));
+        return superSupportInboxCache;
+      }
+
+      function filteredSuperSupportInbox() {
+        const q = String(val("superSupportSearch") || "").trim().toLowerCase();
+        const status = val("superSupportStatus");
+        return superSupportInboxCache.filter((item) => {
+          const haystack = `${item.company.name} ${item.company.code} ${item.details.object || ""} ${item.details.body || ""} ${item.details.companyPhone || ""} ${item.details.companyEmail || ""}`.toLowerCase();
+          return (!q || haystack.includes(q)) && (!status || item.status === status);
+        });
+      }
+
+      function renderSuperSupportInboxCards() {
+        const host = $("superSupportResults");
+        if (!host) return;
+        const rows = filteredSuperSupportInbox();
+        const cards = rows.map((item) => {
+          const cls = supportStatusClass(item.status);
+          const details = item.details;
+          return `<article class="super-support-card ${cls}">
+            <div class="support-card-top"><div><div class="support-card-meta">${esc(item.company.name)} · Code ${esc(item.company.code || "—")} · ${esc(specialVisitDate(item.visit))}</div><h3>${esc(details.object || "Demande d’assistance")}</h3><div class="support-card-meta">${esc(details.companyPhone || item.company.phone || "—")} · ${esc(details.companyEmail || item.company.email || "—")}</div></div><span class="support-status ${cls}">${esc(item.status)}</span></div>
+            <p class="support-card-body">${esc(details.body || "")}</p>
+            ${item.action.observation ? `<div class="support-card-observation"><b>Observation interne :</b> ${esc(item.action.observation)}</div>` : ""}
+            <div class="support-card-actions">${supportAttachmentButton(details.attachment, item.key)}<button class="btn btn-primary btn-sm" type="button" onclick="openSuperSupportManager('${attr(item.key)}')">Gérer le message</button><button class="btn btn-danger btn-sm" type="button" onclick="deleteSuperSupportMessage('${attr(item.key)}')">Supprimer</button></div>
+          </article>`;
+        }).join("");
+        host.innerHTML = cards || '<div class="empty card">Aucun message ne correspond à votre recherche.</div>';
+        const total = superSupportInboxCache.length;
+        const newCount = superSupportInboxCache.filter((item) => item.status === "Nouveau").length;
+        const progressCount = superSupportInboxCache.filter((item) => item.status === "En cours").length;
+        const doneCount = superSupportInboxCache.filter((item) => item.status === "Traité").length;
+        if ($("superSupportCountAll")) $("superSupportCountAll").textContent = total;
+        if ($("superSupportCountNew")) $("superSupportCountNew").textContent = newCount;
+        if ($("superSupportCountProgress")) $("superSupportCountProgress").textContent = progressCount;
+        if ($("superSupportCountDone")) $("superSupportCountDone").textContent = doneCount;
+      }
+
+      async function renderSuperSupportInboxSection(forceReload = true) {
+        const root = $("superSupportSection");
+        if (!root || sessionKind !== "super") return;
+        root.innerHTML = `<div class="toolbar"><div><h3 style="margin:0 0 4px">Nouveau Message</h3><div class="muted" style="font-size:12px">Messages d’assistance transmis par les entreprises immobilières.</div></div></div><div class="empty card">Chargement des messages…</div>`;
+        if (forceReload) await loadSuperSupportInbox();
+        root.innerHTML = `
+          <div class="toolbar"><div><h3 style="margin:0 0 4px">Nouveau Message</h3><div class="muted" style="font-size:12px">Consultez, traitez, répondez et classez les demandes d’assistance des entreprises.</div></div></div>
+          <div class="super-support-summary">
+            <div class="mini-stat"><small>Total</small><strong id="superSupportCountAll">0</strong></div>
+            <div class="mini-stat"><small>Nouveaux</small><strong id="superSupportCountNew">0</strong></div>
+            <div class="mini-stat"><small>En cours / traités</small><strong><span id="superSupportCountProgress">0</span> / <span id="superSupportCountDone">0</span></strong></div>
+          </div>
+          <div class="super-support-toolbar"><input id="superSupportSearch" placeholder="Entreprise, objet, téléphone ou message…" oninput="renderSuperSupportInboxCards()"><select id="superSupportStatus" onchange="renderSuperSupportInboxCards()"><option value="">Tous les statuts</option><option>Nouveau</option><option>En cours</option><option>Traité</option></select><button class="btn btn-light" type="button" onclick="refreshSuperSupportInbox()">Actualiser</button></div>
+          <div id="superSupportResults" class="super-support-grid"></div>`;
+        renderSuperSupportInboxCards();
+      }
+
+      async function refreshSuperSupportInbox() {
+        const button = document.querySelector('#superSupportSection button[onclick="refreshSuperSupportInbox()"]');
+        if (button) { button.disabled = true; button.textContent = "Actualisation…"; }
+        await loadSuperSupportInbox();
+        renderSuperSupportInboxCards();
+        if (button) { button.disabled = false; button.textContent = "Actualiser"; }
+        toast("Boîte de réception actualisée.", "success");
+      }
+
+      function superSupportItem(key) {
+        return superSupportInboxCache.find((item) => item.key === key);
+      }
+
+      function downloadSupportAttachment(key) {
+        const item = superSupportItem(key);
+        const attachment = item?.details?.attachment;
+        if (!attachment?.dataUrl) {
+          toast("Aucune pièce jointe disponible.", "warning");
+          return;
+        }
+        const link = document.createElement("a");
+        link.href = attachment.dataUrl;
+        link.download = attachment.name || "piece-jointe";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+
+      function openSuperSupportManager(key) {
+        const item = superSupportItem(key);
+        if (!item) return;
+        editing = { type: "superSupport", key };
+        modalTitle.textContent = "Gestion du message support";
+        modalBody.innerHTML = `
+          <div class="support-company-summary">
+            <div><small>Entreprise</small><strong>${esc(item.company.name)}</strong></div>
+            <div><small>Code</small><strong>${esc(item.company.code || "—")}</strong></div>
+            <div><small>Téléphone</small><strong>${esc(item.details.companyPhone || item.company.phone || "—")}</strong></div>
+            <div><small>E-mail</small><strong>${esc(item.details.companyEmail || item.company.email || "—")}</strong></div>
+          </div>
+          <div class="field"><label>Objet</label><input value="${attr(item.details.object || "")}" readonly></div>
+          <div class="field"><label>Message reçu</label><textarea readonly style="min-height:120px">${esc(item.details.body || "")}</textarea></div>
+          ${item.details.attachment?.dataUrl ? `<div class="field"><label>Pièce jointe</label>${supportAttachmentButton(item.details.attachment, item.key)}</div>` : ""}
+          <div class="form-grid">
+            <div class="field"><label>Statut</label><select id="supportManageStatus">${["Nouveau", "En cours", "Traité"].map((status) => `<option ${item.status === status ? "selected" : ""}>${status}</option>`).join("")}</select></div>
+            <div class="field"><label>Observation interne</label><input id="supportManageObservation" maxlength="500" value="${attr(item.action.observation || "")}" placeholder="Note de suivi réservée au Super Admin"></div>
+            <div class="field span-2"><label>Réponse à l’entreprise (facultative)</label><textarea id="supportManageReply" maxlength="2000" style="min-height:110px" placeholder="La réponse apparaîtra dans Notes et notifications de l’entreprise."></textarea></div>
+          </div>`;
+        modalSave.textContent = "Enregistrer le suivi";
+        modalSave.onclick = saveSuperSupportManagement;
+        modal.classList.add("show");
+      }
+
+      async function postSpecialCompanyVisit(companyId, marker, details, prefix = "SUP") {
+        const company = enterprises.find((item) => String(item.id) === String(companyId)) || {};
+        const now = new Date();
+        return apiFetch(`public/visits/${encodeURIComponent(companyId)}`, {
+          method: "POST",
+          body: JSON.stringify({
+            ref: `${prefix}-${Date.now()}`,
+            propertyId: "",
+            name: marker === SUPER_MESSAGE_MARKER ? "SUPER ADMIN" : "SUIVI SUPPORT",
+            phone: company.phone || "0000000000",
+            whatsapp: "",
+            email: company.email || "",
+            date: today(),
+            time: now.toTimeString().slice(0, 5),
+            message: encodeSpecialVisit(marker, details),
+            contactMethod: "Application",
+          }),
+        });
+      }
+
+      async function saveSuperSupportManagement() {
+        if (sessionKind !== "super" || editing?.type !== "superSupport") return;
+        const item = superSupportItem(editing.key);
+        if (!item) return;
+        const status = supportStatusLabel(val("supportManageStatus"));
+        const observation = val("supportManageObservation").trim();
+        const reply = val("supportManageReply").trim();
+        modalSave.disabled = true;
+        modalSave.textContent = "Enregistrement…";
+        try {
+          await postSpecialCompanyVisit(item.company.id, SUPPORT_ACTION_MARKER, {
+            supportId: item.supportId,
+            status,
+            observation,
+            deleted: false,
+            updatedAt: new Date().toISOString(),
+            manager: "Super Administrateur",
+          }, "SUIVI");
+          if (reply) {
+            await postSpecialCompanyVisit(item.company.id, SUPER_MESSAGE_MARKER, {
+              type: "notification",
+              title: `Réponse du support — ${item.details.object || "Votre demande"}`,
+              body: reply,
+              createdAt: new Date().toISOString(),
+              sender: "Super Administrateur",
+              supportId: item.supportId,
+            }, "REP");
+          }
+          closeModal();
+          toast(reply ? "Suivi enregistré et réponse envoyée." : "Suivi du message enregistré.", "success");
+          await renderSuperSupportInboxSection(true);
+        } catch (error) {
+          cloudError(error, "Suivi non enregistré");
+          modalSave.disabled = false;
+          modalSave.textContent = "Enregistrer le suivi";
+        }
+      }
+
+      async function deleteSuperSupportMessage(key) {
+        const item = superSupportItem(key);
+        if (!item) return;
+        if (!(await professionalConfirm(
+          `Supprimer le message « ${item.details.object || "Demande d’assistance"} » de ${item.company.name} ? Il ne sera plus affiché dans la boîte de réception du Super Admin.`,
+          { title: "Supprimer le message", confirmText: "Supprimer", type: "danger" },
+        ))) return;
+        try {
+          await postSpecialCompanyVisit(item.company.id, SUPPORT_ACTION_MARKER, {
+            supportId: item.supportId,
+            status: item.status,
+            observation: item.action.observation || "",
+            deleted: true,
+            updatedAt: new Date().toISOString(),
+            manager: "Super Administrateur",
+          }, "SUPPR");
+          superSupportInboxCache = superSupportInboxCache.filter((entry) => entry.key !== key);
+          renderSuperSupportInboxCards();
+          toast("Message supprimé de la boîte de réception.", "success");
+        } catch (error) {
+          cloudError(error, "Suppression impossible");
+        }
+      }
+
+      const renderSuperAdminBeforeSupportInbox = renderSuperAdmin;
+      renderSuperAdmin = async function () {
+        await renderSuperAdminBeforeSupportInbox();
+        if (sessionKind !== "super") return;
+        const host = $("superAdminContent");
+        if (!host) return;
+        host.insertAdjacentHTML("beforeend", '<section id="superSupportSection" class="card super-support-section"><div class="empty">Chargement de la messagerie support…</div></section>');
+        await renderSuperSupportInboxSection(true);
+      };
+      /* ========== FIN ASSISTANCE ENTREPRISE ET BOÎTE SUPER ADMIN ========== */
 
 
       cloudBootstrap();
