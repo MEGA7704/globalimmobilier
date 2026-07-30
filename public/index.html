@@ -2221,6 +2221,230 @@
         }
       }
 
+
+      /* V13 — Correction ciblée : carte réduite de 30 % et demande de mise en location */
+      @media (min-width: 881px) {
+        #loginPage .login-shell {
+          width: min(966px, calc(100vw - 44px));
+          height: min(574px, calc(100vh - 44px));
+          min-height: 0;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          border-radius: 28px;
+        }
+        #loginPage .login-visual {
+          padding: 19px 24px 14px;
+          overflow-y: auto;
+        }
+        #loginPage .login-emblem-row {
+          width: min(300px, 78%);
+          gap: 12px;
+          margin-bottom: 8px;
+        }
+        #loginPage .login-building-logo {
+          width: 47px;
+          height: 47px;
+          border-radius: 15px;
+        }
+        #loginPage .login-building-logo svg {
+          width: 29px;
+          height: 29px;
+        }
+        #loginPage .login-title {
+          font-size: clamp(39px, 4.4vw, 52px);
+          line-height: 0.88;
+        }
+        #loginPage .login-title-property {
+          margin-top: 6px;
+        }
+        #loginPage .login-description {
+          margin: 12px auto 13px;
+          font-size: 11.5px;
+          line-height: 1.48;
+        }
+        #loginPage .login-features {
+          gap: 8px;
+        }
+        #loginPage .feature {
+          min-height: 88px;
+          grid-template-columns: 34px minmax(0, 1fr);
+          gap: 5px 8px;
+          padding: 10px;
+          border-radius: 13px;
+        }
+        #loginPage .feature-icon {
+          width: 34px;
+          height: 34px;
+        }
+        #loginPage .feature-icon svg {
+          width: 18px;
+          height: 18px;
+        }
+        #loginPage .feature strong {
+          font-size: 10.5px;
+        }
+        #loginPage .feature small {
+          font-size: 8.7px;
+          line-height: 1.35;
+        }
+        #loginPage .login-city-line {
+          height: 34px;
+          margin: 9px auto -4px;
+        }
+        #loginPage .login-wrap {
+          padding: 18px 27px;
+        }
+        #loginPage .login-card,
+        #loginPage .login-card.create-mode {
+          width: min(430px, 100%);
+        }
+        #loginPage .login-card.create-mode {
+          width: min(455px, 100%);
+        }
+        #loginPage .login-security {
+          width: 54px;
+          margin-bottom: 8px;
+        }
+        #loginPage .login-security-icon {
+          width: 52px;
+          height: 52px;
+          border-radius: 17px;
+        }
+        #loginPage .login-security-icon svg {
+          width: 31px;
+          height: 31px;
+        }
+        #loginPage .login-security-line {
+          margin-top: 6px;
+        }
+        #loginPage .auth-choice {
+          gap: 6px;
+          margin-bottom: 13px;
+          padding: 4px;
+          border-radius: 13px;
+        }
+        #loginPage .auth-choice .btn {
+          min-height: 41px;
+          padding: 8px 9px;
+          font-size: 10.5px;
+          border-radius: 10px;
+        }
+        #loginPage .auth-choice .btn svg {
+          width: 15px;
+          height: 15px;
+        }
+        #loginPage .auth-panel h2 {
+          margin-bottom: 4px;
+          font-size: 22px;
+        }
+        #loginPage .auth-panel > p {
+          margin-bottom: 14px;
+          padding-bottom: 9px;
+          font-size: 10.5px;
+        }
+        #loginPage .field {
+          margin-bottom: 9px;
+        }
+        #loginPage .field label {
+          margin-bottom: 5px;
+          font-size: 10px;
+        }
+        #loginPage .login-field-control input,
+        #loginPage .create-company-grid input {
+          min-height: 41px;
+          font-size: 11px;
+        }
+        #loginPage .login-input-icon {
+          left: 13px;
+          width: 17px;
+          height: 17px;
+        }
+        #loginPage .login-field-control input {
+          padding-left: 39px;
+        }
+        #loginPage .password-toggle {
+          min-width: 64px;
+          padding: 7px 7px;
+          font-size: 9px;
+        }
+        #loginPage .login-primary-action,
+        #loginPage .login-secondary-action,
+        #loginPage .login-owner-action,
+        #loginPage .create-submit {
+          min-height: 42px;
+          border-radius: 11px;
+          font-size: 10.5px;
+        }
+        #loginPage .login-primary-action {
+          margin-top: 2px;
+        }
+        #loginPage .login-secondary-action,
+        #loginPage .login-owner-action {
+          margin-top: 7px !important;
+        }
+        #loginPage .auth-note {
+          margin-top: 9px;
+          font-size: 9.5px;
+        }
+        #loginPage .create-company-grid {
+          gap: 7px 10px;
+        }
+      }
+
+      #loginPage .login-owner-action {
+        color: #173f37;
+        border: 1px solid rgba(201, 162, 75, 0.58);
+        background: linear-gradient(135deg, #fffaf0, #f4ead0);
+        box-shadow: 0 8px 18px rgba(201, 162, 75, 0.11);
+      }
+      #loginPage .login-owner-action:hover {
+        border-color: #c9a24b;
+        background: linear-gradient(135deg, #fffdf7, #f1e2bd);
+      }
+      #loginPage .login-owner-action svg {
+        width: 18px;
+        height: 18px;
+      }
+      .property-offer-form {
+        display: grid;
+        gap: 14px;
+      }
+      .property-offer-form .request-intro {
+        margin: 0;
+        padding: 12px 14px;
+        color: #31514a;
+        border: 1px solid #dce8e3;
+        border-radius: 12px;
+        background: #f5faf8;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+      .property-offer-admin-card .toolbar {
+        align-items: flex-start;
+      }
+      .property-offer-admin-card h3 {
+        margin: 0 0 4px;
+      }
+      .property-offer-note {
+        min-width: 190px;
+        min-height: 58px;
+        resize: vertical;
+        font-size: 11px;
+      }
+      .property-offer-date {
+        white-space: nowrap;
+        font-size: 11px;
+        color: #687772;
+      }
+      @media (max-width: 600px) {
+        #loginPage .login-owner-action {
+          line-height: 1.35;
+          white-space: normal;
+        }
+        .property-offer-note {
+          min-width: 150px;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -2341,8 +2565,12 @@
                 </button>
               </form>
               <button class="btn full login-secondary-action" type="button" onclick="openPublicFromLogin()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 4.4 6.2 4.4 9S15 17.8 12 21M12 3C9 6.2 7.6 9.2 7.6 12S9 17.8 12 21"/></svg>
-                Ouvrir le catalogue public
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5M9 21v-6h6v6"/></svg>
+                je cherche une maison à louer
+              </button>
+              <button class="btn full login-owner-action" type="button" onclick="openPropertyOfferRequest()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5M16.5 6.5v-4M14.5 4.5h4"/></svg>
+                j’ai une maison que je veux mettre en location
               </button>
               <div class="auth-note">Identifiant unique dans toute l’application.</div>
             </div>
@@ -8051,6 +8279,183 @@
       }
 
       /* ======================= FIN CLOUD OVERRIDES ======================= */
+
+
+      /* ======================= DEMANDES DE MISE EN LOCATION ======================= */
+      const PROPERTY_OFFER_STORAGE_KEY = "global_immobilier_property_offers_v1";
+      let propertyOfferRequestsCache = [];
+      let propertyOfferRequestsRemote = false;
+
+      function readLocalPropertyOffers() {
+        try {
+          const list = JSON.parse(localStorage.getItem(PROPERTY_OFFER_STORAGE_KEY) || "[]");
+          return Array.isArray(list) ? list : [];
+        } catch (error) {
+          return Array.isArray(window.__propertyOfferMemory) ? window.__propertyOfferMemory : [];
+        }
+      }
+
+      function writeLocalPropertyOffers(list) {
+        const normalized = Array.isArray(list) ? list : [];
+        window.__propertyOfferMemory = normalized;
+        try {
+          localStorage.setItem(PROPERTY_OFFER_STORAGE_KEY, JSON.stringify(normalized));
+        } catch (error) {}
+      }
+
+      function normalizePropertyOffer(item = {}) {
+        return {
+          id: String(item.id || uid("off")),
+          location: String(item.location || item.localisation || "").trim(),
+          phone: String(item.phone || item.telephone || "").trim(),
+          observation: String(item.observation || ""),
+          createdAt: item.createdAt || item.date || new Date().toISOString(),
+        };
+      }
+
+      function openPropertyOfferRequest() {
+        editing = { type: "propertyOfferRequest" };
+        modalTitle.textContent = "Mettre une maison en location";
+        modalBody.innerHTML = `<div class="property-offer-form">
+          <p class="request-intro">Renseignez la localisation de la maison et votre numéro de téléphone. La demande sera transmise au Super Administrateur pour traitement.</p>
+          <div class="field"><label for="propertyOfferLocation">Localisation de la maison *</label><input id="propertyOfferLocation" autocomplete="street-address" placeholder="Ville, commune, quartier ou repère" required></div>
+          <div class="field"><label for="propertyOfferPhone">N° téléphone *</label><input id="propertyOfferPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ex. 0700000000" required></div>
+        </div>`;
+        modalSave.textContent = "Envoyer";
+        modalSave.onclick = submitPropertyOfferRequest;
+        modal.classList.add("show");
+        setTimeout(() => $("propertyOfferLocation")?.focus(), 80);
+      }
+
+      async function submitPropertyOfferRequest() {
+        if (editing?.type !== "propertyOfferRequest") return;
+        const location = val("propertyOfferLocation").trim();
+        const phone = val("propertyOfferPhone").trim();
+        if (!location || !phone) {
+          toast("La localisation et le numéro de téléphone sont obligatoires.");
+          return;
+        }
+        const request = normalizePropertyOffer({
+          id: uid("off"),
+          location,
+          phone,
+          observation: "",
+          createdAt: new Date().toISOString(),
+        });
+        let savedRemotely = false;
+        modalSave.disabled = true;
+        try {
+          const result = await apiFetch("public/property-offers", {
+            method: "POST",
+            body: JSON.stringify(request),
+          });
+          savedRemotely = result?.ok !== false;
+        } catch (error) {
+          savedRemotely = false;
+        } finally {
+          modalSave.disabled = false;
+        }
+        if (!savedRemotely) {
+          const list = readLocalPropertyOffers();
+          list.unshift(request);
+          writeLocalPropertyOffers(list);
+        }
+        closeModal();
+        toast("Votre demande a été envoyée avec succès.");
+      }
+
+      async function loadPropertyOffersForSuperAdmin() {
+        propertyOfferRequestsRemote = false;
+        try {
+          const result = await apiFetch("super/property-offers");
+          const remoteItems = result?.requests || result?.items || result?.propertyOffers;
+          if (Array.isArray(remoteItems)) {
+            propertyOfferRequestsRemote = true;
+            propertyOfferRequestsCache = remoteItems.map(normalizePropertyOffer);
+            return propertyOfferRequestsCache;
+          }
+        } catch (error) {}
+        propertyOfferRequestsCache = readLocalPropertyOffers().map(normalizePropertyOffer);
+        return propertyOfferRequestsCache;
+      }
+
+      function propertyOfferDate(value) {
+        const d = new Date(value);
+        return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      async function renderPropertyOfferAdminSection() {
+        if (sessionKind !== "super") return;
+        const host = $("superAdminContent");
+        if (!host) return;
+        const requests = await loadPropertyOffersForSuperAdmin();
+        const rows = requests.map((request) => `<tr data-property-offer-id="${attr(request.id)}">
+          <td class="property-offer-date">${esc(propertyOfferDate(request.createdAt))}</td>
+          <td><b>${esc(request.location || "—")}</b></td>
+          <td><a href="tel:${attr(request.phone)}">${esc(request.phone || "—")}</a></td>
+          <td><textarea id="propertyOfferNote_${attr(request.id)}" class="property-offer-note" maxlength="220" placeholder="Petite note d’observation…">${esc(request.observation || "")}</textarea></td>
+          <td><div class="actions"><button class="btn btn-primary btn-sm" type="button" onclick="savePropertyOfferObservation('${attr(request.id)}')">Enregistrer la note</button><button class="btn btn-danger btn-sm" type="button" onclick="deletePropertyOfferRequest('${attr(request.id)}')">Supprimer</button></div></td>
+        </tr>`).join("");
+        host.insertAdjacentHTML("beforeend", `<div class="card property-offer-admin-card" style="margin-top:16px">
+          <div class="toolbar"><div><h3>Demandes de mise en location</h3><div class="muted" style="font-size:12px">Maisons proposées par les visiteurs depuis la page de connexion.</div></div><span class="pill">${requests.length} demande${requests.length > 1 ? "s" : ""}</span></div>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th>Date</th><th>Localisation de la maison</th><th>N° téléphone</th><th>Observation</th><th>Gestion</th></tr></thead><tbody>${rows || '<tr><td colspan="5" class="empty">Aucune demande de mise en location.</td></tr>'}</tbody></table></div>
+        </div>`);
+      }
+
+      async function savePropertyOfferObservation(id) {
+        const field = $("propertyOfferNote_" + id);
+        if (!field) return;
+        const observation = field.value.trim();
+        let savedRemotely = false;
+        if (propertyOfferRequestsRemote) {
+          try {
+            await apiFetch(`super/property-offers/${encodeURIComponent(id)}`, {
+              method: "PATCH",
+              body: JSON.stringify({ observation }),
+            });
+            savedRemotely = true;
+          } catch (error) {
+            savedRemotely = false;
+          }
+        }
+        if (!savedRemotely) {
+          const list = readLocalPropertyOffers();
+          const item = list.find((entry) => String(entry.id) === String(id));
+          if (item) item.observation = observation;
+          writeLocalPropertyOffers(list);
+        }
+        const cached = propertyOfferRequestsCache.find((entry) => String(entry.id) === String(id));
+        if (cached) cached.observation = observation;
+        toast("Note d’observation enregistrée.");
+      }
+
+      async function deletePropertyOfferRequest(id) {
+        if (!confirm("Supprimer cette demande de mise en location ?")) return;
+        let deletedRemotely = false;
+        if (propertyOfferRequestsRemote) {
+          try {
+            await apiFetch(`super/property-offers/${encodeURIComponent(id)}`, {
+              method: "DELETE",
+              body: "{}",
+            });
+            deletedRemotely = true;
+          } catch (error) {
+            deletedRemotely = false;
+          }
+        }
+        if (!deletedRemotely) {
+          writeLocalPropertyOffers(readLocalPropertyOffers().filter((entry) => String(entry.id) !== String(id)));
+        }
+        await renderSuperAdmin();
+        toast("Demande supprimée.");
+      }
+
+      const renderSuperAdminBase = renderSuperAdmin;
+      renderSuperAdmin = async function () {
+        await renderSuperAdminBase();
+        if (sessionKind === "super") await renderPropertyOfferAdminSection();
+      };
+      /* ======================= FIN DEMANDES DE MISE EN LOCATION ======================= */
 
       cloudBootstrap();
     </script>
