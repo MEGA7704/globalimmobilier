@@ -2568,10 +2568,6 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5M9 21v-6h6v6"/></svg>
                 je cherche une maison à louer
               </button>
-              <button class="btn full login-owner-action" type="button" onclick="openPropertyOfferRequest()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V21h14V10.5M16.5 6.5v-4M14.5 4.5h4"/></svg>
-                j’ai une maison que je veux mettre en location
-              </button>
               <div class="auth-note">Identifiant unique dans toute l’application.</div>
             </div>
 
@@ -2656,6 +2652,9 @@
         <button class="nav-btn" data-page="catalogAdmin">
           ◎ Catalogue public
         </button>
+        <button class="nav-btn" data-page="adminMessages">
+          ✉ Notes et notifications
+        </button>
         <button class="nav-btn" data-page="users" data-admin-only="true">
           ♜ Utilisateurs
         </button>
@@ -2700,6 +2699,7 @@
           <section id="reports" class="page"></section>
           <section id="visits" class="page"></section>
           <section id="catalogAdmin" class="page"></section>
+          <section id="adminMessages" class="page"></section>
           <section id="users" class="page"></section>
           <section id="settings" class="page"></section>
         </div>
@@ -2878,6 +2878,11 @@
                 <option value="views">Plus consulté</option>
                 <option value="popular">Plus populaire</option>
               </select>
+            </div>
+            <div class="public-owner-offer-bar">
+              <button class="btn public-owner-offer-button" type="button" onclick="openCatalogPropertyOffer()">
+                J’ai une maison que je veux mettre en location
+              </button>
             </div>
           </div>
           <div id="publicCatalogGrid" class="catalog-grid"></div>
@@ -6654,7 +6659,102 @@
           return;
         }
         w.document.write(
-          `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:A4;margin:16mm}body{font-family:Arial,sans-serif;color:#17231f;font-size:12px}.head{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center;border-bottom:3px solid ${data.settings.primary};padding-bottom:12px;margin-bottom:18px}.logo{width:75px;height:75px;border:1px solid #ddd;display:grid;place-items:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain}h1{font-size:20px;margin:0;color:${data.settings.primary}}h2{font-size:17px;margin:8px 0 0}h3{color:${data.settings.primary};margin-top:20px}h4{margin:12px 0 6px}p{line-height:1.55;text-align:justify}ol,ul{padding-left:22px;line-height:1.55}li{margin:4px 0}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid #bbb;padding:8px;text-align:left;vertical-align:top}th{background:#eef4f1}.contract-cover{text-align:center;border:2px solid ${data.settings.primary};padding:15px;margin-bottom:18px}.contract-main-title{font-size:22px;font-weight:800;color:${data.settings.primary}}.contract-ref{margin-top:9px;line-height:1.7}.contract-intro h3{text-align:center;border-bottom:2px solid #333;padding-bottom:7px}.contract-article{break-inside:auto;margin:16px 0}.contract-article h3{font-size:13px;border-bottom:1px solid ${data.settings.primary};padding-bottom:5px;margin-bottom:8px}.contract-info{break-inside:avoid}.contract-info th{width:31%}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 15px;margin:8px 0 12px}.contract-check{line-height:1.45}.contract-value{font-weight:700;border-bottom:1px dotted #555}.signature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:25px;break-inside:avoid}.signature-grid>div,.witness-box{border:1px solid #999;padding:12px;min-height:180px}.signature-space{margin-top:70px;text-align:center;border-top:1px dotted #777;padding-top:5px}.witness-box{margin-top:18px;min-height:120px}.avoid-break{break-inside:avoid}.footer{position:fixed;bottom:0;left:0;right:0;text-align:center;border-top:1px solid #bbb;padding-top:6px;font-size:10px}.sign{margin-top:60px;text-align:right}</style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
+          `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:A4;margin:16mm}body{font-family:Arial,sans-serif;color:#17231f;font-size:12px}.head{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center;border-bottom:3px solid ${data.settings.primary};padding-bottom:12px;margin-bottom:18px}.logo{width:75px;height:75px;border:1px solid #ddd;display:grid;place-items:center;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain}h1{font-size:20px;margin:0;color:${data.settings.primary}}h2{font-size:17px;margin:8px 0 0}h3{color:${data.settings.primary};margin-top:20px}h4{margin:12px 0 6px}p{line-height:1.55;text-align:justify}ol,ul{padding-left:22px;line-height:1.55}li{margin:4px 0}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid #bbb;padding:8px;text-align:left;vertical-align:top}th{background:#eef4f1}.contract-cover{text-align:center;border:2px solid ${data.settings.primary};padding:15px;margin-bottom:18px}.contract-main-title{font-size:22px;font-weight:800;color:${data.settings.primary}}.contract-ref{margin-top:9px;line-height:1.7}.contract-intro h3{text-align:center;border-bottom:2px solid #333;padding-bottom:7px}.contract-article{break-inside:auto;margin:16px 0}.contract-article h3{font-size:13px;border-bottom:1px solid ${data.settings.primary};padding-bottom:5px;margin-bottom:8px}.contract-info{break-inside:avoid}.contract-info th{width:31%}.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 15px;margin:8px 0 12px}.contract-check{line-height:1.45}.contract-value{font-weight:700;border-bottom:1px dotted #555}.signature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:25px;break-inside:avoid}.signature-grid>div,.witness-box{border:1px solid #999;padding:12px;min-height:180px}.signature-space{margin-top:70px;text-align:center;border-top:1px dotted #777;padding-top:5px}.witness-box{margin-top:18px;min-height:120px}.avoid-break{break-inside:avoid}.footer{position:fixed;bottom:0;left:0;right:0;text-align:center;border-top:1px solid #bbb;padding-top:6px;font-size:10px}.sign{margin-top:60px;text-align:right}
+      /* Catalogue public : proposition de mise en location */
+      .public-owner-offer-bar {
+        display: flex;
+        justify-content: center;
+        margin-top: 18px;
+      }
+      .public-owner-offer-button {
+        width: min(100%, 720px);
+        min-height: 48px;
+        border: 1px solid #9f1f1f;
+        background: linear-gradient(135deg, #c62828, #a91515);
+        color: #fff;
+        font-weight: 800;
+        box-shadow: 0 10px 24px rgba(166, 22, 22, 0.22);
+      }
+      .public-owner-offer-button:hover {
+        background: linear-gradient(135deg, #b51f1f, #8f1111);
+        color: #fff;
+      }
+      .special-request-grid,
+      .company-message-grid {
+        display: grid;
+        gap: 12px;
+      }
+      .special-request-card,
+      .company-message-card {
+        border: 1px solid #dfe8e4;
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px;
+        box-shadow: 0 6px 18px rgba(0, 59, 52, 0.06);
+      }
+      .special-request-card {
+        display: grid;
+        grid-template-columns: minmax(160px, 1fr) minmax(130px, .55fr) minmax(220px, 1.2fr) auto;
+        gap: 12px;
+        align-items: start;
+      }
+      .special-request-card .request-label,
+      .company-message-card .message-meta {
+        color: #71807a;
+        font-size: 11px;
+        margin-bottom: 4px;
+      }
+      .special-request-card textarea {
+        min-height: 64px;
+        resize: vertical;
+      }
+      .company-message-card.note {
+        border-left: 5px solid #c9a24b;
+      }
+      .company-message-card.notification {
+        border-left: 5px solid #005b4f;
+      }
+      .company-message-card h3 {
+        margin: 3px 0 7px;
+        color: #003b34;
+      }
+      .company-message-card p {
+        margin: 0;
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+      .company-message-card .message-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+      .super-message-composer textarea {
+        min-height: 110px;
+      }
+      @media (max-width: 900px) {
+        .special-request-card {
+          grid-template-columns: 1fr 1fr;
+        }
+        .special-request-card .special-request-observation,
+        .special-request-card .special-request-actions {
+          grid-column: 1 / -1;
+        }
+      }
+      @media (max-width: 600px) {
+        .special-request-card {
+          grid-template-columns: 1fr;
+        }
+        .special-request-card .special-request-observation,
+        .special-request-card .special-request-actions {
+          grid-column: auto;
+        }
+        .public-owner-offer-button {
+          white-space: normal;
+          line-height: 1.35;
+        }
+      }
+
+    </style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
         );
         w.document.close();
       }
@@ -8281,181 +8381,326 @@
       /* ======================= FIN CLOUD OVERRIDES ======================= */
 
 
-      /* ======================= DEMANDES DE MISE EN LOCATION ======================= */
-      const PROPERTY_OFFER_STORAGE_KEY = "global_immobilier_property_offers_v1";
-      let propertyOfferRequestsCache = [];
-      let propertyOfferRequestsRemote = false;
 
-      function readLocalPropertyOffers() {
+
+
+      /* ========== DEMANDES CATALOGUE ET MESSAGES SUPER ADMIN ========== */
+      const PROPERTY_OFFER_MARKER = "[[PROPERTY_OFFER]]";
+      const SUPER_MESSAGE_MARKER = "[[SUPER_ADMIN_MESSAGE]]";
+
+      function encodeSpecialVisit(marker, payload) {
+        return marker + JSON.stringify(payload || {});
+      }
+
+      function decodeSpecialVisit(visit, marker) {
+        const message = String(visit?.message || "");
+        if (!message.startsWith(marker)) return null;
         try {
-          const list = JSON.parse(localStorage.getItem(PROPERTY_OFFER_STORAGE_KEY) || "[]");
-          return Array.isArray(list) ? list : [];
+          return JSON.parse(message.slice(marker.length)) || {};
         } catch (error) {
-          return Array.isArray(window.__propertyOfferMemory) ? window.__propertyOfferMemory : [];
+          return {};
         }
       }
 
-      function writeLocalPropertyOffers(list) {
-        const normalized = Array.isArray(list) ? list : [];
-        window.__propertyOfferMemory = normalized;
-        try {
-          localStorage.setItem(PROPERTY_OFFER_STORAGE_KEY, JSON.stringify(normalized));
-        } catch (error) {}
+      function isPropertyOfferVisit(visit) {
+        return !!decodeSpecialVisit(visit, PROPERTY_OFFER_MARKER);
       }
 
-      function normalizePropertyOffer(item = {}) {
-        return {
-          id: String(item.id || uid("off")),
-          location: String(item.location || item.localisation || "").trim(),
-          phone: String(item.phone || item.telephone || "").trim(),
-          observation: String(item.observation || ""),
-          createdAt: item.createdAt || item.date || new Date().toISOString(),
-        };
+      function isSuperAdminMessageVisit(visit) {
+        return !!decodeSpecialVisit(visit, SUPER_MESSAGE_MARKER);
       }
 
-      function openPropertyOfferRequest() {
-        editing = { type: "propertyOfferRequest" };
-        modalTitle.textContent = "Mettre une maison en location";
+      function isSpecialSystemVisit(visit) {
+        return isPropertyOfferVisit(visit) || isSuperAdminMessageVisit(visit);
+      }
+
+      function specialVisitDate(visit) {
+        const raw = visit?.createdAt || visit?.date || "";
+        const date = new Date(raw);
+        if (!Number.isNaN(date.getTime())) {
+          return date.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+        }
+        return visit?.date ? fmtDate(visit.date) : "—";
+      }
+
+      function openCatalogPropertyOffer() {
+        if (!activeCompanyId || $("publicCompanyCatalog")?.classList.contains("hidden")) {
+          toast("Sélectionnez d’abord une entreprise immobilière.");
+          return;
+        }
+        editing = { type: "catalogPropertyOffer", companyId: activeCompanyId };
+        modalTitle.textContent = "Proposer une maison à mettre en location";
         modalBody.innerHTML = `<div class="property-offer-form">
-          <p class="request-intro">Renseignez la localisation de la maison et votre numéro de téléphone. La demande sera transmise au Super Administrateur pour traitement.</p>
-          <div class="field"><label for="propertyOfferLocation">Localisation de la maison *</label><input id="propertyOfferLocation" autocomplete="street-address" placeholder="Ville, commune, quartier ou repère" required></div>
-          <div class="field"><label for="propertyOfferPhone">N° téléphone *</label><input id="propertyOfferPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ex. 0700000000" required></div>
+          <p class="request-intro">Votre demande sera envoyée directement à l’entreprise immobilière dont vous consultez le catalogue.</p>
+          <div class="field"><label for="catalogOfferLocation">Localisation de la maison *</label><input id="catalogOfferLocation" autocomplete="street-address" placeholder="Ville, commune, quartier ou repère" required></div>
+          <div class="field"><label for="catalogOfferPhone">N° téléphone *</label><input id="catalogOfferPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ex. 0700000000" required></div>
         </div>`;
-        modalSave.textContent = "Envoyer";
-        modalSave.onclick = submitPropertyOfferRequest;
+        modalSave.textContent = "Envoyer ma demande";
+        modalSave.onclick = submitCatalogPropertyOffer;
         modal.classList.add("show");
-        setTimeout(() => $("propertyOfferLocation")?.focus(), 80);
+        setTimeout(() => $("catalogOfferLocation")?.focus(), 80);
       }
 
-      async function submitPropertyOfferRequest() {
-        if (editing?.type !== "propertyOfferRequest") return;
-        const location = val("propertyOfferLocation").trim();
-        const phone = val("propertyOfferPhone").trim();
+      async function submitCatalogPropertyOffer() {
+        if (editing?.type !== "catalogPropertyOffer") return;
+        const companyId = editing.companyId || activeCompanyId;
+        const location = val("catalogOfferLocation").trim();
+        const phone = val("catalogOfferPhone").trim();
+        if (!companyId) {
+          toast("Entreprise immobilière introuvable.");
+          return;
+        }
         if (!location || !phone) {
           toast("La localisation et le numéro de téléphone sont obligatoires.");
           return;
         }
-        const request = normalizePropertyOffer({
-          id: uid("off"),
-          location,
+        const now = new Date();
+        const payload = {
+          ref: `LOC-${Date.now()}`,
+          propertyId: "",
+          name: "Propriétaire proposant une maison",
           phone,
-          observation: "",
-          createdAt: new Date().toISOString(),
-        });
-        let savedRemotely = false;
+          whatsapp: phone,
+          email: "",
+          date: today(),
+          time: now.toTimeString().slice(0, 5),
+          message: encodeSpecialVisit(PROPERTY_OFFER_MARKER, {
+            location,
+            observation: "",
+            createdAt: now.toISOString(),
+          }),
+          contactMethod: "Téléphone",
+        };
         modalSave.disabled = true;
         try {
-          const result = await apiFetch("public/property-offers", {
+          await apiFetch(`public/visits/${encodeURIComponent(companyId)}`, {
             method: "POST",
-            body: JSON.stringify(request),
+            body: JSON.stringify(payload),
           });
-          savedRemotely = result?.ok !== false;
+          closeModal();
+          toast("Votre demande a été envoyée à l’entreprise immobilière.");
         } catch (error) {
-          savedRemotely = false;
+          cloudError(error, "Envoi de la demande impossible");
         } finally {
           modalSave.disabled = false;
         }
-        if (!savedRemotely) {
-          const list = readLocalPropertyOffers();
-          list.unshift(request);
-          writeLocalPropertyOffers(list);
+      }
+
+      function renderPropertyOfferRequests() {
+        const offers = data.visits.filter(isPropertyOfferVisit);
+        const canManage = isCompanyAdmin();
+        const cards = offers.map((visit) => {
+          const details = decodeSpecialVisit(visit, PROPERTY_OFFER_MARKER) || {};
+          return `<div class="special-request-card">
+            <div><div class="request-label">Localisation de la maison</div><b>${esc(details.location || "Non renseignée")}</b><div class="muted" style="font-size:11px;margin-top:5px">${esc(specialVisitDate(visit))}</div></div>
+            <div><div class="request-label">N° téléphone</div><a href="tel:${attr(visit.phone || "")}"><b>${esc(visit.phone || "—")}</b></a></div>
+            <div class="special-request-observation"><div class="request-label">Petite note d’observation</div><textarea id="catalogOfferObservation_${attr(visit.id)}" maxlength="300" placeholder="Ajouter une observation…" ${canManage ? "" : "readonly"}>${esc(details.observation || "")}</textarea></div>
+            <div class="special-request-actions">${canManage ? `<div class="actions"><button class="btn btn-primary btn-sm" type="button" onclick="saveCatalogOfferObservation('${attr(visit.id)}')">Enregistrer</button><button class="btn btn-danger btn-sm" type="button" onclick="deleteCatalogOffer('${attr(visit.id)}')">Supprimer</button></div>` : '<span class="muted" style="font-size:11px">Gestion réservée à l’administrateur.</span>'}</div>
+          </div>`;
+        }).join("");
+        return `<div class="card" style="margin-top:16px">
+          <div class="toolbar"><div><h3 style="margin:0 0 4px">Demandes de mise en location</h3><div class="muted" style="font-size:12px">Demandes envoyées depuis le catalogue public de cette entreprise.</div></div><span class="pill">${offers.length} demande${offers.length > 1 ? "s" : ""}</span></div>
+          <div class="special-request-grid">${cards || '<div class="empty">Aucune demande de mise en location.</div>'}</div>
+        </div>`;
+      }
+
+      function saveCatalogOfferObservation(id) {
+        const visit = data.visits.find((item) => String(item.id) === String(id));
+        const field = $("catalogOfferObservation_" + id);
+        if (!visit || !field) return;
+        const details = decodeSpecialVisit(visit, PROPERTY_OFFER_MARKER) || {};
+        details.observation = field.value.trim();
+        details.updatedAt = new Date().toISOString();
+        visit.message = encodeSpecialVisit(PROPERTY_OFFER_MARKER, details);
+        saveData("Note d’observation enregistrée.");
+      }
+
+      function deleteCatalogOffer(id) {
+        if (!confirm("Supprimer cette demande de mise en location ?")) return;
+        data.visits = data.visits.filter((item) => String(item.id) !== String(id));
+        saveData("Demande de mise en location supprimée.");
+      }
+
+      function renderVisitsWithPropertyOffers() {
+        const q = (val("visitSearch") || "").toLowerCase();
+        const rows = data.visits.filter((visit) => !isSpecialSystemVisit(visit)).filter((visit) =>
+          (`${visit.ref || ""} ${visit.name || ""} ${visit.phone || ""} ${nameOf(data.properties, visit.propertyId)}`)
+            .toLowerCase()
+            .includes(q),
+        );
+        $("visits").innerHTML =
+          pageHead(
+            "Réservations et visites",
+            "Traitez les demandes de visite et les propositions de mise en location reçues depuis le catalogue public.",
+            `<button class="btn btn-primary" onclick="openVisitForm()">Ajouter une visite</button><button class="btn btn-light" onclick="printVisitList()">Imprimer</button>`,
+          ) +
+          `<div class="toolbar"><input id="visitSearch" placeholder="Visiteur, téléphone, bien…" oninput="renderVisits()"></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Référence</th><th>Visiteur</th><th>Bien</th><th>Date et heure</th><th>Contact préféré</th><th>Source</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${rows.map((v) => `<tr><td>${esc(v.ref || "—")}</td><td>${esc(v.name)}<br><small>${esc(v.phone)} · ${esc(v.email || "")}</small></td><td>${esc(nameOf(data.properties, v.propertyId))}</td><td>${fmtDate(v.date)} à ${esc(v.time || "—")}</td><td>${esc(v.contactMethod || "—")}</td><td>${esc(v.source || "Catalogue")}</td><td>${badge(v.status || "Nouvelle")}</td><td><div class="actions"><button class="btn btn-primary btn-sm" onclick="openVisitForm('${attr(v.id)}')">Modifier</button><button class="btn btn-ok btn-sm" onclick="confirmVisit('${attr(v.id)}')">Confirmer</button><button class="btn btn-light btn-sm" onclick="sellVisit('${attr(v.id)}')">Vendre visite</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('visits','${attr(v.id)}')">Supprimer</button></div></td></tr>`).join("") || '<tr><td colspan="8" class="empty">Aucune demande de visite.</td></tr>'}</tbody></table></div>` +
+          renderPropertyOfferRequests();
+      }
+
+      renderVisits = renderVisitsWithPropertyOffers;
+
+      printVisitList = function () {
+        const visits = data.visits.filter((visit) => !isSpecialSystemVisit(visit));
+        printDocument(
+          "LISTE DES VISITES",
+          `<table><thead><tr><th>Référence</th><th>Visiteur</th><th>Bien</th><th>Date</th><th>Contact</th><th>Statut</th></tr></thead><tbody>${visits.map((v) => `<tr><td>${esc(v.ref || "—")}</td><td>${esc(v.name || "")}</td><td>${esc(nameOf(data.properties, v.propertyId))}</td><td>${fmtDate(v.date)} ${esc(v.time || "")}</td><td>${esc(v.phone || "")}</td><td>${esc(v.status || "Nouvelle")}</td></tr>`).join("")}</tbody></table>`,
+        );
+      };
+
+      function renderCompanyAdminMessages() {
+        const messages = data.visits
+          .filter(isSuperAdminMessageVisit)
+          .sort((a, b) => String(b.createdAt || b.date || "").localeCompare(String(a.createdAt || a.date || "")));
+        const cards = messages.map((visit) => {
+          const details = decodeSpecialVisit(visit, SUPER_MESSAGE_MARKER) || {};
+          const type = details.type === "note" ? "note" : "notification";
+          const label = type === "note" ? "Note" : "Notification";
+          return `<article class="company-message-card ${type}">
+            <div class="message-meta">${esc(label)} du Super Administrateur · ${esc(specialVisitDate(visit))}</div>
+            <h3>${esc(details.title || label)}</h3>
+            <p>${esc(details.body || "")}</p>
+            <div class="message-actions"><button class="btn btn-danger btn-sm" type="button" onclick="deleteCompanyAdminMessage('${attr(visit.id)}')">Supprimer</button></div>
+          </article>`;
+        }).join("");
+        $("adminMessages").innerHTML = pageHead(
+          "Notes et notifications",
+          "Messages transmis par le Super Administrateur à votre entreprise.",
+          `<span class="pill">${messages.length} message${messages.length > 1 ? "s" : ""}</span>`,
+        ) + `<div class="company-message-grid">${cards || '<div class="empty card">Aucune note ou notification reçue.</div>'}</div>`;
+      }
+
+      function deleteCompanyAdminMessage(id) {
+        if (!confirm("Supprimer cette note ou notification ?")) return;
+        data.visits = data.visits.filter((item) => String(item.id) !== String(id));
+        saveData("Message supprimé.");
+      }
+
+      const allowedPagesForUserBeforeMessages = allowedPagesForUser;
+      allowedPagesForUser = function () {
+        const pages = [...allowedPagesForUserBeforeMessages()];
+        if (sessionKind === "company" && !pages.includes("adminMessages")) pages.push("adminMessages");
+        return pages;
+      };
+
+      const renderPageBeforeMessages = renderPage;
+      renderPage = function (page) {
+        if (page === "adminMessages") return renderCompanyAdminMessages();
+        return renderPageBeforeMessages(page);
+      };
+
+      navigate = function (page) {
+        if (!canAccessPage(page)) {
+          toast("Vous n’avez pas accès à cette section.");
+          page = "dashboard";
         }
-        closeModal();
-        toast("Votre demande a été envoyée avec succès.");
-      }
+        currentPage = page;
+        document.querySelectorAll(".page").forEach((element) => element.classList.toggle("active", element.id === page));
+        document.querySelectorAll(".nav-btn[data-page]").forEach((button) => button.classList.toggle("active", button.dataset.page === page));
+        const titles = {
+          dashboard: "Tableau de bord",
+          properties: "Biens immobiliers",
+          owners: "Propriétaires",
+          tenants: "Locataires",
+          payments: "Paiements et loyers",
+          accounting: "Comptabilité",
+          reports: "Rapports",
+          visits: "Réservations et visites",
+          catalogAdmin: "Catalogue public",
+          adminMessages: "Notes et notifications",
+          users: "Utilisateurs",
+          settings: "Paramètres",
+        };
+        topTitle.textContent = titles[page] || page;
+        sidebar.classList.remove("open");
+        renderPage(page);
+        window.scrollTo(0, 0);
+      };
 
-      async function loadPropertyOffersForSuperAdmin() {
-        propertyOfferRequestsRemote = false;
-        try {
-          const result = await apiFetch("super/property-offers");
-          const remoteItems = result?.requests || result?.items || result?.propertyOffers;
-          if (Array.isArray(remoteItems)) {
-            propertyOfferRequestsRemote = true;
-            propertyOfferRequestsCache = remoteItems.map(normalizePropertyOffer);
-            return propertyOfferRequestsCache;
-          }
-        } catch (error) {}
-        propertyOfferRequestsCache = readLocalPropertyOffers().map(normalizePropertyOffer);
-        return propertyOfferRequestsCache;
-      }
-
-      function propertyOfferDate(value) {
-        const d = new Date(value);
-        return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
-      }
-
-      async function renderPropertyOfferAdminSection() {
-        if (sessionKind !== "super") return;
+      function renderSuperAdminMessageComposer() {
         const host = $("superAdminContent");
-        if (!host) return;
-        const requests = await loadPropertyOffersForSuperAdmin();
-        const rows = requests.map((request) => `<tr data-property-offer-id="${attr(request.id)}">
-          <td class="property-offer-date">${esc(propertyOfferDate(request.createdAt))}</td>
-          <td><b>${esc(request.location || "—")}</b></td>
-          <td><a href="tel:${attr(request.phone)}">${esc(request.phone || "—")}</a></td>
-          <td><textarea id="propertyOfferNote_${attr(request.id)}" class="property-offer-note" maxlength="220" placeholder="Petite note d’observation…">${esc(request.observation || "")}</textarea></td>
-          <td><div class="actions"><button class="btn btn-primary btn-sm" type="button" onclick="savePropertyOfferObservation('${attr(request.id)}')">Enregistrer la note</button><button class="btn btn-danger btn-sm" type="button" onclick="deletePropertyOfferRequest('${attr(request.id)}')">Supprimer</button></div></td>
-        </tr>`).join("");
-        host.insertAdjacentHTML("beforeend", `<div class="card property-offer-admin-card" style="margin-top:16px">
-          <div class="toolbar"><div><h3>Demandes de mise en location</h3><div class="muted" style="font-size:12px">Maisons proposées par les visiteurs depuis la page de connexion.</div></div><span class="pill">${requests.length} demande${requests.length > 1 ? "s" : ""}</span></div>
-          <div class="table-wrap"><table class="data-table"><thead><tr><th>Date</th><th>Localisation de la maison</th><th>N° téléphone</th><th>Observation</th><th>Gestion</th></tr></thead><tbody>${rows || '<tr><td colspan="5" class="empty">Aucune demande de mise en location.</td></tr>'}</tbody></table></div>
+        if (!host || sessionKind !== "super") return;
+        const options = enterprises.map((company) => `<option value="${attr(company.id)}">${esc(company.name)} — ${esc(company.code)}</option>`).join("");
+        host.insertAdjacentHTML("beforeend", `<div class="card super-message-composer" style="margin-top:16px">
+          <div class="toolbar"><div><h3 style="margin:0 0 4px">Envoyer une note ou une notification</h3><div class="muted" style="font-size:12px">Choisissez une entreprise précise ou toutes les entreprises inscrites.</div></div></div>
+          <div class="form-grid">
+            <div class="field"><label>Destinataire</label><select id="superMessageTarget"><option value="all">Toutes les entreprises</option>${options}</select></div>
+            <div class="field"><label>Type de message</label><select id="superMessageType"><option value="notification">Notification</option><option value="note">Note</option></select></div>
+            <div class="field span-2"><label>Titre *</label><input id="superMessageTitle" maxlength="100" placeholder="Objet de la note ou de la notification"></div>
+            <div class="field span-2"><label>Message *</label><textarea id="superMessageBody" maxlength="1200" placeholder="Rédigez votre message…"></textarea></div>
+          </div>
+          <div class="actions" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" type="button" onclick="sendSuperAdminMessage()">Envoyer le message</button></div>
         </div>`);
       }
 
-      async function savePropertyOfferObservation(id) {
-        const field = $("propertyOfferNote_" + id);
-        if (!field) return;
-        const observation = field.value.trim();
-        let savedRemotely = false;
-        if (propertyOfferRequestsRemote) {
+      async function sendSuperAdminMessage() {
+        if (sessionKind !== "super") return;
+        const target = val("superMessageTarget");
+        const type = val("superMessageType") === "note" ? "note" : "notification";
+        const title = val("superMessageTitle").trim();
+        const body = val("superMessageBody").trim();
+        if (!title || !body) {
+          toast("Le titre et le message sont obligatoires.");
+          return;
+        }
+        const targets = target === "all" ? enterprises : enterprises.filter((company) => String(company.id) === String(target));
+        if (!targets.length) {
+          toast("Aucune entreprise destinataire.");
+          return;
+        }
+        const button = document.querySelector('.super-message-composer button[onclick="sendSuperAdminMessage()"]');
+        if (button) button.disabled = true;
+        let sent = 0;
+        const failures = [];
+        const now = new Date();
+        for (const company of targets) {
+          const messageDetails = {
+            type,
+            title,
+            body,
+            createdAt: now.toISOString(),
+            sender: "Super Administrateur",
+          };
+          const payload = {
+            ref: `MSG-${Date.now()}-${sent + failures.length + 1}`,
+            propertyId: "",
+            name: "SUPER ADMIN",
+            phone: "0000000000",
+            whatsapp: "",
+            email: "",
+            date: today(),
+            time: now.toTimeString().slice(0, 5),
+            message: encodeSpecialVisit(SUPER_MESSAGE_MARKER, messageDetails),
+            contactMethod: "Application",
+          };
           try {
-            await apiFetch(`super/property-offers/${encodeURIComponent(id)}`, {
-              method: "PATCH",
-              body: JSON.stringify({ observation }),
+            await apiFetch(`public/visits/${encodeURIComponent(company.id)}`, {
+              method: "POST",
+              body: JSON.stringify(payload),
             });
-            savedRemotely = true;
+            sent += 1;
           } catch (error) {
-            savedRemotely = false;
+            failures.push(company.name);
           }
         }
-        if (!savedRemotely) {
-          const list = readLocalPropertyOffers();
-          const item = list.find((entry) => String(entry.id) === String(id));
-          if (item) item.observation = observation;
-          writeLocalPropertyOffers(list);
+        if (button) button.disabled = false;
+        if (sent) {
+          $("superMessageTitle").value = "";
+          $("superMessageBody").value = "";
+          toast(`${sent} entreprise${sent > 1 ? "s" : ""} destinataire${sent > 1 ? "s" : ""}.`);
         }
-        const cached = propertyOfferRequestsCache.find((entry) => String(entry.id) === String(id));
-        if (cached) cached.observation = observation;
-        toast("Note d’observation enregistrée.");
+        if (failures.length) {
+          alert(`Le message n’a pas pu être envoyé à : ${failures.join(", ")}.`);
+        }
       }
 
-      async function deletePropertyOfferRequest(id) {
-        if (!confirm("Supprimer cette demande de mise en location ?")) return;
-        let deletedRemotely = false;
-        if (propertyOfferRequestsRemote) {
-          try {
-            await apiFetch(`super/property-offers/${encodeURIComponent(id)}`, {
-              method: "DELETE",
-              body: "{}",
-            });
-            deletedRemotely = true;
-          } catch (error) {
-            deletedRemotely = false;
-          }
-        }
-        if (!deletedRemotely) {
-          writeLocalPropertyOffers(readLocalPropertyOffers().filter((entry) => String(entry.id) !== String(id)));
-        }
-        await renderSuperAdmin();
-        toast("Demande supprimée.");
-      }
-
-      const renderSuperAdminBase = renderSuperAdmin;
+      const renderSuperAdminBeforeMessages = renderSuperAdmin;
       renderSuperAdmin = async function () {
-        await renderSuperAdminBase();
-        if (sessionKind === "super") await renderPropertyOfferAdminSection();
+        await renderSuperAdminBeforeMessages();
+        if (sessionKind === "super") renderSuperAdminMessageComposer();
       };
-      /* ======================= FIN DEMANDES DE MISE EN LOCATION ======================= */
+      /* ========== FIN DEMANDES CATALOGUE ET MESSAGES SUPER ADMIN ========== */
+
 
       cloudBootstrap();
     </script>
