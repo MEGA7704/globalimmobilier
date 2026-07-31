@@ -5802,15 +5802,20 @@
       }
       function tenantDocumentIdentityTable(ctx) {
         const { tenant, property, lease, owner } = ctx;
-        return `<table class="contract-info"><tbody>
+        return `<table class="premium-identity-table"><tbody>
           <tr><th>Locataire</th><td>${esc(tenant.name)} — ${esc(tenant.ref)}</td></tr>
-          <tr><th>Bien occupé</th><td>${esc(property.ref)} — ${esc(property.title)}<br>${esc([property.address, property.district, property.commune, property.city].filter(Boolean).join(", "))}</td></tr>
+          <tr><th>Bien occupé</th><td><b>${esc(property.ref)} — ${esc(property.title)}</b><br>${esc([property.address, property.district, property.commune, property.city].filter(Boolean).join(", ") || "Adresse non renseignée")}</td></tr>
           <tr><th>Propriétaire</th><td>${esc(owner?.name || "Non renseigné")} — ${esc(owner?.phone || "—")}</td></tr>
-          <tr><th>Contrat</th><td>${esc(lease.ref)} · du ${fmtDate(lease.startDate)} au ${lease.leaseType === "Indéterminée" ? "durée indéterminée" : fmtDate(lease.endDate)}</td></tr>
+          <tr><th>Contrat</th><td>${esc(lease.ref)} · du ${fmtDate(lease.startDate)} ${lease.leaseType === "Indéterminée" ? "à durée indéterminée" : `au ${fmtDate(lease.endDate)}`}</td></tr>
         </tbody></table>`;
       }
-      function tenantSignatureBlocks(ctx, wording = "Lu et approuvé") {
-        return `<div class="signature-grid"><div><h4>LE PROPRIÉTAIRE / BAILLEUR</h4><p>${esc(ctx.owner?.name || "Non renseigné")}</p><p>${esc(wording)}</p><div class="signature-space">Signature</div></div><div><h4>LE LOCATAIRE</h4><p>${esc(ctx.tenant.name)}</p><p>${esc(wording)}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(ctx.agency.agency)}</p><p>Cachet obligatoire</p><div class="signature-space">Cachet et signature</div></div></div>`;
+      function tenantSignatureBlocks(ctx, wording = "Bon pour accord", roles = null) {
+        const blocks = roles || [
+          { title: "LE PROPRIÉTAIRE / BAILLEUR", name: ctx.owner?.name || "Non renseigné", note: wording, label: "Signature" },
+          { title: "LE LOCATAIRE", name: ctx.tenant.name, note: wording, label: "Signature" },
+          { title: "L’ENTREPRISE IMMOBILIÈRE", name: ctx.agency.agency, note: "Cachet obligatoire", label: "Cachet et signature" },
+        ];
+        return `<div class="premium-signatures">${blocks.map((item) => `<div class="premium-signature-box"><h4>${esc(item.title)}</h4><span class="signature-accent"></span><p class="signature-name">${esc(item.name || "—")}</p><p class="signature-note">${esc(item.note || "")}</p><div class="premium-signature-space">${esc(item.label || "Signature")}</div></div>`).join("")}</div>`;
       }
       function parseInventoryItems(value) {
         return String(value || "")
@@ -5824,34 +5829,178 @@
             return { name, quantity, state, observation };
           });
       }
+      function premiumDocumentRef(prefix, ctx, explicit = "") {
+        const cleanTenant = String(ctx?.tenant?.ref || "LOC")
+          .replace(/[^A-Za-z0-9]/g, "")
+          .toUpperCase();
+        return explicit || `${prefix}-${cleanTenant}-${new Date().getFullYear()}`;
+      }
+      function premiumSideCard(number, date, fields = []) {
+        return `<aside class="premium-side-card"><div class="side-card-head"><span>N° DU DOCUMENT</span><strong>${esc(number || "—")}</strong></div>${[
+          ["DATE", fmtDate(date)],
+          ...fields,
+        ].map(([label, value]) => `<div class="side-card-row"><b>${esc(label)}</b><span>${esc(value || "—")}</span></div>`).join("")}</aside>`;
+      }
+      function premiumIdentitySection(ctx, sideCard) {
+        return `<div class="premium-intro-line"><b>${esc(ctx.tenant.name)}</b><span>•</span><span>${esc(ctx.property.ref)}</span><span>•</span><span>${esc(ctx.lease.ref)}</span></div><div class="premium-main-grid"><div>${tenantDocumentIdentityTable(ctx)}</div>${sideCard}</div>`;
+      }
+      function premiumObservationBox(title, value) {
+        return `<div class="premium-note-box"><h3>${esc(title)}</h3><p>${esc(value || "Néant")}</p></div>`;
+      }
+      function premiumAmountWords(amount) {
+        return `<div class="premium-words-box">Arrêté le présent reçu à la somme de : <b>${esc(amountInWords(amount))}.</b></div>`;
+      }
+      function premiumTransactionLine(transaction, observation) {
+        return `<div class="premium-transaction"><div><b>Référence de transaction :</b> ${esc(transaction || "—")}</div><div><b>Observation :</b> ${esc(observation || "—")}</div></div>`;
+      }
+      function printPremiumTenantDocument(title, body, ctx, options = {}) {
+        const w = window.open("", "_blank");
+        if (!w) {
+          toast("Autorisez les fenêtres contextuelles pour imprimer.");
+          return;
+        }
+        const agency = ctx?.agency || data.settings,
+          docRef = options.documentRef || `DOC-${Date.now().toString().slice(-8)}`,
+          issueDate = options.issueDate || today(),
+          logo = agency.logo
+            ? `<img src="${attr(agency.logo)}" alt="Logo">`
+            : `<div class="premium-building-logo"><span></span><span></span><span></span></div>`,
+          footer = agency.footer || `Document généré par ${agency.agency}`;
+        w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>
+          @page{size:A4 portrait;margin:7mm 7mm 12mm}
+          *{box-sizing:border-box}
+          html,body{margin:0;padding:0;background:#fff;color:#17231f;font-family:Arial,"Helvetica Neue",sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+          body{font-size:10.7px;line-height:1.38}
+          .premium-sheet{position:relative;min-height:274mm;border:1px solid #b9c0bd;background:#fff;padding-bottom:18mm;overflow:hidden}
+          .premium-header{position:relative;min-height:35mm;padding:6mm 8mm 4mm;display:flex;align-items:center;background:#fff;overflow:hidden}
+          .premium-brand{display:flex;align-items:center;gap:4mm;position:relative;z-index:2;max-width:72%}
+          .premium-brand-logo{width:13mm;height:13mm;display:grid;place-items:center;flex:none}
+          .premium-brand-logo img{width:100%;height:100%;object-fit:contain}
+          .premium-building-logo{height:12mm;display:flex;align-items:flex-end;gap:1.2mm}
+          .premium-building-logo span{display:block;width:3.4mm;background:#003b34;border-top:1.2mm solid #c9a24b}
+          .premium-building-logo span:nth-child(1){height:7mm}.premium-building-logo span:nth-child(2){height:11mm}.premium-building-logo span:nth-child(3){height:8.5mm}
+          .premium-agency-name{margin:0;color:#003b34;font-size:20px;line-height:1;font-weight:900;letter-spacing:.4px;text-transform:uppercase}
+          .premium-gold-line{width:28mm;height:.8mm;background:#c9a24b;margin:2.5mm 0 2mm}
+          .premium-contact{font-size:10.2px;color:#17231f;display:flex;gap:4mm;flex-wrap:wrap}
+          .premium-corner{position:absolute;right:-8mm;top:-16mm;width:68mm;height:57mm;background:linear-gradient(135deg,transparent 0 38%,#c9a24b 38% 44%,#e5c36a 44% 48%,#003b34 48% 100%);transform:skewX(-10deg)}
+          .premium-corner:before{content:"";position:absolute;left:-9mm;top:15mm;width:1mm;height:48mm;background:#c9a24b;transform:rotate(39deg)}
+          .premium-title-band{margin:0 2.5mm;background:linear-gradient(110deg,#003b34,#005b4f 72%,#003b34);color:#fff;border-bottom:1.5mm solid #c9a24b;padding:5.5mm 8mm 4.5mm;font-size:18px;line-height:1.12;font-weight:900;letter-spacing:.45px;text-transform:uppercase;text-align:center}
+          .premium-content{padding:5.5mm 5mm 16mm}
+          .premium-doc-meta{display:flex;justify-content:space-between;gap:5mm;align-items:flex-end;margin-bottom:3.5mm;color:#2e3834}
+          .premium-doc-meta b{color:#003b34}.premium-doc-meta .right{text-align:right}
+          .premium-intro-line{display:flex;gap:3.5mm;align-items:center;flex-wrap:wrap;font-size:12.2px;margin:0 2mm 3.5mm;color:#26322e}.premium-intro-line b{color:#003b34;font-size:13px}
+          .premium-main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(50mm,.9fr);gap:5mm;align-items:stretch;margin-bottom:4mm}
+          table{width:100%;border-collapse:collapse;margin:0 0 5mm}
+          th,td{border:.35mm solid #8f9793;padding:2.5mm 3.2mm;text-align:left;vertical-align:middle}
+          th{background:#eef2ef;color:#003b34;font-weight:800}
+          .premium-identity-table{height:100%;margin:0}.premium-identity-table th{width:30%}.premium-identity-table td{font-size:10.8px}
+          .premium-side-card{border:.65mm solid #003b34;border-radius:2.5mm;overflow:hidden;box-shadow:0 1.5mm 3mm rgba(0,59,52,.10);background:#fff}
+          .side-card-head{background:linear-gradient(135deg,#003b34,#005b4f);color:#fff;text-align:center;padding:3.4mm 3mm 3.2mm;border-bottom:1mm solid #c9a24b}
+          .side-card-head span{display:block;font-weight:800;font-size:11px}.side-card-head strong{display:block;color:#c9a24b;font-size:15px;margin-top:1.5mm;word-break:break-word}
+          .side-card-row{padding:3mm 3.8mm;border-bottom:.35mm solid #c8cecb}.side-card-row:last-child{border-bottom:0}.side-card-row b{display:block;color:#003b34;font-size:10.7px;margin-bottom:1.2mm}.side-card-row span{display:block;font-size:10.5px}
+          .premium-section-title{margin:3.8mm 0 2mm;color:#003b34;font-size:12.5px;text-transform:uppercase;border-left:1.3mm solid #c9a24b;padding-left:3mm}
+          .premium-data-table thead th{background:linear-gradient(135deg,#003b34,#005b4f);color:#fff;text-align:center;border-color:#6e8b83;text-transform:uppercase;font-size:10.5px}
+          .premium-data-table td{font-size:10.5px}.premium-data-table .amount{text-align:right;font-weight:800;white-space:nowrap}.premium-data-table .center{text-align:center}
+          .premium-total-row th,.premium-total-row td{background:#e7eee9;color:#003b34;font-size:11.4px;font-weight:900}.premium-total-row th{text-align:right}.premium-total-row td{text-align:right}
+          .premium-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:3mm 0 3.5mm}.premium-summary-item{border:.35mm solid #9ba39f;border-radius:1.8mm;padding:2.7mm;background:#f8faf8}.premium-summary-item b{display:block;color:#003b34;margin-bottom:1.5mm}
+          .premium-note-box{border:.35mm solid #b7beb9;border-left:1.2mm solid #c9a24b;border-radius:2mm;padding:2.8mm 3.5mm;margin:3mm 0;background:#fbfcfb;min-height:15mm}.premium-note-box h3{margin:0 0 1.5mm;color:#003b34;font-size:11.2px;text-transform:uppercase}.premium-note-box p{margin:0;white-space:pre-wrap;min-height:7mm}
+          .premium-words-box{border:.45mm solid #c9a24b;border-radius:2mm;padding:3.2mm 4mm;margin:3.8mm 0;text-align:center;font-size:11.5px}.premium-words-box b{text-transform:lowercase}
+          .premium-transaction{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin:3.5mm 2mm;font-size:10.8px}.premium-transaction b{color:#17231f}
+          .premium-declaration{margin:3mm 1mm 3.5mm;font-size:10.7px;text-align:justify}
+          .premium-signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-top:4mm;break-inside:avoid}
+          .premium-signature-box{border:.55mm solid #003b34;border-radius:2mm;min-height:40mm;padding:3.5mm 3.5mm 2.5mm;text-align:center;background:#fff}.premium-signature-box:nth-child(2){border-color:#c9a24b}
+          .premium-signature-box h4{margin:0;color:#003b34;font-size:10.5px;text-transform:uppercase}.signature-accent{display:block;width:15mm;height:.7mm;background:#c9a24b;margin:3mm auto}.signature-name{font-size:10.5px;min-height:7mm;margin:0}.signature-note{font-size:9.5px;min-height:5mm;margin:1.5mm 0 0}.premium-signature-space{margin-top:9mm;border-top:.35mm dashed #6b746f;padding-top:1.5mm;font-size:9.5px}
+          .premium-footer{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(110deg,#003b34,#005b4f);color:#fff;border-bottom:1.2mm solid #c9a24b;padding:3mm;text-align:center;font-size:9.5px;font-style:italic}
+          .muted{color:#68736e}.nowrap{white-space:nowrap}.text-right{text-align:right}.text-center{text-align:center}
+          .premium-compact .premium-header{min-height:30mm;padding:4mm 7mm 3mm}
+          .premium-compact .premium-brand-logo{width:11mm;height:11mm}
+          .premium-compact .premium-title-band{padding:4mm 7mm 3.3mm;font-size:16.5px}
+          .premium-compact .premium-content{padding:4mm 4mm 16mm}
+          .premium-compact .premium-doc-meta{margin-bottom:2.5mm}
+          .premium-compact .premium-intro-line{margin-bottom:2.5mm}
+          .premium-compact .premium-main-grid{gap:4mm;margin-bottom:3mm}
+          .premium-compact th,.premium-compact td{padding:1.8mm 2.5mm}
+          .premium-compact .side-card-head{padding:2.6mm 2.5mm}
+          .premium-compact .side-card-row{padding:2.2mm 3mm}
+          .premium-compact .premium-section-title{margin:2.8mm 0 1.6mm}
+          .premium-compact .premium-summary-grid{margin:2.5mm 0 2.8mm}
+          .premium-compact .premium-summary-item{padding:2mm}
+          .premium-compact .premium-note-box{padding:2.2mm 3mm;margin:2.3mm 0;min-height:10mm}
+          .premium-compact .premium-note-box p{min-height:4mm}
+          .premium-compact .premium-declaration{margin:2.2mm 1mm 2.8mm}
+          .premium-compact .premium-signatures{margin-top:3mm;gap:3.5mm;break-inside:auto}
+          .premium-compact .premium-signature-box{min-height:24mm;padding:2.3mm 2.8mm 1.8mm}
+          .premium-compact .signature-accent{margin:2mm auto}
+          .premium-compact .signature-name{min-height:5mm}
+          .premium-compact .signature-note{min-height:3.5mm;margin:1mm 0 0}
+          .premium-compact .premium-signature-space{margin-top:2mm}
+          @media print{body{zoom:.80}.premium-sheet{min-height:347mm;border-color:#aab2ae}body.premium-extra-compact{zoom:.72}body.premium-extra-compact .premium-sheet{min-height:386mm}}
+        </style></head><body class="${options.compact ? "premium-compact" : ""} ${options.extraCompact ? "premium-extra-compact" : ""}"><div class="premium-sheet"><header class="premium-header"><div class="premium-brand"><div class="premium-brand-logo">${logo}</div><div><h1 class="premium-agency-name">${esc(agency.agency || "GLOBAL IMMOBILIER")}</h1><div class="premium-gold-line"></div><div class="premium-contact"><span>${esc(agency.address || "Adresse non renseignée")}</span><span>•</span><span>${esc(agency.phone || "—")}</span><span>•</span><span>${esc(agency.email || "—")}</span></div></div></div><div class="premium-corner"></div></header><div class="premium-title-band">${esc(title)}</div><main class="premium-content"><div class="premium-doc-meta"><div><b>${esc(options.contextLabel || ctx?.tenant?.name || "Document immobilier")}</b>${options.contextDetails ? ` · ${esc(options.contextDetails)}` : ""}</div><div class="right">Référence document : <b>${esc(docRef)}</b> · Date : <b>${fmtDate(issueDate)}</b></div></div>${body}</main><footer class="premium-footer">${esc(footer)}</footer></div><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);
+        w.document.close();
+      }
       function printTenantDocument(tenantId, type) {
         const ctx = tenantDocumentContext(tenantId);
         if (!ctx) return;
         const doc = tenantDocumentData(ctx.tenant, type);
         let title = "DOCUMENT LOCATAIRE",
-          body = tenantDocumentIdentityTable(ctx);
+          body = "",
+          documentRef = premiumDocumentRef("DOC", ctx),
+          issueDate = doc.date || today();
         if (type === "entry" || type === "exit") {
           const exitMode = type === "exit";
-          title = exitMode
-            ? "ÉTAT DES LIEUX DE SORTIE"
-            : "ÉTAT DES LIEUX D’ENTRÉE";
-          body += `<p><b>Date du constat :</b> ${fmtDate(doc.date)} &nbsp;&nbsp; <b>Lieu :</b> ${esc(doc.place || "—")}</p><table><thead><tr><th>Élément contrôlé</th><th>État constaté</th></tr></thead><tbody>
-            <tr><td>État général</td><td>${esc(doc.general || "—")}</td></tr><tr><td>Propreté générale</td><td>${esc(doc.cleanliness || "—")}</td></tr><tr><td>Murs et peintures</td><td>${esc(doc.walls || "—")}</td></tr><tr><td>Sols et revêtements</td><td>${esc(doc.floors || "—")}</td></tr><tr><td>Plafonds</td><td>${esc(doc.ceilings || "—")}</td></tr><tr><td>Portes et serrures</td><td>${esc(doc.doors || "—")}</td></tr><tr><td>Fenêtres et vitrages</td><td>${esc(doc.windows || "—")}</td></tr><tr><td>Installation électrique</td><td>${esc(doc.electricity || "—")}</td></tr><tr><td>Plomberie et eau</td><td>${esc(doc.plumbing || "—")}</td></tr><tr><td>Sanitaires / douche</td><td>${esc(doc.sanitary || "—")}</td></tr><tr><td>Cuisine</td><td>${esc(doc.kitchen || "—")}</td></tr>
-          </tbody></table><table><tbody><tr><th>Clés ${exitMode ? "restituées" : "remises"}</th><td>${Number(doc.keys || 0)}</td><th>Compteur d’eau</th><td>${esc(doc.waterMeter || "—")}</td></tr><tr><th>Compteur électrique</th><td>${esc(doc.electricMeter || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr></tbody></table>${exitMode ? `<h3>Dégradations, réparations ou retenues éventuelles</h3><p>${esc(doc.damages || "Néant")}</p>` : ""}<h3>Observations détaillées</h3><p>${esc(doc.observation || "Néant")}</p><p>Les parties déclarent avoir procédé contradictoirement au présent état des lieux et reconnaissent l’exactitude des constatations ci-dessus.</p>${tenantSignatureBlocks(ctx)}`;
+          title = exitMode ? "ÉTAT DES LIEUX DE SORTIE" : "ÉTAT DES LIEUX D’ENTRÉE";
+          documentRef = premiumDocumentRef(exitMode ? "EDL-SOR" : "EDL-ENT", ctx);
+          const side = premiumSideCard(documentRef, issueDate, [
+            ["TYPE DE CONSTAT", exitMode ? "Sortie du locataire" : "Entrée du locataire"],
+            ["LIEU", doc.place || ctx.property.city || ctx.property.commune || "—"],
+          ]);
+          const rows = [
+            ["État général", doc.general], ["Propreté générale", doc.cleanliness], ["Murs et peintures", doc.walls],
+            ["Sols et revêtements", doc.floors], ["Plafonds", doc.ceilings], ["Portes et serrures", doc.doors],
+            ["Fenêtres et vitrages", doc.windows], ["Installation électrique", doc.electricity], ["Plomberie et eau", doc.plumbing],
+            ["Sanitaires / douche", doc.sanitary], ["Cuisine", doc.kitchen],
+          ];
+          body = `${premiumIdentitySection(ctx, side)}<h3 class="premium-section-title">Constat contradictoire du bien</h3><table class="premium-data-table"><thead><tr><th style="width:34%">Élément contrôlé</th><th>État constaté</th></tr></thead><tbody>${rows.map(([label, value]) => `<tr><td><b>${esc(label)}</b></td><td>${esc(value || "—")}</td></tr>`).join("")}</tbody></table><div class="premium-summary-grid"><div class="premium-summary-item"><b>Clés ${exitMode ? "restituées" : "remises"}</b>${Number(doc.keys || 0)}</div><div class="premium-summary-item"><b>Compteur d’eau</b>${esc(doc.waterMeter || "—")}</div><div class="premium-summary-item"><b>Compteur électrique</b>${esc(doc.electricMeter || "—")}</div></div>${exitMode ? premiumObservationBox("Dégradations, réparations ou retenues éventuelles", doc.damages) : ""}${premiumObservationBox("Observations détaillées", doc.observation)}<p class="premium-declaration">Les parties déclarent avoir procédé contradictoirement au présent état des lieux et reconnaissent l’exactitude des constatations ci-dessus. Le présent document est établi pour servir et valoir ce que de droit.</p>${tenantSignatureBlocks(ctx, "Lu et approuvé")}`;
         } else if (type === "inventory") {
           title = "INVENTAIRE DES ÉQUIPEMENTS";
+          documentRef = premiumDocumentRef("INV", ctx);
           const items = parseInventoryItems(doc.items);
-          body += `<p><b>Date de l’inventaire :</b> ${fmtDate(doc.date)} &nbsp;&nbsp; <b>Nombre de clés remises :</b> ${Number(doc.keys || 0)}</p><table><thead><tr><th>N°</th><th>Désignation</th><th>Quantité</th><th>État</th><th>Observation</th></tr></thead><tbody>${items.map((item, index) => `<tr><td>${index + 1}</td><td>${esc(item.name)}</td><td>${esc(item.quantity)}</td><td>${esc(item.state || "—")}</td><td>${esc(item.observation || "—")}</td></tr>`).join("") || '<tr><td colspan="5">Aucun équipement renseigné.</td></tr>'}</tbody></table><h3>Observations générales</h3><p>${esc(doc.observation || "Néant")}</p><p>Le locataire reconnaît avoir reçu les équipements ci-dessus et s’engage à les restituer dans leur état initial, sous réserve de l’usure normale.</p>${tenantSignatureBlocks(ctx)}`;
+          const side = premiumSideCard(documentRef, issueDate, [
+            ["DOCUMENT", "Inventaire contradictoire"],
+            ["CLÉS REMISES", String(Number(doc.keys || 0))],
+          ]);
+          body = `${premiumIdentitySection(ctx, side)}<h3 class="premium-section-title">Liste des équipements remis au locataire</h3><table class="premium-data-table"><thead><tr><th style="width:7%">N°</th><th>Désignation</th><th style="width:12%">Quantité</th><th style="width:18%">État</th><th style="width:27%">Observation</th></tr></thead><tbody>${items.map((item, index) => `<tr><td class="center">${index + 1}</td><td>${esc(item.name)}</td><td class="center">${esc(item.quantity)}</td><td>${esc(item.state || "—")}</td><td>${esc(item.observation || "—")}</td></tr>`).join("") || '<tr><td colspan="5" class="text-center muted">Aucun équipement renseigné.</td></tr>'}</tbody></table>${premiumObservationBox("Observations générales", doc.observation)}<p class="premium-declaration">Le locataire reconnaît avoir reçu les équipements inventoriés ci-dessus et s’engage à les conserver en bon état puis à les restituer, sous réserve de l’usure normale résultant d’un usage conforme.</p>${tenantSignatureBlocks(ctx, "Inventaire vérifié et approuvé")}`;
         } else if (type === "guarantee") {
           title = "REÇU DU DÉPÔT DE GARANTIE ET DES LOYERS PAYÉS D’AVANCE";
-          const total = Number(doc.total || 0);
-          body += `<table><tbody><tr><th>N° du reçu</th><td>${esc(doc.receipt || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Reçu de</th><td>${esc(ctx.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr></tbody></table><p>Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b>, locataire du bien désigné ci-dessus, les sommes suivantes :</p><table><thead><tr><th>Désignation</th><th>Détail</th><th>Montant</th></tr></thead><tbody><tr><td>Dépôt de garantie</td><td>Garantie liée au contrat ${esc(ctx.lease.ref)}</td><td><b>${money(doc.guarantee)}</b></td></tr><tr><td>Loyers payés d’avance</td><td>${Number(doc.advanceMonths || 0)} mois</td><td><b>${money(doc.advanceAmount)}</b></td></tr><tr><th colspan="2">TOTAL ENCAISSÉ</th><th>${money(total)}</th></tr></tbody></table><p>Arrêté le présent reçu à la somme de : <b>${esc(amountInWords(total))}</b>.</p><p><b>Référence de transaction :</b> ${esc(doc.transaction || "—")}<br><b>Observation :</b> ${esc(doc.observation || "—")}</p>${tenantSignatureBlocks(ctx, "Bon pour accord")}`;
+          const total = Number(doc.total || Number(doc.guarantee || 0) + Number(doc.advanceAmount || 0));
+          documentRef = premiumDocumentRef("RDG", ctx, doc.receipt);
+          const side = premiumSideCard(documentRef, issueDate, [
+            ["REÇU DE", ctx.tenant.name],
+            ["MODE DE PAIEMENT", doc.method || "—"],
+          ]);
+          body = `${premiumIdentitySection(ctx, side)}<p class="premium-declaration">Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b>, locataire du bien désigné ci-dessus, les sommes suivantes :</p><table class="premium-data-table"><thead><tr><th>Désignation</th><th>Détail</th><th style="width:27%">Montant</th></tr></thead><tbody><tr><td>Dépôt de garantie</td><td>Garantie liée au contrat ${esc(ctx.lease.ref)}</td><td class="amount">${money(doc.guarantee)}</td></tr><tr><td>Loyers payés d’avance</td><td>${Number(doc.advanceMonths || 0)} mois</td><td class="amount">${money(doc.advanceAmount)}</td></tr><tr class="premium-total-row"><th colspan="2">TOTAL ENCAISSÉ</th><td>${money(total)}</td></tr></tbody></table>${premiumAmountWords(total)}${premiumTransactionLine(doc.transaction, doc.observation)}${tenantSignatureBlocks(ctx, "Bon pour accord")}`;
         } else if (type === "agency") {
           title = "REÇU DES DROITS D’AGENCE";
           const amount = Number(doc.amount || 0);
-          body += `<table><tbody><tr><th>N° du reçu</th><td>${esc(doc.receipt || "—")}</td><th>Date</th><td>${fmtDate(doc.date)}</td></tr><tr><th>Reçu de</th><td>${esc(ctx.tenant.name)}</td><th>Mode de paiement</th><td>${esc(doc.method || "—")}</td></tr></tbody></table><p>Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b> la somme de <b>${money(amount)}</b>, soit <b>${esc(amountInWords(amount))}</b>, au titre de :</p><table><tbody><tr><th>Nature</th><td>${esc(doc.nature || "Droits d’agence")}</td></tr><tr><th>Bien concerné</th><td>${esc(ctx.property.ref)} — ${esc(ctx.property.title)}</td></tr><tr><th>Contrat</th><td>${esc(ctx.lease.ref)}</td></tr><tr><th>Référence de transaction</th><td>${esc(doc.transaction || "—")}</td></tr><tr><th>Observation</th><td>${esc(doc.observation || "—")}</td></tr></tbody></table><div class="signature-grid"><div><h4>LE LOCATAIRE</h4><p>${esc(ctx.tenant.name)}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(ctx.agency.agency)}</p><div class="signature-space">Cachet et signature</div></div><div><h4>RESPONSABLE</h4><p>${esc(ctx.lease.managerName || ctx.agency.adminUser || "—")}</p><div class="signature-space">Signature</div></div></div>`;
+          documentRef = premiumDocumentRef("RDA", ctx, doc.receipt);
+          const side = premiumSideCard(documentRef, issueDate, [
+            ["REÇU DE", ctx.tenant.name],
+            ["MODE DE PAIEMENT", doc.method || "—"],
+          ]);
+          body = `${premiumIdentitySection(ctx, side)}<p class="premium-declaration">Nous reconnaissons avoir reçu de <b>${esc(ctx.tenant.name)}</b> la somme indiquée ci-dessous au titre des frais et honoraires liés à la mise en location du bien.</p><table class="premium-data-table"><thead><tr><th>Désignation</th><th>Détail</th><th style="width:27%">Montant</th></tr></thead><tbody><tr><td>${esc(doc.nature || "Droits d’agence")}</td><td>Bien ${esc(ctx.property.ref)} — Contrat ${esc(ctx.lease.ref)}</td><td class="amount">${money(amount)}</td></tr><tr class="premium-total-row"><th colspan="2">TOTAL ENCAISSÉ</th><td>${money(amount)}</td></tr></tbody></table>${premiumAmountWords(amount)}${premiumTransactionLine(doc.transaction, doc.observation)}${tenantSignatureBlocks(ctx, "Bon pour accord", [
+            { title: "LE LOCATAIRE", name: ctx.tenant.name, note: "Bon pour accord", label: "Signature" },
+            { title: "LE RESPONSABLE", name: ctx.lease.managerName || ctx.agency.adminUser || "—", note: "Reçu établi", label: "Signature" },
+            { title: "L’ENTREPRISE IMMOBILIÈRE", name: ctx.agency.agency, note: "Cachet obligatoire", label: "Cachet et signature" },
+          ])}`;
         }
-        printDocument(title, body, `${ctx.tenant.name} · ${ctx.property.ref} · ${ctx.lease.ref}`);
+        printPremiumTenantDocument(title, body, ctx, {
+          documentRef,
+          issueDate,
+          contextLabel: ctx.tenant.name,
+          contextDetails: `${ctx.property.ref} · ${ctx.lease.ref}`,
+          compact: type === "entry" || type === "exit",
+          extraCompact: type === "exit",
+        });
       }
 
       async function deleteTenant(id) {
@@ -6288,18 +6437,30 @@
         const tenant = data.tenants.find((x) => x.id === payment.tenantId),
           property = data.properties.find((x) => x.id === payment.propertyId),
           lease = data.leases.find((x) => x.id === payment.leaseId),
-          owner = data.owners.find(
-            (x) => x.id === (lease?.ownerId || property?.ownerId),
-          ),
+          owner = data.owners.find((x) => x.id === (lease?.ownerId || property?.ownerId)),
+          ctx = { tenant, property, lease, owner, agency: data.settings },
           isRent = String(payment.kind || "Loyer").toLowerCase() === "loyer",
-          title = isRent
-            ? "REÇU INDIVIDUEL DE PAIEMENT DE LOYER"
-            : "REÇU DE PAIEMENT";
-        printDocument(
-          title,
-          `<table><tbody><tr><th>N° du reçu</th><td>${esc(payment.receipt)}</td><th>Date</th><td>${fmtDate(payment.date)}</td></tr><tr><th>Locataire</th><td>${esc(tenant?.name || "—")} — ${esc(tenant?.ref || "—")}</td><th>Téléphone</th><td>${esc(tenant?.phone || "—")}</td></tr><tr><th>Bien occupé</th><td>${esc(property?.ref || "—")} — ${esc(property?.title || "—")}</td><th>Contrat</th><td>${esc(lease?.ref || "—")}</td></tr><tr><th>Propriétaire</th><td>${esc(owner?.name || "Non renseigné")}</td><th>Période</th><td>${esc(payment.period)}</td></tr></tbody></table><h3>Détail du règlement</h3><table><thead><tr><th>Désignation</th><th>Montant attendu</th><th>Pénalité</th><th>Montant payé</th><th>Reste</th></tr></thead><tbody><tr><td>${esc(payment.kind || "Loyer")}</td><td>${money(payment.expected)}</td><td>${money(payment.penalty)}</td><td><b>${money(payment.paid)}</b></td><td>${money(Math.max(0, payment.expected + Number(payment.penalty || 0) - payment.paid))}</td></tr></tbody></table><p>Arrêté le présent reçu à la somme de : <b>${esc(amountInWords(payment.paid))}</b>.</p><p><b>Mode de paiement :</b> ${esc(payment.method || "—")}<br><b>Référence de transaction :</b> ${esc(payment.transactionRef || "—")}<br><b>Observation :</b> ${esc(payment.observation || "—")}</p><div class="signature-grid"><div><h4>LE LOCATAIRE</h4><p>${esc(tenant?.name || "—")}</p><div class="signature-space">Signature</div></div><div><h4>L’ENTREPRISE IMMOBILIÈRE</h4><p>${esc(data.settings.agency)}</p><div class="signature-space">Cachet et signature</div></div><div><h4>LE PROPRIÉTAIRE / BAILLEUR</h4><p>${esc(owner?.name || "Non renseigné")}</p><div class="signature-space">Signature</div></div></div>`,
-          `${tenant?.name || "Locataire"} · ${property?.ref || "Bien"} · ${lease?.ref || "Contrat"}`,
-        );
+          title = isRent ? "REÇU INDIVIDUEL DE PAIEMENT DE LOYER" : "REÇU DE PAIEMENT";
+        if (!tenant || !property || !lease) {
+          toast("Les informations du locataire, du bien ou du contrat sont incomplètes.");
+          return;
+        }
+        const expected = Number(payment.expected || 0),
+          penalty = Number(payment.penalty || 0),
+          paid = Number(payment.paid || 0),
+          balance = Math.max(0, expected + penalty - paid),
+          receiptRef = payment.receipt || premiumDocumentRef("RLOY", ctx),
+          side = premiumSideCard(receiptRef, payment.date || today(), [
+            ["REÇU DE", tenant.name],
+            ["MODE DE PAIEMENT", payment.method || "—"],
+          ]),
+          body = `${premiumIdentitySection(ctx, side)}<p class="premium-declaration">Nous reconnaissons avoir reçu de <b>${esc(tenant.name)}</b>, locataire du bien désigné ci-dessus, le règlement individuel suivant :</p><table class="premium-data-table"><thead><tr><th>Désignation</th><th>Détail</th><th style="width:27%">Montant</th></tr></thead><tbody><tr><td>${esc(payment.kind || "Loyer")}</td><td>Période : ${esc(payment.period || "—")} · Contrat ${esc(lease.ref)}</td><td class="amount">${money(expected)}</td></tr>${penalty > 0 ? `<tr><td>Pénalité</td><td>Pénalité appliquée au règlement</td><td class="amount">${money(penalty)}</td></tr>` : ""}<tr><td>Montant payé</td><td>${esc(payment.method || "Mode non renseigné")}</td><td class="amount">${money(paid)}</td></tr><tr><td>Reste à payer</td><td>Solde restant après ce règlement</td><td class="amount">${money(balance)}</td></tr><tr class="premium-total-row"><th colspan="2">TOTAL ENCAISSÉ</th><td>${money(paid)}</td></tr></tbody></table>${premiumAmountWords(paid)}${premiumTransactionLine(payment.transactionRef, payment.observation)}${tenantSignatureBlocks(ctx, "Bon pour accord")}`;
+        printPremiumTenantDocument(title, body, ctx, {
+          documentRef: receiptRef,
+          issueDate: payment.date || today(),
+          contextLabel: tenant.name,
+          contextDetails: `${property.ref} · ${lease.ref}`,
+        });
       }
       function sendReceiptWhatsApp(id) {
         const p = data.payments.find((x) => x.id === id),
