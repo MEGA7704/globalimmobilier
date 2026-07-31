@@ -9452,6 +9452,7 @@
       /* ========== ASSISTANCE ENTREPRISE ET BOÎTE DE RÉCEPTION SUPER ADMIN ========== */
       const SUPPORT_MESSAGE_MARKER = "[[SUPPORT_MESSAGE]]";
       const SUPPORT_ACTION_MARKER = "[[SUPPORT_ACTION]]";
+      const SUPPORT_OUTBOX_HIDE_MARKER = "[[SUPPORT_OUTBOX_HIDE]]";
       const SUPPORT_FILE_MAX_BYTES = 500 * 1024;
       let superSupportInboxCache = [];
 
@@ -9463,9 +9464,13 @@
         return !!decodeSpecialVisit(visit, SUPPORT_ACTION_MARKER);
       }
 
+      function isSupportOutboxHideVisit(visit) {
+        return !!decodeSpecialVisit(visit, SUPPORT_OUTBOX_HIDE_MARKER);
+      }
+
       const isSpecialSystemVisitBeforeSupport = isSpecialSystemVisit;
       isSpecialSystemVisit = function (visit) {
-        return isSpecialSystemVisitBeforeSupport(visit) || isSupportMessageVisit(visit) || isSupportActionVisit(visit);
+        return isSpecialSystemVisitBeforeSupport(visit) || isSupportMessageVisit(visit) || isSupportActionVisit(visit) || isSupportOutboxHideVisit(visit);
       };
 
       function supportStatusClass(status) {
@@ -9540,6 +9545,42 @@
         }
       }
 
+      async function persistSupportMessageInCompanyState(visit) {
+        data.visits = Array.isArray(data.visits) ? data.visits : [];
+        data.visits.unshift(visit);
+        data.settings.companyId = activeCompanyId;
+        data.settings.adminPass = "";
+        data.settings.apiUrl = "";
+        setSyncState("Transmission au Super Admin…", "saving");
+        try {
+          let result;
+          try {
+            result = await apiFetch("state", {
+              method: "PUT",
+              body: JSON.stringify({ version: cloudVersion, state: data }),
+            });
+          } catch (error) {
+            if (error.status !== 409 || !error.details?.state || !error.details?.version) throw error;
+            data = mergeCloudState(error.details.state, data);
+            cloudVersion = Number(error.details.version);
+            result = await apiFetch("state", {
+              method: "PUT",
+              body: JSON.stringify({ version: cloudVersion, state: data }),
+            });
+          }
+          cloudVersion = Number(result.version || cloudVersion);
+          data = migrate(result.state || data);
+          cloudSavePending = false;
+          setSyncState("Cloud synchronisé", "ok");
+          renderAll();
+          return true;
+        } catch (error) {
+          data.visits = (data.visits || []).filter((item) => item.id !== visit.id);
+          setSyncState("Transmission non effectuée", "error");
+          throw error;
+        }
+      }
+
       async function sendSupportMessage() {
         if (sessionKind !== "company" || editing?.type !== "supportMessage") return;
         const object = val("supportObject").trim();
@@ -9586,24 +9627,26 @@
             status: "Nouveau",
             createdAt: now.toISOString(),
           };
-          await apiFetch(`public/visits/${encodeURIComponent(activeCompanyId)}`, {
-            method: "POST",
-            body: JSON.stringify({
-              ref: `SUP-${Date.now()}`,
-              propertyId: "",
-              name: details.companyName,
-              phone: details.companyPhone || "0000000000",
-              whatsapp: data.settings.whatsapp || "",
-              email: details.companyEmail,
-              date: today(),
-              time: now.toTimeString().slice(0, 5),
-              message: encodeSpecialVisit(SUPPORT_MESSAGE_MARKER, details),
-              contactMethod: "Application",
-            }),
-          });
+          const visit = {
+            id: uid("v"),
+            ref: `SUP-${Date.now()}`,
+            propertyId: "",
+            name: details.companyName,
+            phone: details.companyPhone || "0000000000",
+            whatsapp: data.settings.whatsapp || "",
+            email: details.companyEmail,
+            date: today(),
+            time: now.toTimeString().slice(0, 5),
+            message: encodeSpecialVisit(SUPPORT_MESSAGE_MARKER, details),
+            contactMethod: "Application",
+            status: "Nouveau",
+            source: "Support",
+            createdAt: now.toISOString(),
+          };
+          await persistSupportMessageInCompanyState(visit);
           closeModal();
           toast("Votre message a été transmis au Super Administrateur.", "success");
-          await refreshCompanyStateAfterSupport();
+          if (currentPage === "adminMessages") renderCompanyAdminMessages();
         } catch (error) {
           cloudError(error, "Message non envoyé");
           button.disabled = false;
@@ -9613,6 +9656,7 @@
 
       function companySupportHistory() {
         const actions = new Map();
+        const hiddenCopies = new Map();
         (data.visits || []).filter(isSupportActionVisit).forEach((visit) => {
           const details = decodeSpecialVisit(visit, SUPPORT_ACTION_MARKER) || {};
           if (!details.supportId) return;
@@ -9620,15 +9664,58 @@
           const date = String(details.updatedAt || visit.createdAt || visit.date || "");
           if (!previous || date >= previous._date) actions.set(details.supportId, { ...details, _date: date });
         });
+        (data.visits || []).filter(isSupportOutboxHideVisit).forEach((visit) => {
+          const details = decodeSpecialVisit(visit, SUPPORT_OUTBOX_HIDE_MARKER) || {};
+          if (!details.supportId) return;
+          const previous = hiddenCopies.get(details.supportId);
+          const date = String(details.updatedAt || visit.createdAt || visit.date || "");
+          if (!previous || date >= previous._date) hiddenCopies.set(details.supportId, { ...details, _date: date });
+        });
         return (data.visits || [])
           .filter(isSupportMessageVisit)
           .map((visit) => {
             const details = decodeSpecialVisit(visit, SUPPORT_MESSAGE_MARKER) || {};
-            const action = actions.get(details.id) || {};
-            return { visit, details, action, status: supportStatusLabel(action.status || details.status) };
+            const supportId = details.id || visit.id || visit.ref;
+            const action = actions.get(supportId) || {};
+            const hidden = hiddenCopies.get(supportId)?.hidden === true;
+            return { visit, details, action, supportId, hidden, status: supportStatusLabel(action.status || details.status) };
           })
-          .filter((item) => !item.action.deleted)
+          .filter((item) => !item.hidden)
           .sort((a, b) => String(b.details.createdAt || b.visit.createdAt || "").localeCompare(String(a.details.createdAt || a.visit.createdAt || "")));
+      }
+
+      async function deleteCompanySupportOutboxMessage(supportId) {
+        if (sessionKind !== "company" || !supportId) return;
+        const item = companySupportHistory().find((entry) => String(entry.supportId) === String(supportId));
+        if (!item) return;
+        if (!(await professionalConfirm(
+          `Retirer « ${item.details.object || "Demande d’assistance"} » de la liste « Mes messages au support » ? La copie déjà reçue par le Super Admin sera conservée et pourra toujours être traitée.`,
+          { title: "Supprimer votre copie", confirmText: "Supprimer de ma liste", type: "danger" },
+        ))) return;
+        const now = new Date();
+        data.visits.unshift({
+          id: uid("v"),
+          ref: `MASQ-SUP-${Date.now()}`,
+          propertyId: "",
+          name: data.settings.agency || "Entreprise immobilière",
+          phone: data.settings.phone || "0000000000",
+          whatsapp: "",
+          email: data.settings.email || "",
+          date: today(),
+          time: now.toTimeString().slice(0, 5),
+          message: encodeSpecialVisit(SUPPORT_OUTBOX_HIDE_MARKER, {
+            supportId,
+            hidden: true,
+            updatedAt: now.toISOString(),
+            hiddenBy: sessionUser?.username || data.settings.adminUser || "Administrateur",
+          }),
+          contactMethod: "Application",
+          status: "Masqué",
+          source: "Support",
+          createdAt: now.toISOString(),
+        });
+        renderCompanyAdminMessages();
+        saveData("Votre copie du message a été supprimée. La réception du Super Admin est conservée.");
       }
 
       function renderCompanyAdminMessagesWithSupport() {
@@ -9655,6 +9742,7 @@
             <p class="support-card-body">${esc(details.body || "")}</p>
             ${details.attachment?.name ? `<div class="support-card-observation">Pièce jointe : ${esc(details.attachment.name)} — ${esc(formatSupportBytes(details.attachment.size))}</div>` : ""}
             ${item.action.observation ? `<div class="support-card-observation"><b>Suivi du support :</b> ${esc(item.action.observation)}</div>` : ""}
+            <div class="support-card-actions"><button class="btn btn-danger btn-sm" type="button" onclick="deleteCompanySupportOutboxMessage('${attr(item.supportId)}')">Supprimer de ma liste</button></div>
           </article>`;
         }).join("");
         $("adminMessages").innerHTML = pageHead(
@@ -9668,33 +9756,65 @@
 
       renderCompanyAdminMessages = renderCompanyAdminMessagesWithSupport;
 
+      function extractVisitArraysFromPayload(payload) {
+        const visits = [];
+        const visitKeys = new Set();
+        const seenObjects = new Set();
+        const addVisit = (visit) => {
+          if (!visit || typeof visit !== "object" || typeof visit.message !== "string") return;
+          const key = String(visit.id || visit.ref || `${visit.message}|${visit.createdAt || visit.date || ""}`);
+          if (visitKeys.has(key)) return;
+          visitKeys.add(key);
+          visits.push(visit);
+        };
+        const walk = (value, depth = 0) => {
+          if (value == null || depth > 8) return;
+          if (Array.isArray(value)) {
+            value.forEach((item) => {
+              if (item && typeof item === "object" && typeof item.message === "string") addVisit(item);
+              else walk(item, depth + 1);
+            });
+            return;
+          }
+          if (typeof value !== "object" || seenObjects.has(value)) return;
+          seenObjects.add(value);
+          Object.values(value).forEach((item) => walk(item, depth + 1));
+        };
+        walk(payload);
+        return visits;
+      }
+
       async function fetchCompanySupportVisits(company) {
-        if (Array.isArray(company?.visits)) return company.visits;
+        const initial = extractVisitArraysFromPayload(company);
+        if (initial.some((visit) => isSupportMessageVisit(visit) || isSupportActionVisit(visit))) return initial;
         const id = company?.id;
-        if (!id) return [];
+        if (!id) return initial;
         const paths = [
           `super/companies/${encodeURIComponent(id)}/state`,
+          `super/companies/${encodeURIComponent(id)}/data`,
           `super/companies/${encodeURIComponent(id)}`,
+          `super/company/${encodeURIComponent(id)}/state`,
+          `super/company-state/${encodeURIComponent(id)}`,
           `public/companies/${encodeURIComponent(id)}`,
+          `public/visits/${encodeURIComponent(id)}`,
         ];
+        let fallback = initial;
         for (const path of paths) {
           try {
             const result = await apiFetch(path);
-            const candidates = [
-              result?.state?.visits,
-              result?.companyState?.visits,
-              result?.data?.visits,
-              result?.visits,
-              result?.company?.state?.visits,
-            ];
-            const visits = candidates.find(Array.isArray);
-            if (visits) return visits;
+            const found = extractVisitArraysFromPayload(result);
+            if (found.length) fallback = found;
+            if (found.some((visit) => isSupportMessageVisit(visit) || isSupportActionVisit(visit))) return found;
           } catch (error) {}
         }
-        return [];
+        return fallback;
       }
 
       async function loadSuperSupportInbox() {
+        try {
+          const directory = await apiFetch("super/companies");
+          if (Array.isArray(directory?.companies)) enterprises = directory.companies.map(normalizeEnterpriseRecord);
+        } catch (error) {}
         const results = await Promise.all((enterprises || []).map(async (company) => ({
           company,
           visits: await fetchCompanySupportVisits(company),
