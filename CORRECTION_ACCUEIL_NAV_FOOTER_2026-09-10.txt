@@ -1,0 +1,31 @@
+CORRECTION CIBLÉE — GLOBAL IMMOBILIER
+Date : 10/09/2026
+
+1. PAGE D’ACCUEIL
+- Remplacement de l’ancien écran de connexion par une vraie page d’accueil professionnelle.
+- Présentation de GLOBAL IMMOBILIER, de ses fonctionnalités et de ses formules Free / Standard / Business.
+- Illustration de villa réaliste intégrée à la page d’accueil.
+- Espace de connexion et de création d’entreprise placé à côté du visuel principal.
+- En mode non connecté, le menu général affiche uniquement « Accueil ».
+
+2. NAVIGATION CONNECTÉE
+- Suppression du menu général vertical de l’espace entreprise.
+- Mise en place d’un menu horizontal responsive.
+- Ajout du bouton « Accueil » dans l’espace connecté.
+- Conservation des droits d’accès selon le rôle de l’utilisateur.
+- Accès aux rubriques : Tableau de bord, Propriétaires, Biens immobiliers, Locataires, Paiements, Comptabilité, Rapports, Visites, Catalogue public, Notes et notifications, Utilisateurs, Paramètres.
+- Boutons Catalogue et Déconnexion conservés dans la navigation horizontale.
+
+3. FOOTER
+- Ajout d’un footer institutionnel sur l’accueil, l’espace connecté et le catalogue public.
+- GLOBAL IMMOBILIER — exploité par MEGA SERVICES SARL U
+- Téléphone / WhatsApp : +225 0777041790
+- E-mail : megaservicediabo@gmail.com
+- RCCM : CI-BKE-2020-B-1150
+- Compte contribuable : 2039493 M
+- Siège social : Diabo
+
+4. COMPATIBILITÉ
+- Aucune modification des règles Free / Standard / Business déjà mises en place.
+- Aucune modification de la base D1 ni de l’API métier.
+- Vérification de syntaxe frontend et API effectuée.
