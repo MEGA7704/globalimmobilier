@@ -2882,7 +2882,7 @@
         display: block;
         min-height: 100vh;
         padding: 0;
-        background: #f4f7f5;
+        background: linear-gradient(135deg, rgba(2, 30, 27, .90), rgba(4, 54, 48, .74)), url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2200&q=88') center/cover no-repeat fixed;
         color: #17332d;
       }
       #loginPage .gi-home-nav {
@@ -3020,10 +3020,11 @@
       .gi-home-v2 { min-height:100vh; width:100%; background:#f5f7f6; }
       .gi-home-nav-v2 { width:100%; min-height:74px; padding:10px clamp(20px,3vw,48px); border-bottom:1px solid rgba(7,60,54,.10); background:rgba(255,255,255,.96); backdrop-filter:blur(14px); position:relative; z-index:20; }
       .gi-home-main-v2 { width:100%; max-width:none !important; margin:0 !important; padding:0 !important; }
-      .gi-home-stage { width:100%; min-height:calc(100vh - 74px); display:grid; grid-template-columns:minmax(0,1.68fr) minmax(390px,.72fr); background:#fff; }
-      .gi-home-showcase { position:relative; min-height:calc(100vh - 74px); overflow:hidden; isolation:isolate; }
-      .gi-home-villa { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:-3; }
-      .gi-home-shade { position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,rgba(1,30,27,.96) 0%,rgba(2,44,39,.87) 34%,rgba(4,57,50,.52) 65%,rgba(4,57,50,.16) 100%),linear-gradient(0deg,rgba(0,25,22,.62),transparent 50%); }
+      .gi-home-stage { width:100%; min-height:calc(100vh - 74px); display:grid; grid-template-columns:minmax(0,1.28fr) minmax(560px,.92fr); background:transparent; position:relative; }
+      .gi-home-stage::before { content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(1,30,27,.42) 0%, rgba(2,44,39,.20) 38%, rgba(4,57,50,.06) 100%); pointer-events:none; }
+      .gi-home-showcase { position:relative; min-height:calc(100vh - 74px); overflow:hidden; isolation:isolate; background:transparent; }
+      .gi-home-villa { display:none; }
+      .gi-home-shade { position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,rgba(1,30,27,.86) 0%,rgba(2,44,39,.74) 34%,rgba(4,57,50,.42) 65%,rgba(4,57,50,.14) 100%),linear-gradient(0deg,rgba(0,25,22,.58),transparent 50%); }
       .gi-home-decor { position:absolute; border:1px solid rgba(229,190,92,.38); border-radius:50%; pointer-events:none; }
       .gi-home-decor-one { width:360px; height:360px; right:-120px; top:-95px; }
       .gi-home-decor-two { width:210px; height:210px; right:35px; top:-45px; }
@@ -3042,19 +3043,19 @@
       .gi-home-capabilities article > span { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border:1px solid rgba(240,196,91,.7); border-radius:10px; color:#f0c45b; font-size:10px; font-weight:900; }
       .gi-home-capabilities strong { display:block; color:#fff; font-size:12px; margin-bottom:3px; }
       .gi-home-capabilities small { display:block; color:#bdd2cb; font-size:10.5px; line-height:1.45; }
-      .gi-auth-zone { min-width:0; min-height:calc(100vh - 74px); padding:clamp(28px,4vw,56px) clamp(24px,3vw,46px); display:flex; flex-direction:column; justify-content:center; background:linear-gradient(160deg,#ffffff 0%,#f7faf8 54%,#eef4f1 100%); border-left:1px solid #e3ebe7; position:relative; }
+      .gi-auth-zone { min-width:0; min-height:calc(100vh - 74px); padding:clamp(28px,4vw,56px) clamp(26px,3vw,52px); display:flex; flex-direction:column; justify-content:center; background:linear-gradient(160deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,.11) 54%, rgba(255,255,255,.08) 100%); border-left:1px solid rgba(255,255,255,.20); position:relative; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
       .gi-auth-zone::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#c89b31,#efd273,#c89b31); }
-      .gi-auth-brandline { display:flex; align-items:center; gap:12px; margin:0 auto 18px; width:min(520px,100%); }
+      .gi-auth-brandline { display:flex; align-items:center; gap:12px; margin:0 auto 18px; width:min(728px,100%); }
       .gi-auth-mark { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:#073c36; color:#f0c45b; font-weight:950; box-shadow:0 8px 18px rgba(7,60,54,.16); }
       .gi-auth-brandline strong,.gi-auth-brandline small { display:block; }
       .gi-auth-brandline strong { color:#073c36; font-size:13px; }
       .gi-auth-brandline small { color:#7a8883; font-size:10.5px; margin-top:2px; }
-      .gi-auth-zone .login-wrap { width:min(520px,100%); margin:0 auto; padding:0; min-height:0; }
-      .gi-auth-zone .login-card,.gi-auth-zone .login-card.create-mode { width:100%; min-height:0; padding:clamp(24px,3vw,36px); border:1px solid #e2eae6; border-radius:22px; background:rgba(255,255,255,.98); box-shadow:0 24px 70px rgba(1,45,39,.11); }
-      .gi-auth-zone .gi-login-heading { margin-bottom:18px; }
-      .gi-auth-zone .gi-login-heading small { color:#b18324; letter-spacing:.12em; font-size:9.5px; font-weight:900; }
-      .gi-auth-zone .gi-login-heading h2 { margin:5px 0 6px; font-size:31px; color:#073c36; }
-      .gi-auth-zone .gi-login-heading p { margin:0; color:#71807a; font-size:12px; line-height:1.55; }
+      .gi-auth-zone .login-wrap { width:min(728px,100%); margin:0 auto; padding:0; min-height:0; }
+      .gi-auth-zone .login-card,.gi-auth-zone .login-card.create-mode { width:100%; min-height:0; padding:clamp(26px,3vw,38px); border:1px solid rgba(255,255,255,.62); border-radius:24px; background:rgba(255,255,255,.97); box-shadow:0 26px 78px rgba(1,45,39,.16); }
+      .gi-auth-zone .gi-login-heading { margin-bottom:18px; justify-content:center; text-align:center; }
+      .gi-auth-zone .gi-login-heading small { color:#b18324; letter-spacing:.12em; font-size:10px; font-weight:900; display:block; text-align:center; }
+      .gi-auth-zone .gi-login-heading h2 { margin:5px 0 6px; font-size:34px; color:#073c36; text-align:center; }
+      .gi-auth-zone .gi-login-heading p { margin:0; color:#71807a; font-size:12.5px; line-height:1.6; text-align:center; }
       .gi-auth-zone .auth-choice { margin-bottom:18px; }
       .gi-auth-zone .auth-panel > p { color:#71807a; }
       .gi-auth-zone .field label { color:#294942; font-weight:800; }
@@ -7696,107 +7697,249 @@
 
     
 
-      /* Paramètres V2 : navigation administrative interne */
+      /* Paramètres V3 : barre Administration premium sur une seule ligne */
       .settings-admin-links-v2 {
-        align-items: flex-start;
-        gap: 24px;
-        padding: 20px 22px;
+        display:flex;
+        flex-direction:row !important;
+        align-items:center;
+        gap:18px;
+        width:100%;
+        padding:16px 18px;
+        border:1px solid rgba(231,173,47,.34);
+        border-radius:18px;
+        background:linear-gradient(110deg,#063a33 0%,#07554b 58%,#0a6256 100%);
+        box-shadow:0 16px 34px rgba(4,48,42,.15);
+        overflow:hidden;
       }
       .settings-admin-title {
-        flex: 0 0 245px;
-        min-width: 210px;
+        flex:0 0 auto;
+        min-width:205px;
+        padding-right:17px;
+        border-right:1px solid rgba(255,255,255,.16);
       }
+      .settings-admin-title h3 { margin:3px 0 2px; color:#fff; font-size:15px; line-height:1.2; }
+      .settings-admin-title p { margin:0; color:#bad4cd; font-size:9.5px; white-space:nowrap; }
       .settings-admin-actions-v2 {
-        flex: 1 1 auto;
-        display: flex;
-        align-items: stretch;
-        justify-content: flex-end;
-        gap: 8px;
-        flex-wrap: wrap;
+        flex:1 1 auto;
+        min-width:0;
+        display:flex;
+        align-items:center;
+        justify-content:flex-start;
+        gap:8px;
+        flex-wrap:nowrap !important;
+        overflow-x:auto;
+        overflow-y:hidden;
+        padding:2px 2px 5px;
+        scrollbar-width:thin;
+        scrollbar-color:rgba(240,196,91,.65) rgba(255,255,255,.08);
       }
+      .settings-admin-actions-v2::-webkit-scrollbar { height:5px; }
+      .settings-admin-actions-v2::-webkit-scrollbar-track { background:rgba(255,255,255,.08); border-radius:999px; }
+      .settings-admin-actions-v2::-webkit-scrollbar-thumb { background:rgba(240,196,91,.65); border-radius:999px; }
       .settings-admin-tab {
-        min-height: 42px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        padding: 9px 12px;
-        border: 1px solid rgba(255,255,255,.24);
-        border-radius: 10px;
-        background: rgba(255,255,255,.08);
-        color: #fff;
-        font: inherit;
-        font-size: 11px;
-        font-weight: 850;
-        cursor: pointer;
-        transition: .18s ease;
+        flex:0 0 auto;
+        min-height:46px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        padding:8px 13px 8px 9px;
+        border:1px solid rgba(255,255,255,.20);
+        border-radius:12px;
+        background:rgba(255,255,255,.075);
+        color:#edf7f4;
+        font:inherit;
+        font-size:10.5px;
+        font-weight:850;
+        white-space:nowrap;
+        cursor:pointer;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+        transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      }
+      .settings-admin-tab .settings-tab-icon {
+        width:30px;
+        height:30px;
+        flex:0 0 30px;
+        display:grid;
+        place-items:center;
+        border-radius:9px;
+        background:rgba(255,255,255,.10);
+        border:1px solid rgba(255,255,255,.13);
+        color:#f0c45b;
+        font-size:14px;
+        line-height:1;
       }
       .settings-admin-tab:hover {
-        transform: translateY(-1px);
-        border-color: rgba(224,173,50,.8);
-        background: rgba(255,255,255,.14);
+        transform:translateY(-1px);
+        border-color:rgba(240,196,91,.72);
+        background:rgba(255,255,255,.13);
+        box-shadow:0 8px 18px rgba(0,0,0,.12);
       }
       .settings-admin-tab.active {
-        color: #173f37;
-        border-color: #e0ad32;
-        background: linear-gradient(135deg,#f4d978,#e0ad32);
-        box-shadow: 0 7px 18px rgba(0,0,0,.16);
+        color:#173f37;
+        border-color:#f0cb6e;
+        background:linear-gradient(135deg,#f6df8f,#e2ad31);
+        box-shadow:0 9px 22px rgba(0,0,0,.18);
       }
-      .settings-admin-tab span { font-size: 15px; line-height: 1; }
+      .settings-admin-tab.active .settings-tab-icon {
+        color:#063a33;
+        background:rgba(255,255,255,.45);
+        border-color:rgba(6,58,51,.12);
+      }
       .settings-admin-panel-host {
-        scroll-margin-top: 112px;
-        margin-top: 0;
-        animation: settingsPanelIn .18s ease both;
+        scroll-margin-top:112px;
+        margin-top:16px;
+        animation:settingsPanelIn .18s ease both;
       }
       @keyframes settingsPanelIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity:0; transform:translateY(5px); }
+        to { opacity:1; transform:translateY(0); }
       }
+
+      /* Pages internes Administration */
       .settings-panel-card {
-        padding: 22px;
-        border-top: 4px solid var(--accent);
+        padding:0;
+        overflow:hidden;
+        border:1px solid #dbe6e1;
+        border-radius:18px;
+        background:#fff;
+        box-shadow:0 13px 34px rgba(4,48,42,.08);
       }
       .settings-panel-heading {
         display:flex;
-        align-items:flex-start;
+        align-items:center;
         justify-content:space-between;
-        gap:16px;
-        padding-bottom:14px;
-        margin-bottom:18px;
-        border-bottom:1px solid var(--line);
+        gap:18px;
+        padding:20px 22px;
+        margin:0;
+        border-bottom:1px solid #dfe8e4;
+        background:linear-gradient(135deg,#f8fbf9,#eef5f2);
       }
-      .settings-panel-heading h3 { margin: 3px 0 4px; color: var(--primary); font-size: 19px; }
-      .settings-panel-heading p { margin:0; color:var(--muted); font-size:12px; line-height:1.55; }
-      .settings-panel-kicker { font-size:9px; font-weight:950; letter-spacing:.16em; color:#9b7820; }
-      .settings-panel-form { max-width: 980px; }
+      .settings-panel-heading-main { display:flex; align-items:center; gap:14px; min-width:0; }
+      .settings-panel-heading-icon {
+        width:46px;
+        height:46px;
+        flex:0 0 46px;
+        display:grid;
+        place-items:center;
+        border-radius:13px;
+        background:linear-gradient(135deg,#073c36,#0a6256);
+        color:#f0c45b;
+        font-size:20px;
+        box-shadow:0 8px 20px rgba(4,48,42,.14);
+      }
+      .settings-panel-heading h3 { margin:3px 0 4px; color:var(--primary); font-size:20px; line-height:1.2; }
+      .settings-panel-heading p { margin:0; max-width:760px; color:var(--muted); font-size:11.5px; line-height:1.55; }
+      .settings-panel-kicker { font-size:8.5px; font-weight:950; letter-spacing:.16em; color:#9b7820; }
+      .settings-panel-body { padding:22px; }
+      .settings-panel-form {
+        max-width:none;
+        padding:18px;
+        border:1px solid #e2ebe7;
+        border-radius:14px;
+        background:#fbfcfb;
+      }
+      .settings-panel-form .field { margin:0; }
+      .settings-panel-form .field label { margin-bottom:6px; color:#31554d; font-weight:850; }
+      .settings-panel-form input,
+      .settings-panel-form select,
+      .settings-panel-form textarea {
+        min-height:44px;
+        border-color:#d6e2dd;
+        background:#fff;
+      }
+      .settings-panel-form input:focus,
+      .settings-panel-form select:focus,
+      .settings-panel-form textarea:focus {
+        border-color:#0b6d5f;
+        box-shadow:0 0 0 3px rgba(11,109,95,.10);
+      }
       .settings-panel-save {
         display:flex;
         justify-content:flex-end;
-        margin-top:20px;
-        padding-top:16px;
-        border-top:1px solid var(--line);
+        margin:0;
+        padding:16px 22px;
+        border-top:1px solid #dfe8e4;
+        background:#f8faf9;
       }
-      .settings-panel-save .btn { min-width: 160px; }
-      .settings-security-log .kpi-row { padding: 11px 0; }
-      .settings-embedded-module > .page-head { margin-top:0; }
-      .settings-embedded-module .page-head,
+      .settings-panel-save .btn {
+        min-width:180px;
+        min-height:43px;
+        border-radius:10px;
+        box-shadow:0 7px 18px rgba(4,48,42,.12);
+      }
+      .settings-security-log { padding:4px 0; }
+      .settings-security-log .kpi-row {
+        padding:13px 14px;
+        margin-bottom:8px;
+        border:1px solid #e1e9e5;
+        border-radius:11px;
+        background:#fbfcfb;
+      }
+      .settings-security-log .kpi-row:last-child { margin-bottom:0; }
+
+      /* Modules Utilisateurs / Messages intégrés */
+      .settings-embedded-module {
+        padding:20px;
+        border:1px solid #dbe6e1;
+        border-radius:18px;
+        background:#fff;
+        box-shadow:0 13px 34px rgba(4,48,42,.08);
+      }
+      .settings-embedded-module > .page-head {
+        margin:0 0 16px;
+        padding:18px 20px;
+        border:1px solid #e0e9e5;
+        border-radius:14px;
+        background:linear-gradient(135deg,#f8fbf9,#eef5f2);
+      }
+      .settings-embedded-module .page-head h2 { color:#073c36; }
+      .settings-embedded-module .page-head p { color:#6d8079; }
       .settings-embedded-module .card,
       .settings-embedded-module .table-wrap,
       .settings-embedded-module .user-limit,
       .settings-embedded-module .company-message-grid,
       .settings-embedded-module .support-section-head,
       .settings-embedded-module .support-outbox-grid { max-width:100%; }
+      .settings-embedded-module .user-limit {
+        padding:14px 16px;
+        border:1px solid #dce6e2;
+        border-radius:12px;
+        background:#f8fbf9;
+      }
+      .settings-embedded-module .table-wrap {
+        border:1px solid #dfe8e4;
+        border-radius:13px;
+        overflow:auto;
+        box-shadow:none;
+      }
+      .settings-embedded-module .data-table thead th { background:#eef5f2; color:#244b43; }
+      .settings-embedded-module .company-message-card,
+      .settings-embedded-module .support-outbox-card {
+        border-radius:13px;
+        box-shadow:0 8px 22px rgba(4,48,42,.06);
+      }
+
       @media (max-width: 1050px) {
-        .settings-admin-links-v2 { flex-direction:column; }
-        .settings-admin-title { flex-basis:auto; min-width:0; }
-        .settings-admin-actions-v2 { width:100%; justify-content:flex-start; }
+        .settings-admin-links-v2 { gap:12px; padding:14px; }
+        .settings-admin-title { min-width:180px; padding-right:12px; }
+        .settings-admin-title p { display:none; }
+        .settings-admin-tab { padding-right:11px; }
       }
       @media (max-width: 650px) {
-        .settings-admin-links-v2 { padding:16px; }
-        .settings-admin-actions-v2 { display:grid; grid-template-columns:1fr; }
-        .settings-admin-tab { width:100%; justify-content:flex-start; }
-        .settings-panel-card { padding:16px; }
+        .settings-admin-links-v2 { flex-direction:row !important; align-items:center !important; padding:12px; gap:10px; border-radius:14px; }
+        .settings-admin-title { min-width:142px; }
+        .settings-admin-title h3 { font-size:13px; }
+        .settings-admin-kicker { font-size:8px; }
+        .settings-admin-tab { min-height:42px; font-size:10px; padding:6px 10px 6px 7px; }
+        .settings-admin-tab .settings-tab-icon { width:27px; height:27px; flex-basis:27px; font-size:12px; }
+        .settings-panel-heading { padding:16px; }
+        .settings-panel-heading-icon { width:40px; height:40px; flex-basis:40px; }
+        .settings-panel-body { padding:14px; }
+        .settings-panel-form { padding:14px; }
+        .settings-panel-save { padding:14px; }
         .settings-panel-save .btn { width:100%; }
+        .settings-embedded-module { padding:14px; }
       }
 </style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
         );
@@ -10454,7 +10597,7 @@
           ["messages", "Notes et notifications", "✉"],
         ];
         return buttons
-          .map(([key, label, icon]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span aria-hidden="true">${icon}</span>${label}</button>`)
+          .map(([key, label, icon]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span class="settings-tab-icon" aria-hidden="true">${icon}</span><span>${label}</span></button>`)
           .join("");
       }
 
@@ -10477,21 +10620,25 @@
         return $("adminMessages")?.innerHTML || '<div class="empty card">Aucune note ou notification.</div>';
       }
 
+      function settingsPanelHeadingHTML(icon, kicker, title, description) {
+        return `<div class="settings-panel-heading"><div class="settings-panel-heading-main"><span class="settings-panel-heading-icon" aria-hidden="true">${icon}</span><div><span class="settings-panel-kicker">${kicker}</span><h3>${title}</h3><p>${description}</p></div></div></div>`;
+      }
+
       function settingsAdminPanelHTML() {
         const settings = data.settings;
         if (settingsAdminPanel === "finance") {
-          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">PARAMÈTRES FINANCIERS</span><h3>Finances et apparence</h3><p>Définissez les valeurs financières utilisées par l’application et personnalisez les couleurs de l’agence.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveFinanceSettings()">Enregistrer</button></div></div>`;
+          return `<div class="card settings-panel-card">${settingsPanelHeadingHTML("₣", "PARAMÈTRES FINANCIERS", "Finances et apparence", "Définissez les valeurs financières utilisées par l’application et personnalisez les couleurs de l’agence.")}<div class="settings-panel-body"><div class="form-grid settings-panel-form"><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveFinanceSettings()">Enregistrer les modifications</button></div></div>`;
         }
         if (settingsAdminPanel === "security") {
-          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">ACCÈS ET PROTECTION</span><h3>Administrateur et sécurité</h3><p>Gérez les identifiants du compte administrateur principal et la durée d’inactivité autorisée.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" min="1" value="${settings.autoLogout}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveSecuritySettings()">Enregistrer</button></div></div>`;
+          return `<div class="card settings-panel-card">${settingsPanelHeadingHTML("⌾", "ACCÈS ET PROTECTION", "Administrateur et sécurité", "Gérez les identifiants du compte administrateur principal et la durée d’inactivité autorisée.")}<div class="settings-panel-body"><div class="form-grid settings-panel-form"><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" min="1" value="${settings.autoLogout}"></div></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveSecuritySettings()">Enregistrer les modifications</button></div></div>`;
         }
         if (settingsAdminPanel === "journal") {
-          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">TRAÇABILITÉ</span><h3>Journal de sécurité</h3><p>Consultez les dernières connexions enregistrées pour cette entreprise.</p></div></div><div class="kpi-list settings-security-log">${
+          return `<div class="card settings-panel-card">${settingsPanelHeadingHTML("▤", "TRAÇABILITÉ", "Journal de sécurité", "Consultez les dernières connexions enregistrées pour cette entreprise.")}<div class="settings-panel-body"><div class="kpi-list settings-security-log">${
             data.loginHistory
               .slice(0, 20)
               .map((x) => `<div class="kpi-row"><span>Connexion — ${esc(x.user)} <small>(${esc(x.role || "Administrateur")})</small></span><small>${new Date(x.date).toLocaleString("fr-FR")}</small></div>`)
               .join("") || '<div class="empty">Aucune connexion enregistrée.</div>'
-          }</div></div>`;
+          }</div></div></div>`;
         }
         if (settingsAdminPanel === "users") {
           return `<div class="settings-embedded-module">${renderSettingsUsersPanel()}</div>`;
@@ -10499,7 +10646,7 @@
         if (settingsAdminPanel === "messages") {
           return `<div class="settings-embedded-module">${renderSettingsMessagesPanel()}</div>`;
         }
-        return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">IDENTITÉ DE L’AGENCE</span><h3>Informations de l’agence</h3><p>Modifiez les informations officielles utilisées dans l’application et sur vos documents.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field span-2"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveAgencySettings()">Enregistrer</button></div></div>`;
+        return `<div class="card settings-panel-card">${settingsPanelHeadingHTML("⌂", "IDENTITÉ DE L’AGENCE", "Informations de l’agence", "Modifiez les informations officielles utilisées dans l’application et sur vos documents.")}<div class="settings-panel-body"><div class="form-grid settings-panel-form"><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field span-2"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveAgencySettings()">Enregistrer les modifications</button></div></div>`;
       }
 
       renderSettings = function () {
@@ -10516,7 +10663,7 @@
             : info.plan === "standard"
               ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
               : "") +
-          `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Sélectionnez une rubrique : elle s’ouvre directement sous cette bannière sans quitter Paramètres.</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
+          `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Navigation interne des paramètres</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
       };
 
       async function saveAgencySettings() {
