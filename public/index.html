@@ -3014,108 +3014,180 @@
         .gi-footer-inner { justify-content:flex-start; }
       }
 
+
+
+      /* ===== Correction ciblée V15 : accueil plein écran + navigation simplifiée ===== */
+      .gi-home-v2 { min-height:100vh; width:100%; background:#f5f7f6; }
+      .gi-home-nav-v2 { width:100%; min-height:74px; padding:10px clamp(20px,3vw,48px); border-bottom:1px solid rgba(7,60,54,.10); background:rgba(255,255,255,.96); backdrop-filter:blur(14px); position:relative; z-index:20; }
+      .gi-home-main-v2 { width:100%; max-width:none !important; margin:0 !important; padding:0 !important; }
+      .gi-home-stage { width:100%; min-height:calc(100vh - 74px); display:grid; grid-template-columns:minmax(0,1.68fr) minmax(390px,.72fr); background:#fff; }
+      .gi-home-showcase { position:relative; min-height:calc(100vh - 74px); overflow:hidden; isolation:isolate; }
+      .gi-home-villa { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:-3; }
+      .gi-home-shade { position:absolute; inset:0; z-index:-2; background:linear-gradient(90deg,rgba(1,30,27,.96) 0%,rgba(2,44,39,.87) 34%,rgba(4,57,50,.52) 65%,rgba(4,57,50,.16) 100%),linear-gradient(0deg,rgba(0,25,22,.62),transparent 50%); }
+      .gi-home-decor { position:absolute; border:1px solid rgba(229,190,92,.38); border-radius:50%; pointer-events:none; }
+      .gi-home-decor-one { width:360px; height:360px; right:-120px; top:-95px; }
+      .gi-home-decor-two { width:210px; height:210px; right:35px; top:-45px; }
+      .gi-home-showcase-content { min-height:calc(100vh - 74px); max-width:940px; padding:clamp(54px,7vw,105px) clamp(34px,6vw,96px) 44px; color:#fff; display:flex; flex-direction:column; justify-content:center; }
+      .gi-home-eyebrow { display:flex; align-items:center; gap:10px; letter-spacing:.16em; font-size:11px; font-weight:900; color:#f0c45b; }
+      .gi-home-eyebrow span { width:36px; height:2px; background:#f0c45b; }
+      .gi-home-showcase h1 { max-width:830px; margin:18px 0 18px; font-size:clamp(42px,5vw,74px); line-height:1.02; letter-spacing:-.045em; font-weight:850; }
+      .gi-home-showcase h1 em { display:block; color:#f0c45b; font-style:normal; }
+      .gi-home-showcase-content > p { max-width:720px; margin:0; color:#dbe8e4; font-size:clamp(15px,1.25vw,18px); line-height:1.75; }
+      .gi-home-cta-row { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+      .gi-home-main-cta { min-height:48px; padding-inline:22px; box-shadow:0 12px 30px rgba(0,0,0,.18); }
+      .gi-home-catalog-cta { min-height:48px; padding-inline:22px; color:#fff; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.10); backdrop-filter:blur(6px); }
+      .gi-home-catalog-cta:hover { color:#fff; background:rgba(255,255,255,.18); }
+      .gi-home-capabilities { width:min(900px,100%); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:34px; }
+      .gi-home-capabilities article { display:flex; align-items:center; gap:13px; min-height:76px; padding:12px 14px; border:1px solid rgba(255,255,255,.16); border-radius:14px; background:rgba(4,42,37,.48); backdrop-filter:blur(9px); }
+      .gi-home-capabilities article > span { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border:1px solid rgba(240,196,91,.7); border-radius:10px; color:#f0c45b; font-size:10px; font-weight:900; }
+      .gi-home-capabilities strong { display:block; color:#fff; font-size:12px; margin-bottom:3px; }
+      .gi-home-capabilities small { display:block; color:#bdd2cb; font-size:10.5px; line-height:1.45; }
+      .gi-auth-zone { min-width:0; min-height:calc(100vh - 74px); padding:clamp(28px,4vw,56px) clamp(24px,3vw,46px); display:flex; flex-direction:column; justify-content:center; background:linear-gradient(160deg,#ffffff 0%,#f7faf8 54%,#eef4f1 100%); border-left:1px solid #e3ebe7; position:relative; }
+      .gi-auth-zone::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#c89b31,#efd273,#c89b31); }
+      .gi-auth-brandline { display:flex; align-items:center; gap:12px; margin:0 auto 18px; width:min(520px,100%); }
+      .gi-auth-mark { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:#073c36; color:#f0c45b; font-weight:950; box-shadow:0 8px 18px rgba(7,60,54,.16); }
+      .gi-auth-brandline strong,.gi-auth-brandline small { display:block; }
+      .gi-auth-brandline strong { color:#073c36; font-size:13px; }
+      .gi-auth-brandline small { color:#7a8883; font-size:10.5px; margin-top:2px; }
+      .gi-auth-zone .login-wrap { width:min(520px,100%); margin:0 auto; padding:0; min-height:0; }
+      .gi-auth-zone .login-card,.gi-auth-zone .login-card.create-mode { width:100%; min-height:0; padding:clamp(24px,3vw,36px); border:1px solid #e2eae6; border-radius:22px; background:rgba(255,255,255,.98); box-shadow:0 24px 70px rgba(1,45,39,.11); }
+      .gi-auth-zone .gi-login-heading { margin-bottom:18px; }
+      .gi-auth-zone .gi-login-heading small { color:#b18324; letter-spacing:.12em; font-size:9.5px; font-weight:900; }
+      .gi-auth-zone .gi-login-heading h2 { margin:5px 0 6px; font-size:31px; color:#073c36; }
+      .gi-auth-zone .gi-login-heading p { margin:0; color:#71807a; font-size:12px; line-height:1.55; }
+      .gi-auth-zone .auth-choice { margin-bottom:18px; }
+      .gi-auth-zone .auth-panel > p { color:#71807a; }
+      .gi-auth-zone .field label { color:#294942; font-weight:800; }
+      .gi-auth-zone input { min-height:44px; }
+      .gi-auth-help { margin-top:14px; color:#778681; font-size:10.5px; text-align:center; }
+      .gi-auth-help span { color:#16805f; }
+      .gi-auth-assurance { width:min(520px,100%); margin:16px auto 0; padding:12px 14px; border-radius:13px; border:1px solid #e1e9e5; background:#f9fbfa; text-align:center; }
+      .gi-auth-assurance b,.gi-auth-assurance span { display:block; }
+      .gi-auth-assurance b { color:#244b43; font-size:10.5px; }
+      .gi-auth-assurance span { color:#87928e; font-size:9.5px; margin-top:3px; }
+      .gi-home-v2 .gi-footer { margin-top:0; }
+      .gi-home-v2 .gi-footer-inner { min-height:58px; }
+
+      /* Menu horizontal : fonctions principales uniquement */
+      #appShell .sidebar .icon-logout { width:38px; min-width:38px; height:38px; padding:0; display:grid; place-items:center; font-size:20px; border:1px solid rgba(255,255,255,.18); border-radius:50%; color:#ffe4e4; }
+      #appShell .sidebar .icon-logout:hover { background:rgba(190,40,40,.32); }
+      .settings-admin-links { display:flex; align-items:center; justify-content:space-between; gap:20px; margin:0 0 16px; padding:20px 22px; border:1px solid #dbe6e1; border-radius:16px; background:linear-gradient(135deg,#073c36,#0a5148); color:#fff; box-shadow:var(--shadow); }
+      .settings-admin-links h3 { margin:4px 0 5px; color:#fff; }
+      .settings-admin-links p { margin:0; color:#cfe2dc; font-size:11px; }
+      .settings-admin-kicker { color:#f0c45b; font-size:9px; font-weight:950; letter-spacing:.14em; }
+      .settings-admin-actions { display:flex; gap:9px; flex-wrap:wrap; justify-content:flex-end; }
+      .settings-admin-actions .btn-light { border-color:#d8c58e; }
+
+      @media (max-width: 1180px) {
+        .gi-home-stage { grid-template-columns:1fr; }
+        .gi-home-showcase,.gi-home-showcase-content { min-height:720px; }
+        .gi-auth-zone { min-height:auto; padding-block:46px; }
+      }
+      @media (max-width: 720px) {
+        .gi-home-nav-v2 { min-height:64px; padding:9px 14px; }
+        .gi-home-stage { min-height:0; }
+        .gi-home-showcase,.gi-home-showcase-content { min-height:650px; }
+        .gi-home-showcase-content { padding:52px 20px 28px; justify-content:flex-end; }
+        .gi-home-showcase h1 { font-size:40px; }
+        .gi-home-capabilities { grid-template-columns:1fr 1fr; gap:7px; }
+        .gi-home-capabilities article { min-height:68px; padding:9px; gap:8px; }
+        .gi-home-capabilities article > span { display:none; }
+        .gi-home-capabilities small { font-size:9px; }
+        .gi-auth-zone { padding:32px 14px; }
+        .settings-admin-links { align-items:stretch; flex-direction:column; }
+        .settings-admin-actions { justify-content:stretch; }
+        .settings-admin-actions .btn { flex:1 1 100%; }
+      }
+
 </style>
   </head>
   <body>
-    <section id="loginPage" class="login-page gi-home-page">
-      <header class="gi-home-nav">
+    <section id="loginPage" class="login-page gi-home-page gi-home-v2">
+      <header class="gi-home-nav gi-home-nav-v2">
         <div class="gi-home-brand">
           <div class="gi-home-logo">GI</div>
-          <div><strong>GLOBAL IMMOBILIER</strong><small>Gestion immobilière professionnelle</small></div>
+          <div><strong>GLOBAL IMMOBILIER</strong><small>La gestion immobilière, organisée autrement</small></div>
         </div>
         <nav aria-label="Navigation principale">
           <button class="gi-home-link active" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">Accueil</button>
         </nav>
       </header>
 
-      <main class="gi-home-main">
-        <section class="gi-hero-grid">
-          <div class="gi-villa-showcase">
-            <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&amp;fit=crop&amp;w=1800&amp;q=82" alt="Villa moderne de standing" loading="eager" />
-            <div class="gi-villa-overlay"></div>
-            <div class="gi-villa-copy">
-              <span class="gi-kicker">PLATEFORME IMMOBILIÈRE TOUT-EN-UN</span>
-              <h1>Gérez vos biens. Développez votre agence. Publiez plus facilement.</h1>
-              <p>GLOBAL IMMOBILIER centralise vos propriétaires, biens, locataires, loyers, dépenses, visites, documents et publications dans un espace professionnel simple à piloter.</p>
-              <div class="gi-hero-actions">
-                <button class="btn btn-accent" type="button" onclick="setAuthMode('create'); document.querySelector('.login-wrap').scrollIntoView({behavior:'smooth',block:'center'})">Créer mon entreprise</button>
-                <button class="btn gi-ghost-btn" type="button" onclick="openPublicFromLogin()">Voir le catalogue public</button>
+      <main class="gi-home-main gi-home-main-v2">
+        <section class="gi-home-stage">
+          <div class="gi-home-showcase">
+            <img class="gi-home-villa" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&amp;fit=crop&amp;w=2200&amp;q=88" alt="Villa moderne de standing" loading="eager" />
+            <div class="gi-home-shade"></div>
+            <div class="gi-home-decor gi-home-decor-one"></div>
+            <div class="gi-home-decor gi-home-decor-two"></div>
+            <div class="gi-home-showcase-content">
+              <div class="gi-home-eyebrow"><span></span> SOLUTION DE GESTION IMMOBILIÈRE</div>
+              <h1>Gérez votre activité immobilière avec <em>clarté, contrôle et efficacité.</em></h1>
+              <p>GLOBAL IMMOBILIER réunit dans un même environnement vos propriétaires, biens, locataires, paiements, dépenses, visites, publications et documents professionnels.</p>
+              <div class="gi-home-cta-row">
+                <button class="btn btn-accent gi-home-main-cta" type="button" onclick="setAuthMode('create'); document.querySelector('.gi-auth-zone').scrollIntoView({behavior:'smooth',block:'center'})">Créer mon espace professionnel</button>
+                <button class="btn gi-home-catalog-cta" type="button" onclick="openPublicFromLogin()">Consulter le catalogue public</button>
               </div>
-              <div class="gi-trust-row"><span>✓ Gestion centralisée</span><span>✓ Suivi financier</span><span>✓ Catalogue public</span></div>
-            </div>
-          </div>
-
-          <div class="login-wrap">
-            <div class="login-card">
-              <div class="gi-login-heading">
-                <span class="gi-login-icon">⌂</span>
-                <div><small>ESPACE PROFESSIONNEL</small><h2>Accédez à votre entreprise</h2></div>
-              </div>
-              <div class="auth-choice">
-                <button id="authLoginBtn" class="btn btn-primary active" type="button" onclick="setAuthMode('login')">Se connecter</button>
-                <button id="authCreateBtn" class="btn btn-light" type="button" onclick="setAuthMode('create')">Créer une entreprise</button>
-              </div>
-
-              <div id="loginPanel" class="auth-panel active">
-                <p>Connectez-vous avec votre identifiant administrateur ou utilisateur.</p>
-                <form id="loginForm">
-                  <div class="field"><label for="loginUser">Identifiant</label><input id="loginUser" autocomplete="username" placeholder="Votre identifiant" required /></div>
-                  <div class="field"><label for="loginPass">Mot de passe</label><div class="password-box"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button></div></div>
-                  <button class="btn full login-primary-action" type="submit">Se connecter</button>
-                </form>
-                <div class="auth-note">Accès sécurisé à l’espace de gestion de votre entreprise.</div>
-              </div>
-
-              <div id="createPanel" class="auth-panel">
-                <h2>Créer une entreprise immobilière</h2>
-                <p>Démarrez avec la formule Free pendant 10 jours.</p>
-                <form id="createCompanyForm" class="create-company-grid">
-                  <div class="field"><label for="createAgency">Nom de l’entreprise *</label><input id="createAgency" autocomplete="organization" placeholder="Nom de la société immobilière" required /></div>
-                  <div class="field"><label for="createPhone">Téléphone</label><input id="createPhone" autocomplete="tel" placeholder="Ex. 0777041790" /></div>
-                  <div class="field"><label for="createEmail">Adresse e-mail</label><input id="createEmail" type="email" autocomplete="email" placeholder="contact@entreprise.ci" /></div>
-                  <div class="field"><label for="createAddress">Adresse</label><input id="createAddress" placeholder="Ville, commune ou quartier" /></div>
-                  <div class="field"><label for="createUser">Identifiant administrateur *</label><input id="createUser" autocomplete="username" placeholder="Choisissez un identifiant unique" required /></div>
-                  <div class="field"><label for="createPass">Mot de passe *</label><div class="password-box"><input id="createPass" type="password" autocomplete="new-password" minlength="4" placeholder="Créez un mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('createPass', this)">Afficher</button></div></div>
-                  <div class="field"><label for="createPass2">Confirmer le mot de passe *</label><div class="password-box"><input id="createPass2" type="password" autocomplete="new-password" minlength="4" placeholder="Confirmez le mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('createPass2', this)">Afficher</button></div></div>
-                  <button class="btn full create-submit" type="submit">Créer l’entreprise</button>
-                </form>
-                <div class="auth-note">Free : 10 jours · 2 propriétaires · 2 biens par propriétaire.</div>
+              <div class="gi-home-capabilities">
+                <article><span>01</span><div><strong>Portefeuille immobilier</strong><small>Propriétaires, biens et disponibilités centralisés.</small></div></article>
+                <article><span>02</span><div><strong>Gestion locative</strong><small>Locataires, loyers, paiements et échéances suivis.</small></div></article>
+                <article><span>03</span><div><strong>Pilotage financier</strong><small>Comptabilité, dépenses et indicateurs regroupés.</small></div></article>
+                <article><span>04</span><div><strong>Visibilité commerciale</strong><small>Catalogue public, visites et demandes clients.</small></div></article>
               </div>
             </div>
           </div>
-        </section>
 
-        <section class="gi-feature-section">
-          <div class="gi-section-title"><span>FONCTIONNALITÉS</span><h2>Tout ce qu’il faut pour gérer une activité immobilière avec méthode</h2><p>Une interface unique pour suivre vos opérations de la prospection jusqu’aux rapports de gestion.</p></div>
-          <div class="gi-feature-grid">
-            <article><b>01</b><h3>Propriétaires &amp; biens</h3><p>Centralisez les fiches propriétaires, logements, terrains, magasins, bureaux et disponibilités.</p></article>
-            <article><b>02</b><h3>Locations &amp; locataires</h3><p>Suivez les locataires, contrats, échéances, loyers encaissés et situations en attente.</p></article>
-            <article><b>03</b><h3>Comptabilité &amp; rapports</h3><p>Visualisez revenus, commissions, dépenses, reversements et indicateurs utiles à la décision.</p></article>
-            <article><b>04</b><h3>Catalogue public</h3><p>Avec Standard ou Business, publiez vos biens disponibles pour les rendre visibles aux visiteurs.</p></article>
-            <article><b>05</b><h3>Visites &amp; demandes</h3><p>Réceptionnez et organisez les demandes de visite et les propositions de mise en location.</p></article>
-            <article><b>06</b><h3>Documents professionnels</h3><p>Préparez contrats, reçus, quittances, fiches et rapports imprimables depuis le programme.</p></article>
-          </div>
-        </section>
+          <aside class="gi-auth-zone" aria-label="Espace de connexion">
+            <div class="gi-auth-brandline"><span class="gi-auth-mark">GI</span><div><strong>Espace professionnel</strong><small>Accès sécurisé à votre entreprise</small></div></div>
+            <div class="login-wrap">
+              <div class="login-card">
+                <div class="gi-login-heading">
+                  <div><small>GLOBAL IMMOBILIER</small><h2>Bienvenue</h2><p>Connectez-vous ou créez l’espace de votre entreprise immobilière.</p></div>
+                </div>
+                <div class="auth-choice">
+                  <button id="authLoginBtn" class="btn btn-primary active" type="button" onclick="setAuthMode('login')">Se connecter</button>
+                  <button id="authCreateBtn" class="btn btn-light" type="button" onclick="setAuthMode('create')">Créer une entreprise</button>
+                </div>
 
-        <section class="gi-plan-section">
-          <div class="gi-section-title"><span>FORMULES</span><h2>Une offre adaptée à chaque niveau d’activité</h2></div>
-          <div class="gi-plan-grid">
-            <article><span class="gi-plan-name">FREE</span><strong>0 FCFA</strong><small>10 jours</small><p>2 propriétaires · 2 biens par propriétaire · sans Catalogue public.</p></article>
-            <article class="featured"><span class="gi-plan-name">STANDARD</span><strong>6 200 FCFA</strong><small>par mois</small><p>10 propriétaires · 5 biens par propriétaire · Catalogue public inclus.</p></article>
-            <article><span class="gi-plan-name">BUSINESS</span><strong>56 200 FCFA</strong><small>par an</small><p>Accès complet et illimité au programme.</p></article>
-          </div>
+                <div id="loginPanel" class="auth-panel active">
+                  <form id="loginForm">
+                    <div class="field"><label for="loginUser">Identifiant</label><input id="loginUser" autocomplete="username" placeholder="Votre identifiant" required /></div>
+                    <div class="field"><label for="loginPass">Mot de passe</label><div class="password-box"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button></div></div>
+                    <button class="btn full login-primary-action" type="submit">Se connecter</button>
+                  </form>
+                  <div class="gi-auth-help"><span>●</span> Connexion sécurisée à votre environnement de travail.</div>
+                </div>
+
+                <div id="createPanel" class="auth-panel">
+                  <h2>Créer votre entreprise</h2>
+                  <p>Configurez votre espace professionnel en quelques informations.</p>
+                  <form id="createCompanyForm" class="create-company-grid">
+                    <div class="field"><label for="createAgency">Nom de l’entreprise *</label><input id="createAgency" autocomplete="organization" placeholder="Nom de la société immobilière" required /></div>
+                    <div class="field"><label for="createPhone">Téléphone</label><input id="createPhone" autocomplete="tel" placeholder="Ex. 0777041790" /></div>
+                    <div class="field"><label for="createEmail">Adresse e-mail</label><input id="createEmail" type="email" autocomplete="email" placeholder="contact@entreprise.ci" /></div>
+                    <div class="field"><label for="createAddress">Adresse</label><input id="createAddress" placeholder="Ville, commune ou quartier" /></div>
+                    <div class="field"><label for="createUser">Identifiant administrateur *</label><input id="createUser" autocomplete="username" placeholder="Choisissez un identifiant unique" required /></div>
+                    <div class="field"><label for="createPass">Mot de passe *</label><div class="password-box"><input id="createPass" type="password" autocomplete="new-password" minlength="4" placeholder="Créez un mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('createPass', this)">Afficher</button></div></div>
+                    <div class="field"><label for="createPass2">Confirmer le mot de passe *</label><div class="password-box"><input id="createPass2" type="password" autocomplete="new-password" minlength="4" placeholder="Confirmez le mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('createPass2', this)">Afficher</button></div></div>
+                    <button class="btn full create-submit" type="submit">Créer l’entreprise</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="gi-auth-assurance"><b>Une interface pensée pour les professionnels</b><span>Simple à prendre en main · Centralisée · Responsive</span></div>
+          </aside>
         </section>
       </main>
       <footer class="gi-footer">
-  <div class="gi-footer-inner">
-    <strong>GLOBAL IMMOBILIER — exploité par MEGA SERVICES SARL U</strong>
-    <span><b>Téléphone :</b> <a href="tel:+2250777041790">+225 0777041790</a> · <b>WhatsApp :</b> <a href="https://wa.me/2250777041790" target="_blank" rel="noopener">+225 0777041790</a></span>
-    <span><b>E-mail :</b> <a href="mailto:megaservicediabo@gmail.com">megaservicediabo@gmail.com</a></span>
-    <span><b>RCCM :</b> CI-BKE-2020-B-1150</span>
-    <span><b>Compte contribuable :</b> 2039493 M</span>
-    <span><b>Siège social :</b> Diabo</span>
-  </div>
-</footer>
+        <div class="gi-footer-inner">
+          <strong>GLOBAL IMMOBILIER — exploité par MEGA SERVICES SARL U</strong>
+          <span><b>Téléphone :</b> <a href="tel:+2250777041790">+225 0777041790</a> · <b>WhatsApp :</b> <a href="https://wa.me/2250777041790" target="_blank" rel="noopener">+225 0777041790</a></span>
+          <span><b>E-mail :</b> <a href="mailto:megaservicediabo@gmail.com">megaservicediabo@gmail.com</a></span>
+          <span><b>RCCM :</b> CI-BKE-2020-B-1150</span>
+          <span><b>Compte contribuable :</b> 2039493 M</span>
+          <span><b>Siège social :</b> Diabo</span>
+        </div>
+      </footer>
     </section>
 
     <section id="appShell" class="app hidden">
@@ -3124,22 +3196,18 @@
           <div id="sideLogo" class="logo">GI</div>
           <div><strong id="sideAgency">GLOBAL IMMOBILIER</strong><small>Gestion immobilière</small></div>
         </div>
-        <button class="nav-btn active" data-page="home">⌂ Accueil</button>
-        <button class="nav-btn" data-page="dashboard">▦ Tableau de bord</button>
+        <button class="nav-btn active" data-page="dashboard">▦ Tableau de bord</button>
         <button class="nav-btn" data-page="owners">♙ Propriétaires</button>
         <button class="nav-btn" data-page="properties">⌂ Biens immobiliers</button>
         <button class="nav-btn" data-page="tenants">♟ Locataires</button>
         <button class="nav-btn" data-page="payments">₣ Paiements et loyers</button>
         <button class="nav-btn" data-page="accounting">▥ Comptabilité</button>
-        <button class="nav-btn" data-page="reports">▧ Rapports</button>
         <button class="nav-btn" data-page="visits">◷ Réservations et visites</button>
         <button class="nav-btn" data-page="catalogAdmin">◎ Catalogue public</button>
-        <button class="nav-btn" data-page="adminMessages">✉ Notes et notifications</button>
-        <button class="nav-btn" data-page="users" data-admin-only="true">♜ Utilisateurs</button>
         <button class="nav-btn" data-page="settings" data-admin-only="true">⚙ Paramètres</button>
         <div class="nav-footer">
           <button class="nav-btn" type="button" onclick="showPublic()">↗ Voir le catalogue</button>
-          <button class="nav-btn logout-nav" type="button" onclick="logout()">⇥ Déconnexion</button>
+          <button class="nav-btn logout-nav icon-logout" type="button" onclick="logout()" title="Déconnexion" aria-label="Déconnexion">⇥</button>
         </div>
       </nav>
       <main class="main">
@@ -3151,7 +3219,7 @@
             >
               ☰
             </button>
-            <h1 id="topTitle">Accueil</h1>
+            <h1 id="topTitle">Tableau de bord</h1>
           </div>
           <div class="top-actions">
             <span id="subscriptionPill" class="pill subscription-pill free"
@@ -3164,29 +3232,12 @@
           </div>
         </header>
         <div class="content">
-          <section id="home" class="page">
-            <div class="connected-home-hero">
-              <div class="connected-home-copy">
-                <span class="gi-kicker">BIENVENUE DANS VOTRE ESPACE</span>
-                <h2>GLOBAL IMMOBILIER</h2>
-                <p>Gérez votre portefeuille immobilier depuis une interface centralisée : propriétaires, biens, locataires, paiements, comptabilité, visites, catalogue et rapports.</p>
-                <div class="actions"><button class="btn btn-accent" type="button" onclick="navigate('dashboard')">Ouvrir le tableau de bord</button><button class="btn btn-light" type="button" onclick="navigate('properties')">Voir mes biens</button></div>
-              </div>
-              <div class="connected-home-image" role="img" aria-label="Villa moderne de standing"></div>
-            </div>
-            <div class="connected-home-cards">
-              <article><strong>Gestion structurée</strong><span>Un seul espace pour vos opérations immobilières.</span></article>
-              <article><strong>Suivi financier</strong><span>Loyers, paiements, dépenses, reversements et rapports.</span></article>
-              <article><strong>Visibilité commerciale</strong><span>Publication au Catalogue public selon votre formule.</span></article>
-            </div>
-          </section>
           <section id="dashboard" class="page"></section>
           <section id="properties" class="page"></section>
           <section id="owners" class="page"></section>
           <section id="tenants" class="page"></section>
           <section id="payments" class="page"></section>
           <section id="accounting" class="page"></section>
-          <section id="reports" class="page"></section>
           <section id="visits" class="page"></section>
           <section id="propertyOfferRequests" class="page"></section>
           <section id="catalogAdmin" class="page"></section>
@@ -3829,7 +3880,7 @@
       let enterprises = [];
       let activeCompanyId = "";
       let data = clone(defaultData),
-        currentPage = "home",
+        currentPage = "dashboard",
         propertyView = "all",
         paymentView = "all",
         editing = null,
@@ -8933,7 +8984,7 @@
             : info.plan === "standard"
               ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
               : "") +
-          `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${settings.autoLogout}"></div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
+          `<div class="settings-admin-links"><div><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Retrouvez ici les fonctions administratives retirées du menu principal.</p></div><div class="settings-admin-actions"><button class="btn btn-primary" type="button" onclick="navigate('users')">♜ Utilisateurs</button><button class="btn btn-light" type="button" onclick="navigate('adminMessages')">✉ Notes et notifications</button></div></div><div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${settings.autoLogout}"></div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
               .map(
@@ -10244,38 +10295,34 @@
       };
       /* ========== FIN ASSISTANCE ENTREPRISE ET BOÎTE SUPER ADMIN ========== */
 
-
-      /* ===== Navigation Accueil connectée ===== */
-      const allowedPagesBeforeHomePage = allowedPagesForUser;
+      /* ===== Navigation entreprise simplifiée ===== */
+      const allowedPagesBeforeSimplifiedNavigation = allowedPagesForUser;
       allowedPagesForUser = function () {
-        const pages = [...allowedPagesBeforeHomePage()];
-        if (sessionKind === "company" && !pages.includes("home")) pages.unshift("home");
+        const pages = allowedPagesBeforeSimplifiedNavigation().filter((page) => page !== "home" && page !== "reports");
         return pages;
       };
 
-      const renderPageBeforeHomePage = renderPage;
+      const renderPageBeforeSimplifiedNavigation = renderPage;
       renderPage = function (page) {
-        if (page === "home") return;
-        return renderPageBeforeHomePage(page);
+        if (page === "reports" || page === "home") return navigate("dashboard");
+        return renderPageBeforeSimplifiedNavigation(page);
       };
 
       navigate = function (page) {
-        if (!canAccessPage(page)) {
-          toast("Vous n’avez pas accès à cette section.");
-          page = "home";
+        if (page === "home" || page === "reports" || !canAccessPage(page)) {
+          if (page !== "home" && page !== "reports") toast("Vous n’avez pas accès à cette section.");
+          page = "dashboard";
         }
         currentPage = page;
         document.querySelectorAll(".page").forEach((element) => element.classList.toggle("active", element.id === page));
         document.querySelectorAll(".nav-btn[data-page]").forEach((button) => button.classList.toggle("active", button.dataset.page === page));
         const titles = {
-          home: "Accueil",
           dashboard: "Tableau de bord",
           properties: "Biens immobiliers",
           owners: "Propriétaires",
           tenants: "Locataires",
           payments: "Paiements et loyers",
           accounting: "Comptabilité",
-          reports: "Rapports",
           visits: "Réservations et visites",
           propertyOfferRequests: "Liste des demandes de mise en location",
           catalogAdmin: "Catalogue public",

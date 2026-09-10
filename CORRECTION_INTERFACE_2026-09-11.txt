@@ -1,0 +1,12 @@
+GLOBAL IMMOBILIER — CORRECTION CIBLÉE INTERFACE
+Date : 11/09/2026
+
+- Suppression des boutons Utilisateurs et Notes et notifications du menu horizontal.
+- Accès Utilisateurs et Notes et notifications déplacé dans Paramètres > Administration.
+- Suppression du bouton Rapports du menu et de la section Rapports de l'interface.
+- Suppression de la seconde page Accueil après connexion.
+- Ouverture directe sur le Tableau de bord après connexion.
+- Remplacement du bouton Déconnexion par une icône compacte.
+- Suppression de toute présentation des formules/tarifs sur la page d'accueil publique.
+- Nouvelle page d'accueil publique pleine largeur/pleine hauteur, unifiée et décorée.
+- Conservation du footer institutionnel et des règles d'abonnement existantes.
