@@ -7694,7 +7694,111 @@
         }
       }
 
-    </style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
+    
+
+      /* Paramètres V2 : navigation administrative interne */
+      .settings-admin-links-v2 {
+        align-items: flex-start;
+        gap: 24px;
+        padding: 20px 22px;
+      }
+      .settings-admin-title {
+        flex: 0 0 245px;
+        min-width: 210px;
+      }
+      .settings-admin-actions-v2 {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: stretch;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .settings-admin-tab {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 12px;
+        border: 1px solid rgba(255,255,255,.24);
+        border-radius: 10px;
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 850;
+        cursor: pointer;
+        transition: .18s ease;
+      }
+      .settings-admin-tab:hover {
+        transform: translateY(-1px);
+        border-color: rgba(224,173,50,.8);
+        background: rgba(255,255,255,.14);
+      }
+      .settings-admin-tab.active {
+        color: #173f37;
+        border-color: #e0ad32;
+        background: linear-gradient(135deg,#f4d978,#e0ad32);
+        box-shadow: 0 7px 18px rgba(0,0,0,.16);
+      }
+      .settings-admin-tab span { font-size: 15px; line-height: 1; }
+      .settings-admin-panel-host {
+        scroll-margin-top: 112px;
+        margin-top: 0;
+        animation: settingsPanelIn .18s ease both;
+      }
+      @keyframes settingsPanelIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .settings-panel-card {
+        padding: 22px;
+        border-top: 4px solid var(--accent);
+      }
+      .settings-panel-heading {
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:16px;
+        padding-bottom:14px;
+        margin-bottom:18px;
+        border-bottom:1px solid var(--line);
+      }
+      .settings-panel-heading h3 { margin: 3px 0 4px; color: var(--primary); font-size: 19px; }
+      .settings-panel-heading p { margin:0; color:var(--muted); font-size:12px; line-height:1.55; }
+      .settings-panel-kicker { font-size:9px; font-weight:950; letter-spacing:.16em; color:#9b7820; }
+      .settings-panel-form { max-width: 980px; }
+      .settings-panel-save {
+        display:flex;
+        justify-content:flex-end;
+        margin-top:20px;
+        padding-top:16px;
+        border-top:1px solid var(--line);
+      }
+      .settings-panel-save .btn { min-width: 160px; }
+      .settings-security-log .kpi-row { padding: 11px 0; }
+      .settings-embedded-module > .page-head { margin-top:0; }
+      .settings-embedded-module .page-head,
+      .settings-embedded-module .card,
+      .settings-embedded-module .table-wrap,
+      .settings-embedded-module .user-limit,
+      .settings-embedded-module .company-message-grid,
+      .settings-embedded-module .support-section-head,
+      .settings-embedded-module .support-outbox-grid { max-width:100%; }
+      @media (max-width: 1050px) {
+        .settings-admin-links-v2 { flex-direction:column; }
+        .settings-admin-title { flex-basis:auto; min-width:0; }
+        .settings-admin-actions-v2 { width:100%; justify-content:flex-start; }
+      }
+      @media (max-width: 650px) {
+        .settings-admin-links-v2 { padding:16px; }
+        .settings-admin-actions-v2 { display:grid; grid-template-columns:1fr; }
+        .settings-admin-tab { width:100%; justify-content:flex-start; }
+        .settings-panel-card { padding:16px; }
+        .settings-panel-save .btn { width:100%; }
+      }
+</style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
         );
         w.document.close();
       }
@@ -10335,6 +10439,149 @@
         renderPage(page);
         window.scrollTo(0, 0);
       };
+
+
+      /* ===== Paramètres : administration intégrée par panneaux ===== */
+      let settingsAdminPanel = "agency";
+
+      function settingsAdminButtonsHTML() {
+        const buttons = [
+          ["agency", "Informations de l’agence", "⌂"],
+          ["finance", "Finances et apparence", "₣"],
+          ["security", "Administrateur et sécurité", "⌾"],
+          ["journal", "Journal de sécurité", "▤"],
+          ["users", "Utilisateurs", "♜"],
+          ["messages", "Notes et notifications", "✉"],
+        ];
+        return buttons
+          .map(([key, label, icon]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span aria-hidden="true">${icon}</span>${label}</button>`)
+          .join("");
+      }
+
+      function openSettingsAdminPanel(panel) {
+        settingsAdminPanel = panel || "agency";
+        renderSettings();
+        requestAnimationFrame(() => {
+          const host = $("settingsAdminPanelHost");
+          if (host) host.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+
+      function renderSettingsUsersPanel() {
+        renderUsers();
+        return $("users")?.innerHTML || '<div class="empty card">Aucun utilisateur.</div>';
+      }
+
+      function renderSettingsMessagesPanel() {
+        renderCompanyAdminMessages();
+        return $("adminMessages")?.innerHTML || '<div class="empty card">Aucune note ou notification.</div>';
+      }
+
+      function settingsAdminPanelHTML() {
+        const settings = data.settings;
+        if (settingsAdminPanel === "finance") {
+          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">PARAMÈTRES FINANCIERS</span><h3>Finances et apparence</h3><p>Définissez les valeurs financières utilisées par l’application et personnalisez les couleurs de l’agence.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveFinanceSettings()">Enregistrer</button></div></div>`;
+        }
+        if (settingsAdminPanel === "security") {
+          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">ACCÈS ET PROTECTION</span><h3>Administrateur et sécurité</h3><p>Gérez les identifiants du compte administrateur principal et la durée d’inactivité autorisée.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" min="1" value="${settings.autoLogout}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveSecuritySettings()">Enregistrer</button></div></div>`;
+        }
+        if (settingsAdminPanel === "journal") {
+          return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">TRAÇABILITÉ</span><h3>Journal de sécurité</h3><p>Consultez les dernières connexions enregistrées pour cette entreprise.</p></div></div><div class="kpi-list settings-security-log">${
+            data.loginHistory
+              .slice(0, 20)
+              .map((x) => `<div class="kpi-row"><span>Connexion — ${esc(x.user)} <small>(${esc(x.role || "Administrateur")})</small></span><small>${new Date(x.date).toLocaleString("fr-FR")}</small></div>`)
+              .join("") || '<div class="empty">Aucune connexion enregistrée.</div>'
+          }</div></div>`;
+        }
+        if (settingsAdminPanel === "users") {
+          return `<div class="settings-embedded-module">${renderSettingsUsersPanel()}</div>`;
+        }
+        if (settingsAdminPanel === "messages") {
+          return `<div class="settings-embedded-module">${renderSettingsMessagesPanel()}</div>`;
+        }
+        return `<div class="card settings-panel-card"><div class="settings-panel-heading"><div><span class="settings-panel-kicker">IDENTITÉ DE L’AGENCE</span><h3>Informations de l’agence</h3><p>Modifiez les informations officielles utilisées dans l’application et sur vos documents.</p></div></div><div class="form-grid settings-panel-form"><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field span-2"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveAgencySettings()">Enregistrer</button></div></div>`;
+      }
+
+      renderSettings = function () {
+        if (!requireAdmin()) {
+          navigate("dashboard");
+          return;
+        }
+        const info = subscriptionInfo(currentEnterprise());
+        $("settings").innerHTML =
+          pageHead("Paramètres", "Gérez les informations, finances, accès et outils administratifs de votre entreprise.", "") +
+          subscriptionBannerHTML() +
+          (info.plan === "free"
+            ? '<div class="business-upgrade-settings"><div><h3>Passez à une formule payante</h3><p><b>Standard :</b> 6 200 FCFA/mois — 10 propriétaires, 5 biens par propriétaire, Catalogue public.<br><b>Business :</b> 56 200 FCFA/an — accès illimité.</p></div><div class="actions"><a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Standard</a><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Business</a></div></div>'
+            : info.plan === "standard"
+              ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
+              : "") +
+          `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Sélectionnez une rubrique : elle s’ouvre directement sous cette bannière sans quitter Paramètres.</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
+      };
+
+      async function saveAgencySettings() {
+        if (!requireAdmin()) return;
+        let logo = data.settings.logo;
+        const file = $("setLogoFile")?.files?.[0];
+        if (file) {
+          if (file.size > 700000) {
+            toast("Le logo doit être inférieur à 700 Ko.");
+            return;
+          }
+          logo = await fileData(file);
+        }
+        Object.assign(data.settings, {
+          agency: val("setAgency").trim(),
+          logo,
+          phone: val("setPhone").trim(),
+          whatsapp: val("setWhatsapp").trim(),
+          email: val("setEmail").trim(),
+          address: val("setAddress").trim(),
+          footer: val("setFooter").trim(),
+        });
+        logAction("Mise à jour des informations de l’agence");
+        saveData("Informations de l’agence enregistrées.");
+      }
+
+      function saveFinanceSettings() {
+        if (!requireAdmin()) return;
+        Object.assign(data.settings, {
+          currency: val("setCurrency").trim() || "FCFA",
+          taxRate: Number(val("setTax") || 0),
+          defaultCommission: Number(val("setCommission") || 0),
+          contractFee: Number(val("setContractFee") || 0),
+          visitFee: Number(val("setVisitFee") || 0),
+          primary: val("setPrimary") || data.settings.primary,
+          accent: val("setAccent") || data.settings.accent,
+        });
+        logAction("Mise à jour des finances et de l’apparence");
+        saveData("Finances et apparence enregistrées.");
+      }
+
+      async function saveSecuritySettings() {
+        if (!requireAdmin()) return;
+        const newAdminUser = val("setUser").trim();
+        if (!newAdminUser) {
+          toast("L’identifiant administrateur est obligatoire.");
+          return;
+        }
+        try {
+          const credentials = await apiFetch("company/admin-credentials", {
+            method: "PUT",
+            body: JSON.stringify({ username: newAdminUser, password: val("setPass") }),
+          });
+          sessionUser = { ...sessionUser, ...credentials.user };
+          Object.assign(data.settings, {
+            adminUser: newAdminUser,
+            adminPass: "",
+            autoLogout: Math.max(1, Number(val("setAutoLogout") || data.settings.autoLogout || 30)),
+          });
+          logAction("Mise à jour de l’administrateur et de la sécurité");
+          saveData("Administrateur et sécurité enregistrés.");
+        } catch (error) {
+          cloudError(error, "Paramètres de sécurité non enregistrés");
+        }
+      }
 
       cloudBootstrap();
     </script>
