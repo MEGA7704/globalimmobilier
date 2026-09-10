@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS gi_companies (
   address TEXT NOT NULL DEFAULT '',
   public_count INTEGER NOT NULL DEFAULT 0,
   plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free','business')),
+  plan_tier TEXT NOT NULL DEFAULT '',
   subscription_start TEXT NOT NULL,
   subscription_end TEXT NOT NULL,
   subscription_status TEXT NOT NULL DEFAULT 'active' CHECK (subscription_status IN ('active','suspended')),

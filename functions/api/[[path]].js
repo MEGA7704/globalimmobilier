@@ -8,7 +8,7 @@ const JSON_HEADERS = {
 const SCHEMA_SQL = `
 PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS gi_app_settings (key TEXT PRIMARY KEY,value TEXT NOT NULL,updated_at TEXT NOT NULL DEFAULT (datetime('now'))) STRICT;
-CREATE TABLE IF NOT EXISTS gi_companies (id TEXT PRIMARY KEY,code TEXT NOT NULL UNIQUE COLLATE NOCASE,name TEXT NOT NULL,phone TEXT NOT NULL DEFAULT '',email TEXT NOT NULL DEFAULT '',address TEXT NOT NULL DEFAULT '',public_count INTEGER NOT NULL DEFAULT 0,plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free','business')),subscription_start TEXT NOT NULL,subscription_end TEXT NOT NULL,subscription_status TEXT NOT NULL DEFAULT 'active' CHECK (subscription_status IN ('active','suspended')),created_at TEXT NOT NULL,updated_at TEXT NOT NULL) STRICT;
+CREATE TABLE IF NOT EXISTS gi_companies (id TEXT PRIMARY KEY,code TEXT NOT NULL UNIQUE COLLATE NOCASE,name TEXT NOT NULL,phone TEXT NOT NULL DEFAULT '',email TEXT NOT NULL DEFAULT '',address TEXT NOT NULL DEFAULT '',public_count INTEGER NOT NULL DEFAULT 0,plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free','business')),plan_tier TEXT NOT NULL DEFAULT '',subscription_start TEXT NOT NULL,subscription_end TEXT NOT NULL,subscription_status TEXT NOT NULL DEFAULT 'active' CHECK (subscription_status IN ('active','suspended')),created_at TEXT NOT NULL,updated_at TEXT NOT NULL) STRICT;
 CREATE TABLE IF NOT EXISTS gi_accounts (id TEXT PRIMARY KEY,company_id TEXT NOT NULL,username TEXT NOT NULL UNIQUE COLLATE NOCASE,password_hash TEXT NOT NULL,password_salt TEXT NOT NULL,name TEXT NOT NULL,role TEXT NOT NULL DEFAULT 'Gestionnaire',is_admin INTEGER NOT NULL DEFAULT 0 CHECK (is_admin IN (0,1)),active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0,1)),created_at TEXT NOT NULL,updated_at TEXT NOT NULL,FOREIGN KEY (company_id) REFERENCES gi_companies(id) ON DELETE CASCADE) STRICT;
 CREATE INDEX IF NOT EXISTS idx_gi_accounts_company ON gi_accounts(company_id);
 CREATE INDEX IF NOT EXISTS idx_gi_accounts_username ON gi_accounts(username COLLATE NOCASE);
@@ -90,8 +90,18 @@ function validateBindings(env) {
 async function ensureSchema(env) {
   if (schemaReady) return;
   await env.D1IM.exec(SCHEMA_SQL);
+  await ensurePlanTierColumn(env);
   await ensureSuperAdmin(env);
   schemaReady = true;
+}
+
+async function ensurePlanTierColumn(env) {
+  const columns = await env.D1IM.prepare("PRAGMA table_info(gi_companies)").all();
+  const names = new Set((columns.results || []).map((row) => String(row.name || '')));
+  if (!names.has('plan_tier')) {
+    await env.D1IM.exec("ALTER TABLE gi_companies ADD COLUMN plan_tier TEXT NOT NULL DEFAULT '';");
+  }
+  await env.D1IM.prepare("UPDATE gi_companies SET plan_tier=plan WHERE plan_tier='' OR plan_tier IS NULL").run();
 }
 
 async function ensureSuperAdmin(env) {
@@ -178,7 +188,7 @@ async function createCompany(request, env) {
   const id = crypto.randomUUID();
   const code = await uniqueCompanyCode(env, name);
   const start = dateOnly();
-  const end = addDays(start, 21);
+  const end = addDays(start, 10);
   const createdAt = now();
   const phone = cleanText(body.phone, 80);
   const email = cleanText(body.email, 180);
@@ -187,10 +197,11 @@ async function createCompany(request, env) {
   const state = sanitizeState(body.state || {}, { id, code, name, phone, email, address });
   state.settings = { ...(state.settings || {}), companyId: id, companyCode: code, agency: name, phone, email, address, adminUser: username, adminPass: '', apiUrl: '' };
   state.users = [];
+  enforcePlanState({ plan: 'free' }, state, {});
 
   try {
-    await env.D1IM.prepare('INSERT INTO gi_companies(id,code,name,phone,email,address,public_count,plan,subscription_start,subscription_end,subscription_status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,\'free\',?,?,\'active\',?,?)')
-      .bind(id, code, name, phone, email, address, countPublicProperties(state), start, end, createdAt, createdAt).run();
+    await env.D1IM.prepare('INSERT INTO gi_companies(id,code,name,phone,email,address,public_count,plan,plan_tier,subscription_start,subscription_end,subscription_status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,\'free\',\'free\',?,?,\'active\',?,?)')
+      .bind(id, code, name, phone, email, address, countPublicPropertiesForPlan(state, 'free'), start, end, createdAt, createdAt).run();
     await env.D1IM.prepare('INSERT INTO gi_accounts(id,company_id,username,password_hash,password_salt,name,role,is_admin,active,created_at,updated_at) VALUES(?,?,?,?,?,?,\'Administrateur\',1,1,?,?)')
       .bind(crypto.randomUUID(), id, username, passwordRecord.password_hash, passwordRecord.password_salt, 'Administrateur principal', createdAt, createdAt).run();
     const saved = await createInitialState(env, id, state);
@@ -207,23 +218,27 @@ async function createCompany(request, env) {
 }
 
 async function publicCompanies(env) {
-  const result = await env.D1IM.prepare("SELECT id,code,name,phone,email,address,public_count,plan,subscription_start,subscription_end,subscription_status,created_at FROM gi_companies WHERE subscription_status='active' ORDER BY name COLLATE NOCASE").all();
-  const companies = (result.results || []).filter(isSubscriptionActive).map((company) => ({ ...publicCompanyRecord(company), count: Number(company.public_count || 0) }));
+  const result = await env.D1IM.prepare("SELECT * FROM gi_companies WHERE subscription_status='active' ORDER BY name COLLATE NOCASE").all();
+  const companies = (result.results || [])
+    .filter((company) => isSubscriptionActive(company) && planRules(company).catalog)
+    .map((company) => ({ ...publicCompanyRecord(company), count: Number(company.public_count || 0) }));
   return ok({ companies }, 200, { 'cache-control': 'public, max-age=30' });
 }
 
 async function publicCompany(env, companyId) {
   const company = await getCompany(env, companyId);
   assertSubscription(company);
+  assertPublicCatalogAccess(company);
   const result = await readState(env, company.id);
   const state = sanitizeState(result.state || {}, company);
-  return ok({ company: publicCompanyRecord(company), state: publicState(state) }, 200, { 'cache-control': 'public, max-age=15' });
+  return ok({ company: publicCompanyRecord(company), state: publicState(state, company) }, 200, { 'cache-control': 'public, max-age=15' });
 }
 
 async function createPublicVisit(request, env, companyId) {
   const body = await readJson(request, 128 * 1024);
   const company = await getCompany(env, companyId);
   assertSubscription(company);
+  assertPublicCatalogAccess(company);
   const name = requiredText(body.name, 'Nom', 160);
   const phone = requiredText(body.phone, 'Téléphone', 80);
   const result = await readState(env, companyId);
@@ -251,6 +266,7 @@ async function recordPublicEngagement(request, env, companyId, propertyId) {
   const type = body.type === 'favorite' ? 'favorite' : 'view';
   const company = await getCompany(env, companyId);
   assertSubscription(company);
+  assertPublicCatalogAccess(company);
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const result = await readState(env, companyId);
     const state = sanitizeState(result.state || {}, company);
@@ -283,9 +299,11 @@ async function putCompanyState(request, env) {
   if (!Number.isInteger(expectedVersion) || expectedVersion < 1) throw new ApiError(400, 'Version de synchronisation invalide.', 'INVALID_VERSION');
   const company = await getCompany(env, session.companyId);
   assertSubscription(company);
+  const previous = await readState(env, company.id);
   const state = sanitizeState(body.state || {}, company);
+  enforcePlanState(company, state, previous.state || {});
   const saved = await writeState(env, company.id, state, expectedVersion);
-  await updateCompanyProfile(env, company.id, state);
+  await updateCompanyProfile(env, company.id, state, company);
   return ok({ state: saved.state, version: saved.version, updatedAt: now() });
 }
 
@@ -373,25 +391,53 @@ async function superSubscription(request, env, companyId) {
   await requireSuperSession(request, env);
   const body = await readJson(request, 64 * 1024);
   const company = await getCompany(env, companyId);
-  let plan = body.plan === 'business' ? 'business' : body.plan === 'free' ? 'free' : company.plan;
+  const requestedPlan = ['free','standard','business'].includes(body.plan) ? body.plan : effectivePlan(company);
+  let plan = requestedPlan;
   let status = body.status === 'suspended' ? 'suspended' : 'active';
   let start = cleanText(body.start, 20) || company.subscription_start;
   let end = cleanText(body.end, 20) || company.subscription_end;
   const action = cleanText(body.action, 30);
   const today = dateOnly();
-  if (action === 'business') {
-    const base = company.plan === 'business' && isSubscriptionActive(company) ? company.subscription_end : today;
-    plan = 'business'; status = 'active'; start = today; end = addDays(base, 365);
-  } else if (action === 'free') {
-    plan = 'free'; status = 'active'; start = today; end = addDays(today, 21);
-  } else if (action === 'suspend') status = 'suspended';
-  else if (action === 'resume') {
+
+  if (['free','standard','business'].includes(action)) {
+    plan = action;
+    const duration = planDurationDays(plan);
+    const base = effectivePlan(company) === plan && isSubscriptionActive(company) ? company.subscription_end : today;
     status = 'active';
-    if (!isSubscriptionActive({ ...company, subscription_status: status })) end = addDays(today, plan === 'business' ? 365 : 21);
+    start = today;
+    end = addDays(base, duration);
+  } else if (!action && body.plan && requestedPlan !== effectivePlan(company)) {
+    plan = requestedPlan;
+    start = today;
+    end = addDays(today, planDurationDays(plan));
+  } else if (action === 'suspend') {
+    status = 'suspended';
+  } else if (action === 'resume') {
+    status = 'active';
+    if (!isSubscriptionActive({ ...company, subscription_status: status })) {
+      end = addDays(today, planDurationDays(plan));
+    }
   }
-  await env.D1IM.prepare('UPDATE gi_companies SET plan=?,subscription_start=?,subscription_end=?,subscription_status=?,updated_at=? WHERE id=?')
-    .bind(plan, start, end, status, now(), companyId).run();
-  return ok({ company: publicCompanyRecord({ ...company, plan, subscription_start: start, subscription_end: end, subscription_status: status }) });
+
+  const legacyPlan = plan === 'business' ? 'business' : 'free';
+  await env.D1IM.prepare('UPDATE gi_companies SET plan=?,plan_tier=?,subscription_start=?,subscription_end=?,subscription_status=?,updated_at=? WHERE id=?')
+    .bind(legacyPlan, plan, start, end, status, now(), companyId).run();
+
+  if (plan === 'free') {
+    const result = await readState(env, companyId);
+    if (result.state) {
+      const state = sanitizeState(result.state, company);
+      for (const property of state.properties) property.published = false;
+      try {
+        await writeState(env, companyId, state, result.version);
+        await updateCompanyProfile(env, companyId, state, { ...company, plan_tier: plan, plan: legacyPlan });
+      } catch (error) {
+        if (!(error instanceof ApiError) || error.code !== 'VERSION_CONFLICT') throw error;
+      }
+    }
+  }
+
+  return ok({ company: publicCompanyRecord({ ...company, plan: legacyPlan, plan_tier: plan, subscription_start: start, subscription_end: end, subscription_status: status }) });
 }
 
 async function superDeleteCompany(request, env, companyId) {
@@ -436,16 +482,16 @@ async function migrateLocalStorage(request, env) {
       const id = oldId;
       const code = cleanText(record.code || settings.companyCode, 50) || await uniqueCompanyCode(env, name);
       const createdAt = cleanText(record.createdAt, 40) || now();
-      const plan = record.plan === 'business' ? 'business' : 'free';
+      const plan = ['free','standard','business'].includes(record.plan) ? record.plan : 'free';
       const start = cleanText(record.subscriptionStart, 20) || dateOnly();
-      const end = cleanText(record.subscriptionEnd, 20) || addDays(start, plan === 'business' ? 365 : 21);
+      const end = cleanText(record.subscriptionEnd, 20) || addDays(start, planDurationDays(plan));
       const status = record.subscriptionStatus === 'suspended' ? 'suspended' : 'active';
       const state = sanitizeState(oldState, { id, code, name, phone: settings.phone || '', email: settings.email || '', address: settings.address || '' });
       const adminUsername = cleanText(settings.adminUser, 120) || `${code.toLowerCase()}-admin`;
       const adminPassword = cleanText(settings.adminPass, 512) || randomToken().slice(0, 16);
       await assertUsernameAvailable(env, adminUsername);
-      await env.D1IM.prepare('INSERT INTO gi_companies(id,code,name,phone,email,address,public_count,plan,subscription_start,subscription_end,subscription_status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)')
-        .bind(id, code, name, cleanText(settings.phone, 80), cleanText(settings.email, 180), cleanText(settings.address, 250), countPublicProperties(state), plan, start, end, status, createdAt, now()).run();
+      await env.D1IM.prepare('INSERT INTO gi_companies(id,code,name,phone,email,address,public_count,plan,plan_tier,subscription_start,subscription_end,subscription_status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+        .bind(id, code, name, cleanText(settings.phone, 80), cleanText(settings.email, 180), cleanText(settings.address, 250), countPublicPropertiesForPlan(state, plan), plan === 'business' ? 'business' : 'free', plan, start, end, status, createdAt, now()).run();
       const adminRecord = await makePasswordRecord(adminPassword);
       await env.D1IM.prepare('INSERT INTO gi_accounts(id,company_id,username,password_hash,password_salt,name,role,is_admin,active,created_at,updated_at) VALUES(?,?,?,?,?,?,\'Administrateur\',1,1,?,?)')
         .bind(crypto.randomUUID(), id, adminUsername, adminRecord.password_hash, adminRecord.password_salt, 'Administrateur principal', createdAt, now()).run();
@@ -538,10 +584,11 @@ async function writeState(env, companyId, state, expectedVersion) {
   return { version: nextVersion, state: clean };
 }
 
-async function updateCompanyProfile(env, companyId, state) {
+async function updateCompanyProfile(env, companyId, state, company = null) {
   const settings = state.settings || {};
+  const sourceCompany = company || await getCompany(env, companyId);
   await env.D1IM.prepare('UPDATE gi_companies SET name=?,phone=?,email=?,address=?,public_count=?,updated_at=? WHERE id=?')
-    .bind(cleanText(settings.agency, 160) || 'Entreprise immobilière', cleanText(settings.phone, 80), cleanText(settings.email, 180), cleanText(settings.address, 250), countPublicProperties(state), now(), companyId).run();
+    .bind(cleanText(settings.agency, 160) || 'Entreprise immobilière', cleanText(settings.phone, 80), cleanText(settings.email, 180), cleanText(settings.address, 250), countPublicPropertiesForPlan(state, effectivePlan(sourceCompany)), now(), companyId).run();
 }
 
 async function requireSession(request, env) {
@@ -618,22 +665,23 @@ function sanitizeUserRecord(user) {
   };
 }
 
-function publicState(state) {
+function publicState(state, company = null) {
   const settings = state.settings || {};
+  const catalogEnabled = company ? planRules(company).catalog : true;
   return {
     settings: {
       companyId: settings.companyId || '', companyCode: settings.companyCode || '', agency: settings.agency || '', phone: settings.phone || '',
       whatsapp: settings.whatsapp || '', email: settings.email || '', address: settings.address || '', currency: settings.currency || 'FCFA',
       logo: settings.logo || '', primary: settings.primary || '#073c36', accent: settings.accent || '#e0ad32', visitFee: Number(settings.visitFee || 0)
     },
-    properties: (state.properties || []).filter((p) => p.published && !p.archived).map((p) => ({ ...p, ownerId: undefined }))
+    properties: catalogEnabled ? (state.properties || []).filter((p) => p.published && !p.archived).map((p) => ({ ...p, ownerId: undefined })) : []
   };
 }
 
 function publicCompanyRecord(company) {
   return {
     id: company.id, code: company.code, name: company.name, phone: company.phone || '', email: company.email || '', address: company.address || '',
-    plan: company.plan || 'free', subscriptionStart: company.subscription_start || company.subscriptionStart || '', subscriptionEnd: company.subscription_end || company.subscriptionEnd || '',
+    plan: effectivePlan(company), subscriptionStart: company.subscription_start || company.subscriptionStart || '', subscriptionEnd: company.subscription_end || company.subscriptionEnd || '',
     subscriptionStatus: company.subscription_status || company.subscriptionStatus || 'active', createdAt: company.created_at || company.createdAt || ''
   };
 }
@@ -642,8 +690,100 @@ function accountToUser(account) {
   return { id: account.id, name: account.name, username: account.username, role: account.role, isAdmin: Boolean(account.is_admin), active: Boolean(account.active) };
 }
 
+function effectivePlan(company) {
+  const tier = String(company?.plan_tier || company?.planTier || company?.plan || 'free').toLowerCase();
+  return ['free','standard','business'].includes(tier) ? tier : 'free';
+}
+
+function planDurationDays(plan) {
+  return plan === 'business' ? 365 : plan === 'standard' ? 30 : 10;
+}
+
+function planRules(companyOrPlan) {
+  const plan = typeof companyOrPlan === 'string' ? companyOrPlan : effectivePlan(companyOrPlan);
+  if (plan === 'business') return { plan, ownerLimit: Infinity, propertyPerOwner: Infinity, catalog: true };
+  if (plan === 'standard') return { plan, ownerLimit: 10, propertyPerOwner: 5, catalog: true };
+  return { plan: 'free', ownerLimit: 2, propertyPerOwner: 2, catalog: false };
+}
+
+function countPublicPropertiesForPlan(state, companyOrPlan) {
+  if (!planRules(companyOrPlan).catalog) return 0;
+  return (Array.isArray(state.properties) ? state.properties : []).filter((p) => p?.published && !p?.archived).length;
+}
+
 function countPublicProperties(state) {
   return (Array.isArray(state.properties) ? state.properties : []).filter((p) => p?.published && !p?.archived).length;
+}
+
+function enforcePlanState(company, state, previousState = {}) {
+  const rules = planRules(company);
+  const owners = Array.isArray(state.owners) ? state.owners : [];
+  const properties = Array.isArray(state.properties) ? state.properties : [];
+  const previousOwners = Array.isArray(previousState.owners) ? previousState.owners : [];
+  const previousProperties = Array.isArray(previousState.properties) ? previousState.properties : [];
+
+  if (!rules.catalog) {
+    for (const property of properties) property.published = false;
+  }
+
+  if (!Number.isFinite(rules.ownerLimit)) return;
+
+  const previousOwnerIds = new Set(previousOwners.map((owner) => String(owner?.id || '')).filter(Boolean));
+  const ownerIds = new Set(owners.map((owner) => String(owner?.id || '')).filter(Boolean));
+  const newOwners = owners.filter((owner) => !previousOwnerIds.has(String(owner?.id || '')));
+  if (
+    owners.length > rules.ownerLimit ||
+    (newOwners.length > 0 && previousOwners.length >= rules.ownerLimit)
+  ) {
+    throw new ApiError(403, `Le plan ${rules.plan === 'free' ? 'Free' : 'Standard'} autorise au maximum ${rules.ownerLimit} propriétaires.`, 'PLAN_OWNER_LIMIT');
+  }
+
+  const removedOwnerIds = [...previousOwnerIds].filter((ownerId) => !ownerIds.has(ownerId));
+  if (removedOwnerIds.some((ownerId) => properties.some((property) => String(property?.ownerId || '') === ownerId))) {
+    throw new ApiError(409, 'Impossible de supprimer un propriétaire tant que des biens immobiliers lui sont rattachés.', 'OWNER_HAS_PROPERTIES');
+  }
+
+  const counts = new Map();
+  const previousCounts = new Map();
+  const previousPropertyIds = new Set(previousProperties.map((property) => String(property?.id || '')).filter(Boolean));
+  const newCounts = new Map();
+
+  for (const property of properties) {
+    const propertyId = String(property?.id || '');
+    const ownerId = String(property?.ownerId || '');
+    if (!ownerId || !ownerIds.has(ownerId)) {
+      if (!previousPropertyIds.has(propertyId)) {
+        throw new ApiError(403, 'Sélectionnez un propriétaire valide pour chaque nouveau bien avec le plan Free ou Standard.', 'PLAN_PROPERTY_OWNER_REQUIRED');
+      }
+      continue;
+    }
+    counts.set(ownerId, (counts.get(ownerId) || 0) + 1);
+    if (!previousPropertyIds.has(propertyId)) {
+      newCounts.set(ownerId, (newCounts.get(ownerId) || 0) + 1);
+    }
+  }
+
+  for (const property of previousProperties) {
+    const ownerId = String(property?.ownerId || '');
+    if (ownerId) previousCounts.set(ownerId, (previousCounts.get(ownerId) || 0) + 1);
+  }
+
+  for (const [ownerId, count] of counts) {
+    const previousCount = previousCounts.get(ownerId) || 0;
+    const newlyCreated = newCounts.get(ownerId) || 0;
+    if (
+      count > rules.propertyPerOwner ||
+      (newlyCreated > 0 && previousCount >= rules.propertyPerOwner)
+    ) {
+      throw new ApiError(403, `Le plan ${rules.plan === 'free' ? 'Free' : 'Standard'} autorise au maximum ${rules.propertyPerOwner} biens immobiliers par propriétaire.`, 'PLAN_PROPERTY_LIMIT');
+    }
+  }
+}
+
+function assertPublicCatalogAccess(company) {
+  if (!planRules(company).catalog) {
+    throw new ApiError(403, 'Le Catalogue public est disponible uniquement avec les plans Standard et Business.', 'CATALOG_PLAN_REQUIRED');
+  }
 }
 
 function assertSubscription(company) {

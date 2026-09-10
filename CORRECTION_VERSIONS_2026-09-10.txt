@@ -1,0 +1,34 @@
+GLOBAL IMMOBILIER — CORRECTION CIBLÉE DES FORMULES
+Date : 10/09/2026
+
+1. PLAN FREE
+- Prix : 0 FCFA
+- Durée : 10 jours
+- Maximum : 2 propriétaires
+- Maximum : 2 biens immobiliers par propriétaire
+- Catalogue public : NON
+- Les biens du plan Free ne sont jamais exposés dans la boutique publique des entreprises.
+- Popup professionnel d'invitation aux formules payantes à l'ouverture puis toutes les 15 minutes.
+
+2. PLAN STANDARD
+- Prix : 6 200 FCFA / mois
+- Durée d'activation : 30 jours
+- Maximum : 10 propriétaires
+- Maximum : 5 biens immobiliers par propriétaire
+- Accès complet au programme
+- Catalogue public : OUI
+- Les biens publiés s'affichent dans la boutique publique des entreprises.
+
+3. PLAN BUSINESS
+- Prix : 56 200 FCFA / année
+- Durée d'activation : 365 jours
+- Propriétaires : illimités
+- Biens immobiliers par propriétaire : illimités
+- Accès complet et illimité au programme
+- Catalogue public : OUI
+
+SÉCURITÉ / CLOUD
+- Les quotas sont contrôlés dans l'interface et dans l'API Cloudflare.
+- L'API bloque l'accès public des comptes Free.
+- Lors d'un passage au plan Free, les publications publiques sont désactivées.
+- Compatibilité ajoutée avec les anciennes bases D1 via la colonne plan_tier, afin d'éviter les erreurs CHECK_CONSTRAINT lors de l'activation du plan Standard.

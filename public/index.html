@@ -626,7 +626,7 @@
         gap: 15px;
       }
       .stats {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       }
       .stat {
         background: #fff;
@@ -1450,6 +1450,10 @@
         background: #fff1cf;
         color: #825600;
       }
+      .subscription-pill.standard {
+        background: #e8f0ff;
+        color: #2457a6;
+      }
       .subscription-pill.business {
         background: #ddf4e9;
         color: #126944;
@@ -1473,6 +1477,10 @@
       .subscription-banner.free {
         border-color: #efd79f;
         background: #fffaf0;
+      }
+      .subscription-banner.standard {
+        border-color: #c8d8f5;
+        background: #f3f7ff;
       }
       .subscription-banner.business {
         border-color: #bfe3d3;
@@ -1574,6 +1582,10 @@
       .plan-badge.free {
         background: #fff1cf;
         color: #825600;
+      }
+      .plan-badge.standard {
+        background: #e8f0ff;
+        color: #2457a6;
       }
       .plan-badge.business {
         background: #dcf3e8;
@@ -3033,7 +3045,7 @@
                   Créer l’entreprise
                 </button>
               </form>
-              <div class="auth-note">La version Free est active pendant 21 jours.</div>
+              <div class="auth-note">La version Free est active pendant 10 jours.</div>
             </div>
           </div>
         </div>
@@ -3283,47 +3295,26 @@
       <div class="business-promo-card">
         <div class="business-promo-head">
           <div class="business-promo-icon">★</div>
-          <h2 id="businessPromoTitle">Passez à la version Business</h2>
+          <h2 id="businessPromoTitle">Passez à une formule professionnelle</h2>
           <p>
-            Profitez pleinement de GLOBAL IMMOBILIER avec un abonnement Business
-            valable pendant 365 jours.
+            Votre version Free est valable 10 jours et limite votre activité à
+            2 propriétaires et 2 biens immobiliers par propriétaire.
           </p>
         </div>
         <div class="business-promo-body">
           <ul class="business-promo-list">
-            <li>
-              Accès continu à toutes les fonctions de gestion immobilière.
-            </li>
-            <li>
-              Protection de votre activité contre l’expiration de la période
-              Free.
-            </li>
-            <li>
-              Utilisation professionnelle pendant 365 jours après activation par
-              le Super Admin.
-            </li>
+            <li><b>Standard — 6 200 FCFA/mois :</b> 10 propriétaires, 5 biens par propriétaire et Catalogue public complet.</li>
+            <li><b>Business — 56 200 FCFA/an :</b> accès illimité à toutes les fonctionnalités du programme.</li>
+            <li>Le plan Free ne publie aucun bien dans la boutique publique des entreprises.</li>
           </ul>
           <div class="business-promo-note">
-            Votre compte est actuellement en version <b>Free</b>. Après le
-            paiement, contactez le service d’activation afin que le Super Admin
-            active votre abonnement Business.
+            Après le paiement, contactez le service d’activation afin que le
+            Super Admin active la formule choisie.
           </div>
           <div class="business-promo-actions">
-            <button
-              class="btn btn-light"
-              type="button"
-              onclick="closeBusinessPromo()"
-            >
-              J’ai compris
-            </button>
-            <a
-              class="btn btn-accent"
-              href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=105700"
-              target="_blank"
-              rel="noopener noreferrer"
-              onclick="closeBusinessPromo()"
-              >Version Business</a
-            >
+            <button class="btn btn-light" type="button" onclick="closeBusinessPromo()">J’ai compris</button>
+            <a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer" onclick="closeBusinessPromo()">Standard — 6 200 F</a>
+            <a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer" onclick="closeBusinessPromo()">Business — 56 200 F</a>
           </div>
         </div>
       </div>
@@ -3608,18 +3599,54 @@
         d.setDate(d.getDate() + Number(days || 0));
         return d.toISOString().slice(0, 10);
       }
+      function planDurationDays(plan) {
+        return plan === "business" ? 365 : plan === "standard" ? 30 : 10;
+      }
+      function currentPlanRules(company = currentEnterprise()) {
+        const plan = ["free", "standard", "business"].includes(company?.plan)
+          ? company.plan
+          : "free";
+        if (plan === "business")
+          return {
+            plan,
+            label: "Business",
+            ownerLimit: Infinity,
+            propertyPerOwner: Infinity,
+            catalog: true,
+            price: 56200,
+            period: "année",
+          };
+        if (plan === "standard")
+          return {
+            plan,
+            label: "Standard",
+            ownerLimit: 10,
+            propertyPerOwner: 5,
+            catalog: true,
+            price: 6200,
+            period: "mois",
+          };
+        return {
+          plan: "free",
+          label: "Free",
+          ownerLimit: 2,
+          propertyPerOwner: 2,
+          catalog: false,
+          price: 0,
+          period: "10 jours",
+        };
+      }
       function normalizeEnterpriseRecord(c) {
         const x = { ...c };
-        if (!x.plan) {
+        if (!["free", "standard", "business"].includes(x.plan)) {
           x.plan = "free";
-          x.subscriptionStart = dateOnlyISO();
-          x.subscriptionEnd = addDaysISO(x.subscriptionStart, 21);
-          x.subscriptionStatus = "active";
         }
-        x.subscriptionStart = x.subscriptionStart || dateOnlyISO();
-        x.subscriptionEnd =
-          x.subscriptionEnd ||
-          addDaysISO(x.subscriptionStart, x.plan === "business" ? 365 : 21);
+        if (!x.subscriptionStart) x.subscriptionStart = dateOnlyISO();
+        if (!x.subscriptionEnd)
+          x.subscriptionEnd = addDaysISO(
+            x.subscriptionStart,
+            planDurationDays(x.plan),
+          );
         x.subscriptionStatus = x.subscriptionStatus || "active";
         return x;
       }
@@ -3642,7 +3669,9 @@
               ? "Expiré"
               : c.plan === "business"
                 ? "Business"
-                : "Free",
+                : c.plan === "standard"
+                  ? "Standard"
+                  : "Free",
         };
       }
       function currentEnterprise() {
@@ -4206,6 +4235,13 @@
           return;
         }
         if (isAuthenticated() && !appShell.classList.contains("hidden")) {
+          if (!currentPlanRules().catalog) {
+            professionalAlert(
+              "Votre plan Free n’inclut pas le Catalogue public. Passez au plan Standard ou Business pour publier vos biens.",
+              "Catalogue public indisponible",
+            );
+            return;
+          }
           openPublicCompany(activeCompanyId);
           return;
         }
@@ -4307,7 +4343,7 @@
           createdAt: info.createdAt,
           plan: "free",
           subscriptionStart: start,
-          subscriptionEnd: addDaysISO(start, 21),
+          subscriptionEnd: addDaysISO(start, 10),
           subscriptionStatus: "active",
         });
         saveRegistry();
@@ -4317,10 +4353,10 @@
         );
         renderEnterpriseOptions();
         professionalAlert(
-          "Entreprise créée avec succès.\n\nVersion : FREE — 21 jours\nIdentifiant : " +
+          "Entreprise créée avec succès.\n\nVersion : FREE — 10 jours\nIdentifiant : " +
             user +
             "\nFin de la période gratuite : " +
-            fmtDate(addDaysISO(start, 21)) +
+            fmtDate(addDaysISO(start, 10)) +
             "\n\nPour vous reconnecter, utilisez uniquement votre identifiant et votre mot de passe.",
         );
         login(id, {
@@ -4621,9 +4657,17 @@
       }
       function openPropertyForm(id = "") {
         const p = id ? data.properties.find((x) => x.id === id) : null;
+        const rules = currentPlanRules();
+        if (!p && Number.isFinite(rules.propertyPerOwner) && !data.owners.length) {
+          professionalAlert(
+            `Le plan ${rules.label} exige de sélectionner un propriétaire. Créez d’abord un propriétaire avant d’ajouter un bien.`,
+            "Propriétaire requis",
+          );
+          return;
+        }
         editing = { type: "property", id };
         modalTitle.textContent = p ? "Modifier le bien" : "Ajouter un bien";
-        modalBody.innerHTML = `<div class="form-grid"><div class="section-title">Identification du bien</div><div class="field"><label>Référence</label><input id="f_ref" value="${attr(p?.ref || seq("BIE", data.properties))}" readonly></div><div class="field"><label>Titre de l’annonce *</label><input id="f_title" value="${attr(p?.title || "")}"></div><div class="field"><label>Type de transaction</label><select id="f_transaction">${["Location", "Vente", "Location-vente", "Location saisonnière"].map((x) => `<option ${p?.transaction === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field"><label>Catégorie</label><select id="f_type">${propertyTypes.map((x) => `<option ${p?.type === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field"><label>Propriétaire</label><select id="f_owner"><option value="">Aucun</option>${data.owners.map((o) => `<option value="${o.id}" ${p?.ownerId === o.id ? "selected" : ""}>${esc(o.name)} — ${esc(o.ref)}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="f_status">${["Disponible", "Occupé", "Réservé", "En travaux", "Indisponible"].map((x) => `<option ${p?.status === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="section-title">Localisation et caractéristiques</div><div class="field"><label>Ville</label><input id="f_city" value="${attr(p?.city || "")}"></div><div class="field"><label>Commune</label><input id="f_commune" value="${attr(p?.commune || "")}"></div><div class="field"><label>Quartier</label><input id="f_district" value="${attr(p?.district || "")}"></div><div class="field"><label>Adresse</label><input id="f_address" value="${attr(p?.address || "")}"></div><div class="field"><label>Superficie (m²)</label><input id="f_area" type="number" value="${p?.area || 0}"></div><div class="field"><label>Nombre de pièces</label><input id="f_rooms" type="number" value="${p?.rooms || 0}"></div><div class="field"><label>Nombre de chambres</label><input id="f_bedrooms" type="number" value="${p?.bedrooms || 0}"></div><div class="field"><label>Salles de bain</label><input id="f_bathrooms" type="number" value="${p?.bathrooms || 0}"></div><div class="field"><label>Bien meublé</label><select id="f_furnished"><option ${p?.furnished === "Non" ? "selected" : ""}>Non</option><option ${p?.furnished === "Oui" ? "selected" : ""}>Oui</option></select></div><div class="field"><label>Carte / localisation approximative</label><input id="f_map" value="${attr(p?.map || "")}" placeholder="Lien de carte ou indication"></div><div class="section-title">Prix et conditions</div><div class="field"><label>Prix / loyer</label><input id="f_price" type="number" value="${p?.price || 0}"></div><div class="field"><label>Caution</label><input id="f_caution" type="number" value="${p?.caution || 0}"></div><div class="field"><label>Avance</label><input id="f_advance" type="number" value="${p?.advance || 0}"></div><div class="field"><label>Frais d’agence</label><input id="f_agencyFees" type="number" value="${p?.agencyFees || 0}"></div><div class="field span-2"><label>Description détaillée</label><textarea id="f_description">${esc(p?.description || "")}</textarea></div><div class="field span-2"><label>Équipements</label><textarea id="f_equipment">${esc(p?.equipment || "")}</textarea></div><div class="field span-2"><label>Conditions d’occupation / vente</label><textarea id="f_conditions">${esc(p?.conditions || "")}</textarea></div><div class="section-title">Médias et publication</div><div class="field"><label>Photo principale</label><input id="f_photo" type="file" accept="image/*"><div class="help">Image enregistrée dans les données cloud de l’entreprise.</div></div><div class="field"><label>URL de la photo</label><input id="f_photoUrl" value="${attr(p?.photo && !p.photo.startsWith("data:") ? p.photo : "")}"></div><div class="field span-2"><label>Galerie (une URL par ligne)</label><textarea id="f_gallery">${esc(p?.gallery || "")}</textarea></div><div class="field"><label>Vidéo du bien</label><input id="f_video" value="${attr(p?.video || "")}"></div><div class="field"><label><input id="f_published" type="checkbox" ${p?.published ? "checked" : ""}> Publier dans le catalogue public</label></div></div>`;
+        modalBody.innerHTML = `<div class="form-grid"><div class="section-title">Identification du bien</div><div class="field"><label>Référence</label><input id="f_ref" value="${attr(p?.ref || seq("BIE", data.properties))}" readonly></div><div class="field"><label>Titre de l’annonce *</label><input id="f_title" value="${attr(p?.title || "")}"></div><div class="field"><label>Type de transaction</label><select id="f_transaction">${["Location", "Vente", "Location-vente", "Location saisonnière"].map((x) => `<option ${p?.transaction === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field"><label>Catégorie</label><select id="f_type">${propertyTypes.map((x) => `<option ${p?.type === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="field"><label>Propriétaire</label><select id="f_owner"><option value="">Aucun</option>${data.owners.map((o) => `<option value="${o.id}" ${p?.ownerId === o.id ? "selected" : ""}>${esc(o.name)} — ${esc(o.ref)}</option>`).join("")}</select></div><div class="field"><label>Statut</label><select id="f_status">${["Disponible", "Occupé", "Réservé", "En travaux", "Indisponible"].map((x) => `<option ${p?.status === x ? "selected" : ""}>${x}</option>`).join("")}</select></div><div class="section-title">Localisation et caractéristiques</div><div class="field"><label>Ville</label><input id="f_city" value="${attr(p?.city || "")}"></div><div class="field"><label>Commune</label><input id="f_commune" value="${attr(p?.commune || "")}"></div><div class="field"><label>Quartier</label><input id="f_district" value="${attr(p?.district || "")}"></div><div class="field"><label>Adresse</label><input id="f_address" value="${attr(p?.address || "")}"></div><div class="field"><label>Superficie (m²)</label><input id="f_area" type="number" value="${p?.area || 0}"></div><div class="field"><label>Nombre de pièces</label><input id="f_rooms" type="number" value="${p?.rooms || 0}"></div><div class="field"><label>Nombre de chambres</label><input id="f_bedrooms" type="number" value="${p?.bedrooms || 0}"></div><div class="field"><label>Salles de bain</label><input id="f_bathrooms" type="number" value="${p?.bathrooms || 0}"></div><div class="field"><label>Bien meublé</label><select id="f_furnished"><option ${p?.furnished === "Non" ? "selected" : ""}>Non</option><option ${p?.furnished === "Oui" ? "selected" : ""}>Oui</option></select></div><div class="field"><label>Carte / localisation approximative</label><input id="f_map" value="${attr(p?.map || "")}" placeholder="Lien de carte ou indication"></div><div class="section-title">Prix et conditions</div><div class="field"><label>Prix / loyer</label><input id="f_price" type="number" value="${p?.price || 0}"></div><div class="field"><label>Caution</label><input id="f_caution" type="number" value="${p?.caution || 0}"></div><div class="field"><label>Avance</label><input id="f_advance" type="number" value="${p?.advance || 0}"></div><div class="field"><label>Frais d’agence</label><input id="f_agencyFees" type="number" value="${p?.agencyFees || 0}"></div><div class="field span-2"><label>Description détaillée</label><textarea id="f_description">${esc(p?.description || "")}</textarea></div><div class="field span-2"><label>Équipements</label><textarea id="f_equipment">${esc(p?.equipment || "")}</textarea></div><div class="field span-2"><label>Conditions d’occupation / vente</label><textarea id="f_conditions">${esc(p?.conditions || "")}</textarea></div><div class="section-title">Médias et publication</div><div class="field"><label>Photo principale</label><input id="f_photo" type="file" accept="image/*"><div class="help">Image enregistrée dans les données cloud de l’entreprise.</div></div><div class="field"><label>URL de la photo</label><input id="f_photoUrl" value="${attr(p?.photo && !p.photo.startsWith("data:") ? p.photo : "")}"></div><div class="field span-2"><label>Galerie (une URL par ligne)</label><textarea id="f_gallery">${esc(p?.gallery || "")}</textarea></div><div class="field"><label>Vidéo du bien</label><input id="f_video" value="${attr(p?.video || "")}"></div><div class="field">${rules.catalog ? `<label><input id="f_published" type="checkbox" ${p?.published ? "checked" : ""}> Publier dans le catalogue public</label>` : `<div class="notice"><b>Catalogue public indisponible en Free.</b><br>Le bien reste privé. Passez au plan Standard ou Business pour le publier.</div><input id="f_published" type="checkbox" class="hidden" disabled>`}</div></div>`;
         modalSave.onclick = saveProperty;
         modal.classList.add("show");
       }
@@ -4635,6 +4679,29 @@
         const old = editing.id
           ? data.properties.find((x) => x.id === editing.id)
           : null;
+        const rules = currentPlanRules();
+        const selectedOwnerId = val("f_owner");
+        if (Number.isFinite(rules.propertyPerOwner)) {
+          if (!selectedOwnerId) {
+            professionalAlert(
+              `Sélectionnez un propriétaire. Le plan ${rules.label} limite le nombre de biens par propriétaire.`,
+              "Propriétaire requis",
+            );
+            return;
+          }
+          const ownerPropertyCount = data.properties.filter(
+            (property) =>
+              property.ownerId === selectedOwnerId &&
+              (!old || property.id !== old.id),
+          ).length;
+          if (ownerPropertyCount >= rules.propertyPerOwner) {
+            professionalAlert(
+              `Le propriétaire sélectionné a déjà atteint la limite de ${rules.propertyPerOwner} biens autorisée par le plan ${rules.label}.`,
+              "Limite du plan atteinte",
+            );
+            return;
+          }
+        }
         let photo = old?.photo || val("f_photoUrl");
         const file = $("f_photo").files[0];
         if (file) {
@@ -4674,7 +4741,7 @@
           gallery: val("f_gallery"),
           video: val("f_video"),
           map: val("f_map"),
-          published: checked("f_published"),
+          published: rules.catalog ? checked("f_published") : false,
           archived: old?.archived || false,
           views: old?.views || 0,
           favorites: old?.favorites || 0,
@@ -4704,6 +4771,15 @@
       function togglePublish(id) {
         const p = data.properties.find((x) => x.id === id);
         if (!p) return;
+        const rules = currentPlanRules();
+        if (!rules.catalog) {
+          professionalAlert(
+            "Le Catalogue public est disponible uniquement avec les plans Standard et Business.",
+            "Fonctionnalité non incluse",
+          );
+          p.published = false;
+          return;
+        }
         p.published = !p.published;
         logAction(
           (p.published ? "Publication" : "Retrait du catalogue") +
@@ -4830,6 +4906,14 @@
       }
       function openOwnerForm(id = "") {
         const o = id ? data.owners.find((x) => x.id === id) : null;
+        const rules = currentPlanRules();
+        if (!o && Number.isFinite(rules.ownerLimit) && data.owners.length >= rules.ownerLimit) {
+          professionalAlert(
+            `Votre plan ${rules.label} autorise au maximum ${rules.ownerLimit} propriétaires. Passez à une formule supérieure pour en ajouter davantage.`,
+            "Limite du plan atteinte",
+          );
+          return;
+        }
         editing = { type: "owner", id };
         modalTitle.textContent = o
           ? "Modifier le propriétaire"
@@ -4846,6 +4930,14 @@
         const old = editing.id
           ? data.owners.find((x) => x.id === editing.id)
           : null;
+        const rules = currentPlanRules();
+        if (!old && Number.isFinite(rules.ownerLimit) && data.owners.length >= rules.ownerLimit) {
+          professionalAlert(
+            `Votre plan ${rules.label} autorise au maximum ${rules.ownerLimit} propriétaires.`,
+            "Limite du plan atteinte",
+          );
+          return;
+        }
         let idCopy = old?.idCopy || "",
           idCopyName = old?.idCopyName || "";
         const file = $("o_idCopyFile").files[0];
@@ -7028,6 +7120,13 @@
       }
 
       function renderCatalogAdmin() {
+        const rules = currentPlanRules();
+        if (!rules.catalog) {
+          $("catalogAdmin").innerHTML =
+            pageHead("Catalogue public", "Disponible avec les plans Standard et Business.") +
+            `<div class="card"><h3>Catalogue public non inclus dans le plan Free</h3><p>Vos biens restent privés et ne sont pas affichés dans la boutique publique des entreprises.</p><div class="actions"><a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Standard — 6 200 FCFA/mois</a><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Business — 56 200 FCFA/an</a></div></div>`;
+          return;
+        }
         const rows = data.properties.filter((x) => !x.archived);
         $("catalogAdmin").innerHTML =
           pageHead(
@@ -7082,6 +7181,11 @@
       }
       function renderPublicCatalog() {
         applySettings();
+        if (cloudCompany && !currentPlanRules(cloudCompany).catalog) {
+          $("publicCatalogGrid").innerHTML =
+            '<div class="empty card" style="grid-column:1/-1">Le Catalogue public de cette entreprise n’est pas disponible avec le plan Free.</div>';
+          return;
+        }
         let rows = data.properties.filter((p) =>
           isPublicPropertyAvailable(p),
         );
@@ -7599,6 +7703,12 @@
         ];
       }
       function canAccessPage(page) {
+        if (
+          page === "catalogAdmin" &&
+          sessionKind === "company" &&
+          !currentPlanRules().catalog
+        )
+          return false;
         return allowedPagesForUser().includes(page);
       }
       function setAuthMode(mode = "login") {
@@ -7728,20 +7838,20 @@
         const c = enterprises.find((x) => x.id === id);
         if (!c) return;
         const now = dateOnlyISO();
-        if (action === "business") {
+        if (action === "business" || action === "standard") {
           const info = subscriptionInfo(c),
             base =
-              c.plan === "business" && info.state === "active"
+              c.plan === action && info.state === "active"
                 ? c.subscriptionEnd
                 : now;
-          c.plan = "business";
+          c.plan = action;
           c.subscriptionStart = now;
-          c.subscriptionEnd = addDaysISO(base, 365);
+          c.subscriptionEnd = addDaysISO(base, planDurationDays(action));
           c.subscriptionStatus = "active";
         } else if (action === "free") {
           c.plan = "free";
           c.subscriptionStart = now;
-          c.subscriptionEnd = addDaysISO(now, 21);
+          c.subscriptionEnd = addDaysISO(now, 10);
           c.subscriptionStatus = "active";
         } else if (action === "suspend") {
           c.subscriptionStatus = "suspended";
@@ -7750,7 +7860,7 @@
           if (subscriptionInfo(c).state === "expired")
             c.subscriptionEnd = addDaysISO(
               now,
-              c.plan === "business" ? 365 : 21,
+              planDurationDays(c.plan),
             );
         }
         saveRegistry();
@@ -7763,7 +7873,7 @@
         if (!c) return;
         editing = { type: "subscription", id };
         modalTitle.textContent = "Gérer l’abonnement — " + c.name;
-        modalBody.innerHTML = `<div class="subscription-banner ${info.state === "active" ? c.plan : info.state}"><div><b>${esc(c.name)}</b><br><small>Code : ${esc(c.code)}</small></div><div>${planBadge(info)}</div></div><div class="form-grid"><div class="field"><label>Formule</label><select id="sub_plan"><option value="free" ${c.plan === "free" ? "selected" : ""}>Free — 21 jours</option><option value="business" ${c.plan === "business" ? "selected" : ""}>Business — 365 jours</option></select></div><div class="field"><label>Statut</label><select id="sub_status"><option value="active" ${c.subscriptionStatus !== "suspended" ? "selected" : ""}>Actif</option><option value="suspended" ${c.subscriptionStatus === "suspended" ? "selected" : ""}>Suspendu</option></select></div><div class="field"><label>Date de début</label><input id="sub_start" type="date" value="${attr(c.subscriptionStart)}"></div><div class="field"><label>Date de fin</label><input id="sub_end" type="date" value="${attr(c.subscriptionEnd)}"></div></div>`;
+        modalBody.innerHTML = `<div class="subscription-banner ${info.state === "active" ? c.plan : info.state}"><div><b>${esc(c.name)}</b><br><small>Code : ${esc(c.code)}</small></div><div>${planBadge(info)}</div></div><div class="form-grid"><div class="field"><label>Formule</label><select id="sub_plan"><option value="free" ${c.plan === "free" ? "selected" : ""}>Free — 10 jours</option><option value="standard" ${c.plan === "standard" ? "selected" : ""}>Standard — 30 jours — 6 200 FCFA/mois</option><option value="business" ${c.plan === "business" ? "selected" : ""}>Business — 365 jours — 56 200 FCFA/an</option></select></div><div class="field"><label>Statut</label><select id="sub_status"><option value="active" ${c.subscriptionStatus !== "suspended" ? "selected" : ""}>Actif</option><option value="suspended" ${c.subscriptionStatus === "suspended" ? "selected" : ""}>Suspendu</option></select></div><div class="field"><label>Date de début</label><input id="sub_start" type="date" value="${attr(c.subscriptionStart)}"></div><div class="field"><label>Date de fin</label><input id="sub_end" type="date" value="${attr(c.subscriptionEnd)}"></div></div>`;
         modalSave.onclick = saveSubscriptionManager;
         modal.classList.add("show");
       }
@@ -7775,7 +7885,7 @@
         c.subscriptionStart = val("sub_start") || dateOnlyISO();
         c.subscriptionEnd =
           val("sub_end") ||
-          addDaysISO(c.subscriptionStart, c.plan === "business" ? 365 : 21);
+          addDaysISO(c.subscriptionStart, planDurationDays(c.plan));
         saveRegistry();
         closeModal();
         renderSuperAdmin();
@@ -7809,11 +7919,11 @@
               .map((c) => {
                 const d = loadData(c.id),
                   info = subscriptionInfo(c);
-                return `<tr><td><b>${esc(c.name)}</b><br><small>${esc(d.settings.email || d.settings.phone || "—")}</small></td><td><b>${esc(c.code)}</b></td><td>${fmtDate(String(c.createdAt || "").slice(0, 10))}</td><td>${planBadge(info)}</td><td>${fmtDate(c.subscriptionEnd)}</td><td><span class="days-number">${info.daysRemaining}</span> jour(s)</td><td>${(d.users || []).length}/2 + admin</td><td>${(d.properties || []).length}</td><td><div class="actions"><button class="btn btn-ok btn-sm" onclick="changeSubscription('${c.id}','business')">Business +365 j</button><button class="btn btn-light btn-sm" onclick="changeSubscription('${c.id}','free')">Free 21 j</button>${info.state === "suspended" ? `<button class="btn btn-primary btn-sm" onclick="changeSubscription('${c.id}','resume')">Réactiver</button>` : `<button class="btn btn-danger btn-sm" onclick="changeSubscription('${c.id}','suspend')">Suspendre</button>`}<button class="btn btn-light btn-sm" onclick="openSubscriptionManager('${c.id}')">Gérer</button><button class="btn btn-danger btn-sm" onclick="deleteEnterpriseAccount('${c.id}')">Supprimer le compte</button></div></td></tr>`;
+                return `<tr><td><b>${esc(c.name)}</b><br><small>${esc(d.settings.email || d.settings.phone || "—")}</small></td><td><b>${esc(c.code)}</b></td><td>${fmtDate(String(c.createdAt || "").slice(0, 10))}</td><td>${planBadge(info)}</td><td>${fmtDate(c.subscriptionEnd)}</td><td><span class="days-number">${info.daysRemaining}</span> jour(s)</td><td>${(d.users || []).length}/2 + admin</td><td>${(d.properties || []).length}</td><td><div class="actions"><button class="btn btn-ok btn-sm" onclick="changeSubscription('${c.id}','business')">Business +365 j</button><button class="btn btn-primary btn-sm" onclick="changeSubscription('${c.id}','standard')">Standard +30 j</button><button class="btn btn-light btn-sm" onclick="changeSubscription('${c.id}','free')">Free 10 j</button>${info.state === "suspended" ? `<button class="btn btn-primary btn-sm" onclick="changeSubscription('${c.id}','resume')">Réactiver</button>` : `<button class="btn btn-danger btn-sm" onclick="changeSubscription('${c.id}','suspend')">Suspendre</button>`}<button class="btn btn-light btn-sm" onclick="openSubscriptionManager('${c.id}')">Gérer</button><button class="btn btn-danger btn-sm" onclick="deleteEnterpriseAccount('${c.id}')">Supprimer le compte</button></div></td></tr>`;
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucune entreprise.</td></tr>'
-          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(loadSuperAdmin().username)}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('superSetPass', this)">Afficher</button></div></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Règles d’abonnement</h3><div class="kpi-list"><div class="kpi-row"><span>Version Free</span><b>21 jours</b></div><div class="kpi-row"><span>Version Business</span><b>365 jours</b></div><div class="kpi-row"><span>Utilisateurs supplémentaires</span><b>2 maximum</b></div></div><div class="warning-box" style="margin-top:12px">Cette version HTML autonome conserve la console Super Admin et les entreprises dans le navigateur actuel. Une base cloud est nécessaire pour une administration réellement centralisée entre plusieurs appareils.</div></div></div>`;
+          }</tbody></table></div></div><div class="settings-grid" style="margin-top:16px"><div class="card"><h3>Identifiants Super Admin</h3><div class="field"><label>Identifiant</label><input id="superSetUser" value="${attr(loadSuperAdmin().username)}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="superSetPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('superSetPass', this)">Afficher</button></div></div><button class="btn btn-primary" onclick="saveSuperCredentials()">Enregistrer</button></div><div class="card"><h3>Règles d’abonnement</h3><div class="kpi-list"><div class="kpi-row"><span>Version Free</span><b>10 jours — 2 propriétaires — 2 biens/propriétaire</b></div><div class="kpi-row"><span>Version Standard</span><b>30 jours — 6 200 FCFA/mois — 10 propriétaires — 5 biens/propriétaire — Catalogue public</b></div><div class="kpi-row"><span>Version Business</span><b>365 jours — 56 200 FCFA/an — accès illimité</b></div><div class="kpi-row"><span>Utilisateurs supplémentaires</span><b>2 maximum</b></div></div><div class="warning-box" style="margin-top:12px">Cette version HTML autonome conserve la console Super Admin et les entreprises dans le navigateur actuel. Une base cloud est nécessaire pour une administration réellement centralisée entre plusieurs appareils.</div></div></div>`;
       }
       function saveSuperCredentials() {
         const old = loadSuperAdmin(),
@@ -8048,8 +8158,10 @@
           ) +
           subscriptionBannerHTML() +
           (info.plan === "free"
-            ? `<div class="business-upgrade-settings"><div><h3>Activez le plan Business</h3><p>Profitez de toutes les fonctionnalités de GLOBAL IMMOBILIER pendant 365 jours. Après le paiement, contactez le service d’activation pour la validation de votre abonnement.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=105700" target="_blank" rel="noopener noreferrer">Activer le plan Business</a></div>`
-            : "") +
+            ? `<div class="business-upgrade-settings"><div><h3>Passez à une formule payante</h3><p>Standard : 6 200 FCFA/mois avec Catalogue public. Business : 56 200 FCFA/an avec accès illimité.</p></div><div class="actions"><a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Standard</a><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Business</a></div></div>`
+            : info.plan === "standard"
+              ? `<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>`
+              : "") +
           `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique de l’entreprise</label><input value="${attr(s.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(s.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(s.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(s.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(s.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(s.address)}"></div><div class="field"><label>Pied de page des documents</label><input id="setFooter" value="${attr(s.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(s.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${s.taxRate}"></div><div class="field"><label>Commission de gestion par défaut (%)</label><input id="setCommission" type="number" value="${s.defaultCommission}"></div><div class="field"><label>Prix de vente d’un contrat</label><input id="setContractFee" type="number" value="${s.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${s.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${s.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${s.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(s.adminUser)}"></div><div class="field"><label>Mot de passe administrateur</label><div class="password-box"><input id="setPass" type="password" value="${attr(s.adminPass)}"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${s.autoLogout}"></div><div class="notice">Vous pouvez créer deux utilisateurs supplémentaires dans le menu <b>Utilisateurs</b>.</div></div><div class="card"><h3>Sauvegarde et synchronisation</h3><div class="field"><label>Adresse de l’API cloud facultative</label><input id="setApiUrl" value="${attr(s.apiUrl)}" placeholder="https://votre-api.exemple.com/api"></div><div class="actions"><button class="btn btn-primary" onclick="exportBackup()">Exporter JSON</button><button class="btn btn-light" onclick="importBackupFile.click()">Restaurer JSON</button><button class="btn btn-light" onclick="cloudSave(true)">Synchroniser</button><button class="btn btn-light" onclick="cloudLoad()">Charger le cloud</button></div><div class="warning-box" style="margin-top:12px">Sans API configurée, les données et abonnements restent enregistrés uniquement dans le navigateur de cet appareil.</div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
@@ -8062,7 +8174,7 @@
           }</div></div><div class="card danger-zone"><h3>Zone sensible</h3><p>Une confirmation est demandée avant l’effacement des données.</p><button class="btn btn-danger" onclick="resetApp()">Réinitialiser l’application</button></div></div>`;
       }
 
-      const BUSINESS_PROMO_INTERVAL_MS = 10 * 60 * 1000;
+      const BUSINESS_PROMO_INTERVAL_MS = 15 * 60 * 1000;
       let freeBusinessPromoTimer = null;
       function currentCompanyHasFreePlan() {
         const c = currentEnterprise();
@@ -8405,7 +8517,7 @@
           form.reset();
           applyBootstrap(result);
           professionalAlert(
-            `Entreprise créée avec succès.\n\nVersion : FREE — 21 jours\nIdentifiant : ${username}\nFin de la période gratuite : ${fmtDate(result.company.subscriptionEnd)}`,
+            `Entreprise créée avec succès.\n\nVersion : FREE — 10 jours\nIdentifiant : ${username}\nFin de la période gratuite : ${fmtDate(result.company.subscriptionEnd)}`,
           );
         } catch (error) {
           cloudError(error, "Création impossible");
@@ -8518,11 +8630,13 @@
         const q = String(val("publicCompanySearch") || "")
           .trim()
           .toLowerCase();
-        const rows = publicDirectory.filter((company) =>
-          `${company.name} ${company.code} ${company.address || ""} ${company.phone || ""} ${company.email || ""}`
-            .toLowerCase()
-            .includes(q),
-        );
+        const rows = publicDirectory
+          .filter((company) => currentPlanRules(company).catalog)
+          .filter((company) =>
+            `${company.name} ${company.code} ${company.address || ""} ${company.phone || ""} ${company.email || ""}`
+              .toLowerCase()
+              .includes(q),
+          );
         const head =
           '<div class="public-company-list-head"><span>Entreprise immobilière</span><span>Code</span><span>Adresse et contact</span><span>Biens publiés</span><span>Action</span></div>';
         const body = rows
@@ -8736,8 +8850,10 @@
           ) +
           subscriptionBannerHTML() +
           (info.plan === "free"
-            ? '<div class="business-upgrade-settings"><div><h3>Activez le plan Business</h3><p>Profitez de toutes les fonctionnalités pendant 365 jours.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=105700" target="_blank" rel="noopener noreferrer">Activer le plan Business</a></div>'
-            : "") +
+            ? '<div class="business-upgrade-settings"><div><h3>Passez à une formule payante</h3><p><b>Standard :</b> 6 200 FCFA/mois — 10 propriétaires, 5 biens par propriétaire, Catalogue public.<br><b>Business :</b> 56 200 FCFA/an — accès illimité.</p></div><div class="actions"><a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Standard</a><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Business</a></div></div>'
+            : info.plan === "standard"
+              ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
+              : "") +
           `<div class="settings-grid"><div class="card"><h3>Informations de l’agence</h3><div class="field"><label>Code unique</label><input value="${attr(settings.companyCode)}" readonly></div><div class="field"><label>Nom de l’agence</label><input id="setAgency" value="${attr(settings.agency)}"></div><div class="field"><label>Logo</label><input id="setLogoFile" type="file" accept="image/*"></div><div class="field"><label>Téléphone</label><input id="setPhone" value="${attr(settings.phone)}"></div><div class="field"><label>WhatsApp</label><input id="setWhatsapp" value="${attr(settings.whatsapp)}"></div><div class="field"><label>E-mail</label><input id="setEmail" value="${attr(settings.email)}"></div><div class="field"><label>Adresse</label><input id="setAddress" value="${attr(settings.address)}"></div><div class="field"><label>Pied de page</label><input id="setFooter" value="${attr(settings.footer)}"></div></div><div class="card"><h3>Finances et apparence</h3><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div><div class="card"><h3>Administrateur et sécurité</h3><div class="field"><label>Identifiant administrateur</label><input id="setUser" value="${attr(settings.adminUser || sessionUser?.username || "")}"></div><div class="field"><label>Nouveau mot de passe</label><div class="password-box"><input id="setPass" type="password" placeholder="Laisser vide pour conserver"><button class="password-toggle" type="button" onclick="togglePassword('setPass', this)">Afficher</button></div></div><div class="field"><label>Déconnexion après inactivité (minutes)</label><input id="setAutoLogout" type="number" value="${settings.autoLogout}"></div></div><div class="card"><h3>Journal de sécurité</h3><div class="kpi-list">${
             data.loginHistory
               .slice(0, 8)
@@ -8931,6 +9047,9 @@
           (company) =>
             company.plan === "business" && company.state === "active",
         ).length;
+        const standard = enterprises.filter(
+          (company) => company.plan === "standard" && company.state === "active",
+        ).length;
         const free = enterprises.filter(
           (company) => company.plan === "free" && company.state === "active",
         ).length;
@@ -8938,11 +9057,11 @@
           (company) => company.state !== "active",
         ).length;
         $("superAdminContent").innerHTML =
-          `${pageHead("Entreprises et abonnements", "Administration centralisée D1, sessions KV et migration locale.", '<button class="btn btn-light" onclick="showLogin(\'create\')">Créer une entreprise</button><button class="btn btn-accent" onclick="migrateLocalStorageToCloud()">Importer localStorage</button>')}<div class="super-stat-grid"><div class="stat"><div class="label">Entreprises inscrites</div><div class="value">${enterprises.length}</div></div><div class="stat"><div class="label">Business actives</div><div class="value">${business}</div></div><div class="stat"><div class="label">Free actives</div><div class="value">${free}</div></div><div class="stat"><div class="label">Expirées / suspendues</div><div class="value">${blocked}</div></div></div><div class="card"><div class="toolbar"><input id="superSearch" placeholder="Rechercher une entreprise ou un code…" value="${attr(val("superSearch"))}" oninput="renderSuperAdminLocal()"></div><div class="table-wrap"><table class="data-table super-company-table"><thead><tr><th>Entreprise</th><th>Code</th><th>Création</th><th>Formule</th><th>Échéance</th><th>Jours</th><th>Utilisateurs</th><th>Biens</th><th>Actions</th></tr></thead><tbody>${
+          `${pageHead("Entreprises et abonnements", "Administration centralisée D1, sessions KV et migration locale.", '<button class="btn btn-light" onclick="showLogin(\'create\')">Créer une entreprise</button><button class="btn btn-accent" onclick="migrateLocalStorageToCloud()">Importer localStorage</button>')}<div class="super-stat-grid"><div class="stat"><div class="label">Entreprises inscrites</div><div class="value">${enterprises.length}</div></div><div class="stat"><div class="label">Business actives</div><div class="value">${business}</div></div><div class="stat"><div class="label">Standard actives</div><div class="value">${standard}</div></div><div class="stat"><div class="label">Free actives</div><div class="value">${free}</div></div><div class="stat"><div class="label">Expirées / suspendues</div><div class="value">${blocked}</div></div></div><div class="card"><div class="toolbar"><input id="superSearch" placeholder="Rechercher une entreprise ou un code…" value="${attr(val("superSearch"))}" oninput="renderSuperAdminLocal()"></div><div class="table-wrap"><table class="data-table super-company-table"><thead><tr><th>Entreprise</th><th>Code</th><th>Création</th><th>Formule</th><th>Échéance</th><th>Jours</th><th>Utilisateurs</th><th>Biens</th><th>Actions</th></tr></thead><tbody>${
             rows
               .map((company) => {
                 const info = subscriptionInfo(company);
-                return `<tr><td><b>${esc(company.name)}</b><br><small>${esc(company.email || company.phone || "—")}</small></td><td><b>${esc(company.code)}</b></td><td>${fmtDate(String(company.createdAt || "").slice(0, 10))}</td><td>${planBadge(info)}</td><td>${fmtDate(company.subscriptionEnd)}</td><td><span class="days-number">${Number(company.daysRemaining || info.daysRemaining || 0)}</span></td><td>${Number(company.userCount || 0)}/2 + admin</td><td>${Number(company.count || 0)}</td><td><div class="actions"><button class="btn btn-ok btn-sm" onclick="changeSubscription('${company.id}','business')">Business +365 j</button><button class="btn btn-light btn-sm" onclick="changeSubscription('${company.id}','free')">Free 21 j</button>${company.state === "suspended" ? `<button class="btn btn-primary btn-sm" onclick="changeSubscription('${company.id}','resume')">Réactiver</button>` : `<button class="btn btn-danger btn-sm" onclick="changeSubscription('${company.id}','suspend')">Suspendre</button>`}<button class="btn btn-light btn-sm" onclick="openSubscriptionManager('${company.id}')">Gérer</button><button class="btn btn-danger btn-sm" onclick="deleteEnterpriseAccount('${company.id}')">Supprimer</button></div></td></tr>`;
+                return `<tr><td><b>${esc(company.name)}</b><br><small>${esc(company.email || company.phone || "—")}</small></td><td><b>${esc(company.code)}</b></td><td>${fmtDate(String(company.createdAt || "").slice(0, 10))}</td><td>${planBadge(info)}</td><td>${fmtDate(company.subscriptionEnd)}</td><td><span class="days-number">${Number(company.daysRemaining || info.daysRemaining || 0)}</span></td><td>${Number(company.userCount || 0)}/2 + admin</td><td>${Number(company.count || 0)}</td><td><div class="actions"><button class="btn btn-ok btn-sm" onclick="changeSubscription('${company.id}','business')">Business +365 j</button><button class="btn btn-primary btn-sm" onclick="changeSubscription('${company.id}','standard')">Standard +30 j</button><button class="btn btn-light btn-sm" onclick="changeSubscription('${company.id}','free')">Free +10 j</button>${company.state === "suspended" ? `<button class="btn btn-primary btn-sm" onclick="changeSubscription('${company.id}','resume')">Réactiver</button>` : `<button class="btn btn-danger btn-sm" onclick="changeSubscription('${company.id}','suspend')">Suspendre</button>`}<button class="btn btn-light btn-sm" onclick="openSubscriptionManager('${company.id}')">Gérer</button><button class="btn btn-danger btn-sm" onclick="deleteEnterpriseAccount('${company.id}')">Supprimer</button></div></td></tr>`;
               })
               .join("") ||
             '<tr><td colspan="9" class="empty">Aucune entreprise.</td></tr>'
@@ -8980,7 +9099,7 @@
         const info = subscriptionInfo(company);
         editing = { type: "subscription", id };
         modalTitle.textContent = `Gérer l’abonnement — ${company.name}`;
-        modalBody.innerHTML = `<div class="subscription-banner ${info.state === "active" ? company.plan : info.state}"><div><b>${esc(company.name)}</b><br><small>Code : ${esc(company.code)}</small></div><div>${planBadge(info)}</div></div><div class="form-grid"><div class="field"><label>Formule</label><select id="sub_plan"><option value="free" ${company.plan === "free" ? "selected" : ""}>Free — 21 jours</option><option value="business" ${company.plan === "business" ? "selected" : ""}>Business — 365 jours</option></select></div><div class="field"><label>Statut</label><select id="sub_status"><option value="active" ${company.subscriptionStatus !== "suspended" ? "selected" : ""}>Actif</option><option value="suspended" ${company.subscriptionStatus === "suspended" ? "selected" : ""}>Suspendu</option></select></div><div class="field"><label>Date de début</label><input id="sub_start" type="date" value="${attr(company.subscriptionStart)}"></div><div class="field"><label>Date de fin</label><input id="sub_end" type="date" value="${attr(company.subscriptionEnd)}"></div></div>`;
+        modalBody.innerHTML = `<div class="subscription-banner ${info.state === "active" ? company.plan : info.state}"><div><b>${esc(company.name)}</b><br><small>Code : ${esc(company.code)}</small></div><div>${planBadge(info)}</div></div><div class="form-grid"><div class="field"><label>Formule</label><select id="sub_plan"><option value="free" ${company.plan === "free" ? "selected" : ""}>Free — 10 jours</option><option value="standard" ${company.plan === "standard" ? "selected" : ""}>Standard — 30 jours — 6 200 FCFA/mois</option><option value="business" ${company.plan === "business" ? "selected" : ""}>Business — 365 jours — 56 200 FCFA/an</option></select></div><div class="field"><label>Statut</label><select id="sub_status"><option value="active" ${company.subscriptionStatus !== "suspended" ? "selected" : ""}>Actif</option><option value="suspended" ${company.subscriptionStatus === "suspended" ? "selected" : ""}>Suspendu</option></select></div><div class="field"><label>Date de début</label><input id="sub_start" type="date" value="${attr(company.subscriptionStart)}"></div><div class="field"><label>Date de fin</label><input id="sub_end" type="date" value="${attr(company.subscriptionEnd)}"></div></div>`;
         modalSave.onclick = saveSubscriptionManager;
         modal.classList.add("show");
       }
