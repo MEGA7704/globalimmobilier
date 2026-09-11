@@ -1,0 +1,10 @@
+GLOBAL IMMOBILIER — CORRECTION V20
+
+- Globe du logo de la page d'accueil redimensionné sans recadrage ni coupe.
+- Affichage du globe avec object-fit: contain dans la bannière.
+- Bannière Paramètres / Administration entièrement revue.
+- Six boutons professionnels alignés sur une seule ligne.
+- Remplacement des symboles Unicode par des icônes SVG.
+- États actif/survol uniformisés.
+- Sous-pages Administration harmonisées et rendues plus professionnelles.
+- Mise en page responsive conservée.

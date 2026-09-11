@@ -3435,7 +3435,224 @@
       }
 
 </style>
-  </head>
+  
+    <style id="global-immobilier-v20-final">
+      /* V20 FINAL — Logo accueil parfaitement contenu dans la bannière */
+      #loginPage .gi-home-nav-v2{min-height:70px!important;}
+      #loginPage .gi-home-brand{gap:12px!important;min-width:0!important;}
+      #loginPage .gi-home-brand-mark{
+        width:48px!important;height:48px!important;flex:0 0 48px!important;
+        overflow:visible!important;display:grid!important;place-items:center!important;
+        background:transparent!important;border:0!important;border-radius:0!important;
+      }
+      #loginPage .gi-home-brand-logo-img{
+        display:block!important;width:48px!important;height:48px!important;
+        max-width:48px!important;max-height:48px!important;
+        object-fit:contain!important;object-position:center!important;
+        transform:none!important;clip-path:none!important;margin:0!important;
+        filter:drop-shadow(0 4px 8px rgba(0,0,0,.16))!important;
+      }
+      #loginPage .gi-home-brand-copy{min-width:0!important;}
+      #loginPage .gi-home-brand-copy strong{font-size:21px!important;line-height:.95!important;letter-spacing:.035em!important;}
+      #loginPage .gi-home-brand-copy span{font-size:14px!important;line-height:1!important;letter-spacing:.10em!important;margin-top:3px!important;}
+      #loginPage .gi-home-brand-tagline{font-size:10.5px!important;padding-left:15px!important;}
+
+      /* V20 FINAL — Bannière Administration fidèle à la référence */
+      #settings .settings-admin-links-v2{
+        display:grid!important;
+        grid-template-columns:minmax(310px,390px) minmax(0,1fr)!important;
+        align-items:center!important;
+        column-gap:28px!important;
+        width:100%!important;
+        min-height:118px!important;
+        padding:18px 22px!important;
+        margin:0 0 20px!important;
+        border:1px solid rgba(255,255,255,.10)!important;
+        border-radius:20px!important;
+        background:linear-gradient(115deg,#075044 0%,#086456 62%,#0a5b50 100%)!important;
+        box-shadow:0 18px 42px rgba(5,55,48,.15)!important;
+        overflow:hidden!important;
+        position:relative!important;
+      }
+      #settings .settings-admin-links-v2::before{
+        content:""!important;position:absolute!important;right:-55px!important;top:-75px!important;
+        width:250px!important;height:250px!important;border-radius:48px!important;
+        background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,0))!important;
+        transform:rotate(30deg)!important;pointer-events:none!important;
+      }
+      #settings .settings-admin-links-v2::after{display:none!important;}
+      #settings .settings-admin-title{
+        min-width:0!important;width:auto!important;padding:4px 24px 4px 0!important;margin:0!important;
+        border-right:1px solid rgba(255,255,255,.22)!important;
+        position:relative!important;z-index:2!important;
+      }
+      #settings .settings-admin-kicker{
+        display:block!important;margin-bottom:7px!important;color:#f0bb3a!important;
+        font-size:10px!important;font-weight:950!important;letter-spacing:.14em!important;line-height:1!important;
+      }
+      #settings .settings-admin-title h3{
+        margin:0 0 7px!important;color:#fff!important;font-size:24px!important;
+        line-height:1.05!important;font-weight:900!important;letter-spacing:-.02em!important;
+      }
+      #settings .settings-admin-title p{
+        display:block!important;margin:0!important;color:#d8ebe6!important;font-size:10.5px!important;
+        line-height:1.3!important;white-space:nowrap!important;
+      }
+      #settings .settings-admin-actions-v2{
+        display:flex!important;align-items:center!important;justify-content:flex-start!important;
+        gap:10px!important;flex-wrap:nowrap!important;min-width:0!important;
+        overflow-x:auto!important;overflow-y:hidden!important;padding:5px 1px 8px!important;
+        scrollbar-width:thin!important;scrollbar-color:#d9ad45 rgba(255,255,255,.10)!important;
+        position:relative!important;z-index:2!important;
+      }
+      #settings .settings-admin-actions-v2::-webkit-scrollbar{height:4px!important;}
+      #settings .settings-admin-actions-v2::-webkit-scrollbar-track{background:rgba(255,255,255,.08)!important;border-radius:999px!important;}
+      #settings .settings-admin-actions-v2::-webkit-scrollbar-thumb{background:#d9ad45!important;border-radius:999px!important;}
+      #settings .settings-admin-tab{
+        appearance:none!important;-webkit-appearance:none!important;
+        flex:0 0 auto!important;min-height:52px!important;height:52px!important;
+        display:inline-flex!important;align-items:center!important;justify-content:center!important;
+        gap:9px!important;padding:0 15px!important;margin:0!important;
+        border:1px solid #dce6e2!important;border-radius:10px!important;
+        background:linear-gradient(180deg,#ffffff 0%,#f7faf8 100%)!important;
+        color:#173f37!important;font:inherit!important;font-size:11.5px!important;font-weight:800!important;
+        white-space:nowrap!important;line-height:1!important;cursor:pointer!important;
+        box-shadow:0 7px 16px rgba(0,0,0,.10)!important;
+        transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important;
+      }
+      #settings .settings-admin-tab:hover{
+        transform:translateY(-2px)!important;border-color:#d4b05a!important;
+        box-shadow:0 10px 22px rgba(0,0,0,.14)!important;background:#fff!important;
+      }
+      #settings .settings-admin-tab.active{
+        color:#fff!important;border-color:#e6c46e!important;
+        background:linear-gradient(135deg,#0a6658,#0b7a68)!important;
+        box-shadow:0 10px 24px rgba(0,0,0,.18)!important;
+      }
+      #settings .settings-tab-icon{
+        width:25px!important;height:25px!important;flex:0 0 25px!important;
+        display:grid!important;place-items:center!important;padding:0!important;
+        border:0!important;border-radius:7px!important;background:transparent!important;
+        color:#0a5b4e!important;
+      }
+      #settings .settings-admin-tab.active .settings-tab-icon{color:#fff!important;background:rgba(255,255,255,.10)!important;}
+      #settings .settings-tab-icon svg{
+        width:20px!important;height:20px!important;display:block!important;
+        fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;
+        stroke-linecap:round!important;stroke-linejoin:round!important;
+      }
+      #settings .settings-tab-label{display:block!important;}
+
+      /* V20 FINAL — Sous-pages Administration */
+      #settings .settings-admin-panel-host{margin-top:0!important;}
+      #settings .settings-panel-card,
+      #settings .settings-embedded-module{
+        border:1px solid #dce6e2!important;border-radius:20px!important;background:#fff!important;
+        box-shadow:0 16px 38px rgba(4,48,42,.08)!important;overflow:hidden!important;
+      }
+      #settings .settings-panel-heading,
+      #settings .settings-embedded-module > .page-head{
+        margin:0!important;padding:20px 24px!important;border:0!important;border-bottom:1px solid #e0e9e5!important;
+        border-radius:0!important;background:linear-gradient(135deg,#f8fbf9 0%,#edf5f2 100%)!important;
+      }
+      #settings .settings-panel-heading-icon{
+        width:46px!important;height:46px!important;flex:0 0 46px!important;border-radius:12px!important;
+        background:linear-gradient(135deg,#075044,#0a6c5c)!important;color:#f0c04a!important;
+        box-shadow:0 8px 18px rgba(5,80,69,.14)!important;
+      }
+      #settings .settings-panel-heading h3,
+      #settings .settings-embedded-module .page-head h2{
+        margin:2px 0 4px!important;color:#073f37!important;font-size:21px!important;font-weight:900!important;
+      }
+      #settings .settings-panel-heading p,
+      #settings .settings-embedded-module .page-head p{color:#6d8079!important;font-size:11.5px!important;line-height:1.55!important;}
+      #settings .settings-panel-body{padding:24px!important;background:#fff!important;}
+      #settings .settings-panel-form{
+        display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px 18px!important;
+        padding:20px!important;border:1px solid #e0e9e5!important;border-radius:14px!important;
+        background:#fbfdfc!important;
+      }
+      #settings .settings-panel-form .field{margin:0!important;min-width:0!important;}
+      #settings .settings-panel-form .field.span-2{grid-column:1/-1!important;}
+      #settings .settings-panel-form label{display:block!important;margin-bottom:6px!important;color:#31554d!important;font-size:11px!important;font-weight:850!important;}
+      #settings .settings-panel-form input,
+      #settings .settings-panel-form select,
+      #settings .settings-panel-form textarea{
+        width:100%!important;min-height:46px!important;padding:10px 12px!important;
+        border:1px solid #d5e1dc!important;border-radius:10px!important;background:#fff!important;
+        box-shadow:inset 0 1px 2px rgba(0,0,0,.02)!important;
+      }
+      #settings .settings-panel-form input:focus,
+      #settings .settings-panel-form select:focus,
+      #settings .settings-panel-form textarea:focus{
+        outline:none!important;border-color:#0b7564!important;box-shadow:0 0 0 3px rgba(11,117,100,.10)!important;
+      }
+      #settings .settings-panel-save{
+        display:flex!important;justify-content:flex-end!important;align-items:center!important;
+        padding:16px 24px!important;border-top:1px solid #e0e9e5!important;background:#f8faf9!important;
+      }
+      #settings .settings-panel-save .btn{
+        min-width:210px!important;min-height:44px!important;border-radius:10px!important;font-weight:900!important;
+      }
+      #settings .settings-security-log .kpi-row{
+        min-height:52px!important;padding:13px 15px!important;border:1px solid #e0e9e5!important;border-radius:10px!important;background:#fbfdfc!important;
+      }
+
+      @media(max-width:1180px){
+        #settings .settings-admin-links-v2{grid-template-columns:280px minmax(0,1fr)!important;column-gap:18px!important;padding:16px 18px!important;}
+        #settings .settings-admin-title h3{font-size:20px!important;}
+      }
+      @media(max-width:760px){
+        #loginPage .gi-home-brand-mark{width:38px!important;height:38px!important;flex-basis:38px!important;}
+        #loginPage .gi-home-brand-logo-img{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;}
+        #loginPage .gi-home-brand-copy strong{font-size:16px!important;}
+        #loginPage .gi-home-brand-copy span{font-size:10px!important;}
+        #settings .settings-admin-links-v2{
+          grid-template-columns:180px minmax(0,1fr)!important;column-gap:12px!important;
+          min-height:96px!important;padding:12px!important;border-radius:15px!important;
+        }
+        #settings .settings-admin-title{padding-right:12px!important;}
+        #settings .settings-admin-title h3{font-size:15px!important;margin-bottom:4px!important;}
+        #settings .settings-admin-title p{display:none!important;}
+        #settings .settings-admin-tab{height:44px!important;min-height:44px!important;padding:0 11px!important;font-size:10px!important;gap:7px!important;}
+        #settings .settings-tab-icon{width:22px!important;height:22px!important;flex-basis:22px!important;}
+        #settings .settings-tab-icon svg{width:17px!important;height:17px!important;}
+        #settings .settings-panel-form{grid-template-columns:1fr!important;padding:14px!important;gap:13px!important;}
+        #settings .settings-panel-form .field.span-2{grid-column:auto!important;}
+        #settings .settings-panel-body{padding:14px!important;}
+        #settings .settings-panel-save{padding:14px!important;}
+        #settings .settings-panel-save .btn{width:100%!important;min-width:0!important;}
+      }
+    </style>
+
+
+<style>
+/* V21 — Boutons Administration fidèles à la maquette fournie */
+#settings .settings-admin-links-v2{display:grid!important;grid-template-columns:430px minmax(0,1fr)!important;align-items:center!important;column-gap:28px!important;width:100%!important;min-height:158px!important;padding:24px 28px!important;margin:0 0 22px!important;border:1px solid rgba(231,173,47,.16)!important;border-radius:22px!important;background:linear-gradient(120deg,#075044 0%,#07594c 52%,#09695a 100%)!important;box-shadow:0 18px 42px rgba(4,48,42,.14)!important;overflow:hidden!important;position:relative!important}
+#settings .settings-admin-links-v2::before{content:""!important;position:absolute!important;right:-85px!important;top:-70px!important;width:330px!important;height:240px!important;border-radius:46px!important;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,0))!important;transform:rotate(-43deg)!important;pointer-events:none!important}
+#settings .settings-admin-title{min-width:0!important;width:100%!important;padding:4px 28px 4px 18px!important;border-right:1px solid rgba(255,255,255,.23)!important;position:relative!important;z-index:1!important}
+#settings .settings-admin-kicker{display:block!important;margin:0 0 8px!important;color:#f1bb39!important;font-size:12px!important;line-height:1!important;font-weight:950!important;letter-spacing:.13em!important;text-transform:uppercase!important}
+#settings .settings-admin-title h3{margin:0 0 7px!important;color:#fff!important;font-size:29px!important;line-height:1.08!important;font-weight:900!important;letter-spacing:-.02em!important}
+#settings .settings-admin-title p{margin:0!important;color:#e4f1ed!important;font-size:13px!important;line-height:1.35!important;white-space:nowrap!important}
+#settings .settings-admin-actions-v2{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;flex-wrap:nowrap!important;min-width:0!important;padding:4px 0 6px!important;overflow-x:auto!important;overflow-y:hidden!important;position:relative!important;z-index:2!important;scrollbar-width:thin!important;scrollbar-color:rgba(240,196,91,.58) rgba(255,255,255,.08)!important}
+#settings .settings-admin-actions-v2::-webkit-scrollbar{height:5px!important}#settings .settings-admin-actions-v2::-webkit-scrollbar-track{background:rgba(255,255,255,.08)!important;border-radius:999px!important}#settings .settings-admin-actions-v2::-webkit-scrollbar-thumb{background:rgba(240,196,91,.58)!important;border-radius:999px!important}
+#settings .settings-admin-tab{flex:0 0 auto!important;height:56px!important;min-height:56px!important;padding:0 19px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;border:1px solid #dfe8e4!important;border-radius:12px!important;background:#fff!important;color:#153e36!important;font:inherit!important;font-size:13px!important;font-weight:850!important;line-height:1!important;white-space:nowrap!important;cursor:pointer!important;box-shadow:0 9px 22px rgba(0,0,0,.09),inset 0 1px 0 rgba(255,255,255,.7)!important;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important}
+#settings .settings-admin-tab:hover{transform:translateY(-2px)!important;border-color:#c7d9d2!important;background:#fff!important;box-shadow:0 13px 26px rgba(0,0,0,.13)!important}
+#settings .settings-admin-tab.active{color:#103c34!important;background:#fff!important;border-color:#e2b94c!important;box-shadow:0 0 0 2px rgba(226,185,76,.18),0 12px 26px rgba(0,0,0,.12)!important}
+#settings .settings-tab-icon{width:25px!important;height:25px!important;flex:0 0 25px!important;display:grid!important;place-items:center!important;border:0!important;border-radius:0!important;background:transparent!important;color:#07564b!important}
+#settings .settings-admin-tab.active .settings-tab-icon{color:#07564b!important;background:transparent!important}
+#settings .settings-tab-icon svg{width:22px!important;height:22px!important;display:block!important;stroke:currentColor!important;stroke-width:2.2!important}
+#settings .settings-tab-label{display:block!important;font-weight:850!important;letter-spacing:-.01em!important}
+#settings .settings-admin-panel-host{margin-top:18px!important}
+#settings .settings-panel-card,#settings .settings-embedded-module{border:1px solid #dce7e2!important;border-radius:20px!important;background:#fff!important;box-shadow:0 15px 36px rgba(4,48,42,.08)!important}
+#settings .settings-panel-heading{padding:22px 24px!important;background:linear-gradient(135deg,#fbfdfc,#eef6f3)!important;border-bottom:1px solid #dfe9e4!important}
+#settings .settings-panel-heading-icon{width:48px!important;height:48px!important;flex-basis:48px!important;border-radius:14px!important;background:linear-gradient(135deg,#075044,#087060)!important;color:#f1bf43!important;box-shadow:0 8px 18px rgba(7,80,68,.17)!important}
+#settings .settings-panel-heading h3{font-size:21px!important;font-weight:900!important}#settings .settings-panel-body{padding:24px!important}#settings .settings-panel-form{padding:20px!important;border:1px solid #e1ebe6!important;border-radius:15px!important;background:#fbfcfb!important}#settings .settings-panel-save{padding:17px 24px!important;background:#f8faf9!important}#settings .settings-panel-save .btn{min-width:210px!important;min-height:45px!important;border-radius:11px!important;font-weight:900!important}
+@media(max-width:1500px){#settings .settings-admin-links-v2{grid-template-columns:350px minmax(0,1fr)!important;column-gap:20px!important;padding:20px!important}#settings .settings-admin-title h3{font-size:25px!important}#settings .settings-admin-tab{height:52px!important;min-height:52px!important;padding:0 15px!important;font-size:12px!important;gap:8px!important}#settings .settings-tab-icon{width:23px!important;height:23px!important;flex-basis:23px!important}#settings .settings-tab-icon svg{width:20px!important;height:20px!important}}
+@media(max-width:900px){#settings .settings-admin-links-v2{grid-template-columns:245px minmax(0,1fr)!important;min-height:132px!important;padding:16px!important;column-gap:14px!important;border-radius:18px!important}#settings .settings-admin-title{padding:2px 14px 2px 4px!important}#settings .settings-admin-kicker{font-size:9px!important;margin-bottom:5px!important}#settings .settings-admin-title h3{font-size:18px!important;margin-bottom:5px!important}#settings .settings-admin-title p{font-size:10px!important}#settings .settings-admin-tab{height:46px!important;min-height:46px!important;padding:0 12px!important;font-size:10.5px!important}#settings .settings-tab-icon{width:21px!important;height:21px!important;flex-basis:21px!important}#settings .settings-tab-icon svg{width:18px!important;height:18px!important}}
+@media(max-width:620px){#settings .settings-admin-links-v2{grid-template-columns:175px minmax(0,1fr)!important;min-height:116px!important;padding:12px!important;column-gap:10px!important}#settings .settings-admin-title{padding-right:10px!important}#settings .settings-admin-title p{display:none!important}#settings .settings-admin-title h3{font-size:15px!important}#settings .settings-admin-tab{height:44px!important;min-height:44px!important;padding:0 10px!important;font-size:10px!important}}
+</style>
+</head>
   <body>
     <section id="loginPage" class="login-page gi-home-page gi-home-v2">
       <header class="gi-home-nav gi-home-nav-v2">
@@ -11238,16 +11455,24 @@
       let settingsAdminPanel = "agency";
 
       function settingsAdminButtonsHTML() {
+        const icons = {
+          agency: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M8 7h4M8 11h4M8 15h4M16 9h3a1 1 0 0 1 1 1v11M2 21h20"/></svg>`,
+          finance: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/><path d="M15 7l3-3 3 3"/></svg>`,
+          security: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z"/><path d="m9 12 2 2 4-5"/></svg>`,
+          journal: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`,
+          users: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c.8-4 2.8-6 6-6s5.2 2 6 6"/><circle cx="17" cy="9" r="2"/><path d="M15.5 15c2.8.2 4.6 1.8 5.5 5"/></svg>`,
+          messages: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>`,
+        };
         const buttons = [
-          ["agency", "Informations de l’agence", "⌂"],
-          ["finance", "Finances et apparence", "₣"],
-          ["security", "Administrateur et sécurité", "⌾"],
-          ["journal", "Journal de sécurité", "▤"],
-          ["users", "Utilisateurs", "♜"],
-          ["messages", "Notes et notifications", "✉"],
+          ["agency", "Informations de l’agence"],
+          ["finance", "Finances et apparence"],
+          ["security", "Administrateur et sécurité"],
+          ["journal", "Journal de sécurité"],
+          ["users", "Utilisateurs"],
+          ["messages", "Notes et notifications"],
         ];
         return buttons
-          .map(([key, label, icon]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span class="settings-tab-icon" aria-hidden="true">${icon}</span><span>${label}</span></button>`)
+          .map(([key, label]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span class="settings-tab-icon" aria-hidden="true">${icons[key]}</span><span class="settings-tab-label">${label}</span></button>`)
           .join("");
       }
 

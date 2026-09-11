@@ -1,0 +1,5 @@
+CORRECTION 2026-09-11 — V19
+- Globe du logo réduit et intégré à la hauteur de la bannière
+- Bannière Paramètres / Administration entièrement refaite
+- Six boutons blancs premium sur une ligne unique
+- Sous-pages Administration harmonisées et professionnalisées

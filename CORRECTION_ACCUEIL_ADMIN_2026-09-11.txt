@@ -1,0 +1,4 @@
+CORRECTION 2026-09-11
+- Suppression des textes demandés sur la page d’accueil
+- En-tête accueil avec globe du logo à gauche et nom bien visible à droite
+- Bannière Paramètres / Administration rendue plus professionnelle, boutons premium sur une seule ligne sans retour

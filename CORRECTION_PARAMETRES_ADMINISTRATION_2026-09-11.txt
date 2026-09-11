@@ -1,0 +1,19 @@
+CORRECTION CIBLÉE — PARAMÈTRES / ADMINISTRATION — 11/09/2026
+
+- Bannière ADMINISTRATION / Gestion de l’entreprise transformée en navigation interne.
+- Boutons intégrés dans la bannière, dans cet ordre :
+  1. Informations de l’agence
+  2. Finances et apparence
+  3. Administrateur et sécurité
+  4. Journal de sécurité
+  5. Utilisateurs
+  6. Notes et notifications
+- Tous les contenus s’ouvrent directement sous la bannière sans quitter Paramètres.
+- Informations de l’agence : bouton Enregistrer en bas.
+- Finances et apparence : bouton Enregistrer en bas.
+- Administrateur et sécurité : bouton Enregistrer en bas.
+- Journal de sécurité : consultation seule.
+- Utilisateurs et Notes/notifications restent intégrés à Paramètres.
+- Suppression de la Zone sensible dans la nouvelle section Paramètres.
+- Suppression du bouton global « Enregistrer les paramètres » placé en haut.
+- Interface responsive : boutons horizontaux sur grand écran, empilés sur petit écran.
