@@ -1,0 +1,4 @@
+CORRECTION V24 - 2026-09-11
+- Version Free confirmée à 10 jours côté frontend et API.
+- Les 7 boutons Paramètres / Administration restent sur une seule ligne sans défilement horizontal.
+- Administrateur et sécurité renommé en Sécurité.
