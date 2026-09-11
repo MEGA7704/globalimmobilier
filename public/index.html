@@ -3652,6 +3652,108 @@
 @media(max-width:900px){#settings .settings-admin-links-v2{grid-template-columns:245px minmax(0,1fr)!important;min-height:132px!important;padding:16px!important;column-gap:14px!important;border-radius:18px!important}#settings .settings-admin-title{padding:2px 14px 2px 4px!important}#settings .settings-admin-kicker{font-size:9px!important;margin-bottom:5px!important}#settings .settings-admin-title h3{font-size:18px!important;margin-bottom:5px!important}#settings .settings-admin-title p{font-size:10px!important}#settings .settings-admin-tab{height:46px!important;min-height:46px!important;padding:0 12px!important;font-size:10.5px!important}#settings .settings-tab-icon{width:21px!important;height:21px!important;flex-basis:21px!important}#settings .settings-tab-icon svg{width:18px!important;height:18px!important}}
 @media(max-width:620px){#settings .settings-admin-links-v2{grid-template-columns:175px minmax(0,1fr)!important;min-height:116px!important;padding:12px!important;column-gap:10px!important}#settings .settings-admin-title{padding-right:10px!important}#settings .settings-admin-title p{display:none!important}#settings .settings-admin-title h3{font-size:15px!important}#settings .settings-admin-tab{height:44px!important;min-height:44px!important;padding:0 10px!important;font-size:10px!important}}
 </style>
+
+<style id="v22-admin-no-scroll">
+#settings .settings-admin-links-v2{
+  display:grid !important;
+  grid-template-columns:minmax(260px,22%) minmax(0,1fr) !important;
+  align-items:center !important;
+  gap:18px !important;
+  overflow:hidden !important;
+}
+#settings .settings-admin-actions-v2{
+  width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  align-items:stretch !important;
+  gap:8px !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  overflow-x:hidden !important;
+  overflow-y:hidden !important;
+  scrollbar-width:none !important;
+}
+#settings .settings-admin-actions-v2::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important;}
+#settings .settings-admin-tab{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:52px !important;
+  min-height:52px !important;
+  margin:0 !important;
+  padding:0 8px !important;
+  gap:6px !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  font-size:clamp(9px,.72vw,12px) !important;
+  line-height:1 !important;
+}
+#settings .settings-tab-icon{width:22px !important;height:22px !important;flex:0 0 22px !important;}
+#settings .settings-tab-icon svg{width:19px !important;height:19px !important;}
+#settings .settings-tab-label{min-width:0 !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:clip !important;}
+@media(max-width:1100px){
+  #settings .settings-admin-links-v2{grid-template-columns:205px minmax(0,1fr) !important;gap:9px !important;padding:13px !important;}
+  #settings .settings-admin-title h3{font-size:15px !important;}
+  #settings .settings-admin-title p{font-size:8px !important;}
+  #settings .settings-admin-actions-v2{gap:4px !important;}
+  #settings .settings-admin-tab{height:45px !important;min-height:45px !important;padding:0 3px !important;gap:3px !important;font-size:7.5px !important;}
+  #settings .settings-tab-icon{width:17px !important;height:17px !important;flex-basis:17px !important;}
+  #settings .settings-tab-icon svg{width:15px !important;height:15px !important;}
+}
+@media(max-width:700px){
+  #settings .settings-admin-links-v2{grid-template-columns:116px minmax(0,1fr) !important;gap:5px !important;padding:9px !important;border-radius:13px !important;}
+  #settings .settings-admin-title{padding-right:6px !important;}
+  #settings .settings-admin-kicker{font-size:6px !important;}
+  #settings .settings-admin-title h3{font-size:10px !important;}
+  #settings .settings-admin-title p{display:none !important;}
+  #settings .settings-admin-actions-v2{gap:2px !important;}
+  #settings .settings-admin-tab{height:38px !important;min-height:38px !important;padding:0 1px !important;gap:1px !important;font-size:5.6px !important;border-radius:6px !important;}
+  #settings .settings-tab-icon{width:12px !important;height:12px !important;flex-basis:12px !important;}
+  #settings .settings-tab-icon svg{width:11px !important;height:11px !important;}
+}
+
+      /* ===== V23 — Abonnement centralisé ===== */
+      .settings-admin-actions-v2{grid-template-columns:repeat(7,minmax(0,1fr)) !important;overflow:hidden !important;}
+      .settings-admin-tab{min-width:0 !important;}
+      .subscription-page .settings-panel-body{padding:24px;}
+      .subscription-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px;}
+      .subscription-summary-card{padding:18px;border:1px solid #dce7e2;border-radius:15px;background:linear-gradient(145deg,#fbfdfc,#f1f6f3);box-shadow:0 8px 22px rgba(4,48,42,.06);}
+      .subscription-summary-card.primary{background:linear-gradient(135deg,#073c36,#0a6658);color:#fff;border-color:#0a6658;}
+      .subscription-summary-card span{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#788a84;margin-bottom:8px;}
+      .subscription-summary-card.primary span{color:#cfe5de;}
+      .subscription-summary-card strong{display:block;font-size:24px;color:#073c36;line-height:1.15;}
+      .subscription-summary-card.primary strong{color:#fff;}
+      .subscription-summary-card small{display:block;margin-top:6px;color:#76867f;font-size:11px;line-height:1.5;}
+      .subscription-summary-card.primary small{color:#d7e8e3;}
+      .subscription-current-rules{padding:20px;border:1px solid #dfe8e4;border-radius:15px;background:#fff;margin-bottom:18px;}
+      .subscription-current-rules h4{margin:0 0 14px;color:#073c36;font-size:16px;}
+      .subscription-rule-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+      .subscription-rule-grid>div{padding:14px;border-radius:12px;background:#f5f8f6;border:1px solid #e1e9e5;}
+      .subscription-rule-grid span{display:block;color:#7a8984;font-size:10px;margin-bottom:5px;}
+      .subscription-rule-grid strong{display:block;color:#234b43;font-size:12px;}
+      .subscription-plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+      .subscription-plan-card{padding:20px;border:1px solid #dbe6e1;border-radius:17px;background:#fff;box-shadow:0 10px 26px rgba(4,48,42,.06);}
+      .subscription-plan-card.current{border:2px solid #c99a2d;box-shadow:0 13px 30px rgba(201,154,45,.13);}
+      .subscription-plan-card.featured{background:linear-gradient(145deg,#073c36,#0b6557);color:#fff;border-color:#0b6557;}
+      .subscription-plan-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+      .subscription-plan-head span{font-size:10px;font-weight:950;letter-spacing:.12em;color:#a87918;}
+      .subscription-plan-card.featured .subscription-plan-head span{color:#f0c45b;}
+      .subscription-plan-head b{font-size:9px;padding:5px 8px;border-radius:999px;background:#fff4cc;color:#8d6914;}
+      .subscription-plan-card h4{margin:15px 0 1px;color:#073c36;font-size:26px;}
+      .subscription-plan-card.featured h4{color:#fff;}
+      .subscription-plan-card p{margin:0;color:#7a8984;font-size:11px;}
+      .subscription-plan-card.featured p{color:#cfe2dc;}
+      .subscription-plan-card ul{margin:16px 0 18px;padding-left:18px;color:#526a63;font-size:11px;line-height:1.7;}
+      .subscription-plan-card.featured ul{color:#e2efeb;}
+      .subscription-help-box{display:flex;align-items:flex-start;gap:12px;margin-top:18px;padding:15px 17px;border:1px solid #e6d7aa;border-radius:13px;background:#fffaf0;}
+      .subscription-help-box strong{color:#7c5e18;white-space:nowrap;}
+      .subscription-help-box span{color:#6b6553;font-size:11px;line-height:1.55;}
+      @media(max-width:1100px){.settings-admin-tab{font-size:9px !important;padding:7px 4px !important;gap:4px !important}.settings-admin-tab .settings-tab-icon{width:23px !important;height:23px !important;flex-basis:23px !important}.subscription-rule-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+      @media(max-width:760px){.subscription-summary-grid,.subscription-plan-grid{grid-template-columns:1fr}.subscription-rule-grid{grid-template-columns:1fr}.subscription-help-box{flex-direction:column}.settings-admin-tab .settings-tab-icon{display:none !important}.settings-admin-tab{font-size:7.2px !important;padding:5px 2px !important;letter-spacing:-.03em}}
+</style>
 </head>
   <body>
     <section id="loginPage" class="login-page gi-home-page gi-home-v2">
@@ -3773,9 +3875,7 @@
             <h1 id="topTitle">Tableau de bord</h1>
           </div>
           <div class="top-actions">
-            <span id="subscriptionPill" class="pill subscription-pill free"
-              >Free</span
-            ><span id="syncPill" class="pill">Cloud D1 / KV actif</span>
+            <span id="syncPill" class="pill">Cloud D1 / KV actif</span>
             <div class="company-identity">
               <span id="companyPill" class="pill">Entreprise</span
               ><span id="rolePill" class="pill">Administrateur</span>
@@ -3966,41 +4066,6 @@
         <div id="detailBody" class="modal-body"></div>
       </div>
     </div>
-    <div
-      id="businessPromo"
-      class="business-promo"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="businessPromoTitle"
-    >
-      <div class="business-promo-card">
-        <div class="business-promo-head">
-          <div class="business-promo-icon">★</div>
-          <h2 id="businessPromoTitle">Passez à une formule professionnelle</h2>
-          <p>
-            Votre version Free est valable 10 jours et limite votre activité à
-            2 propriétaires et 2 biens immobiliers par propriétaire.
-          </p>
-        </div>
-        <div class="business-promo-body">
-          <ul class="business-promo-list">
-            <li><b>Standard — 6 200 FCFA/mois :</b> 10 propriétaires, 5 biens par propriétaire et Catalogue public complet.</li>
-            <li><b>Business — 56 200 FCFA/an :</b> accès illimité à toutes les fonctionnalités du programme.</li>
-            <li>Le plan Free ne publie aucun bien dans la boutique publique des entreprises.</li>
-          </ul>
-          <div class="business-promo-note">
-            Après le paiement, contactez le service d’activation afin que le
-            Super Admin active la formule choisie.
-          </div>
-          <div class="business-promo-actions">
-            <button class="btn btn-light" type="button" onclick="closeBusinessPromo()">J’ai compris</button>
-            <a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer" onclick="closeBusinessPromo()">Standard — 6 200 F</a>
-            <a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer" onclick="closeBusinessPromo()">Business — 56 200 F</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <input
       id="importBackupFile"
       type="file"
@@ -9450,12 +9515,6 @@
       }
       function startFreeBusinessPromo() {
         stopFreeBusinessPromo();
-        if (!currentCompanyHasFreePlan()) return;
-        setTimeout(showBusinessPromo, 180);
-        freeBusinessPromoTimer = setInterval(
-          showBusinessPromo,
-          BUSINESS_PROMO_INTERVAL_MS,
-        );
       }
 
       /* ======================= FIN V8 OVERRIDES ======================= */
@@ -11462,6 +11521,7 @@
           journal: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`,
           users: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c.8-4 2.8-6 6-6s5.2 2 6 6"/><circle cx="17" cy="9" r="2"/><path d="M15.5 15c2.8.2 4.6 1.8 5.5 5"/></svg>`,
           messages: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>`,
+          subscription: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 9h18M7 14h4M16 14h1"/></svg>`,
         };
         const buttons = [
           ["agency", "Informations de l’agence"],
@@ -11470,6 +11530,7 @@
           ["journal", "Journal de sécurité"],
           ["users", "Utilisateurs"],
           ["messages", "Notes et notifications"],
+          ["subscription", "Abonnement"],
         ];
         return buttons
           .map(([key, label]) => `<button class="settings-admin-tab ${settingsAdminPanel === key ? "active" : ""}" type="button" onclick="openSettingsAdminPanel('${key}')"><span class="settings-tab-icon" aria-hidden="true">${icons[key]}</span><span class="settings-tab-label">${label}</span></button>`)
@@ -11501,6 +11562,33 @@
 
       function settingsAdminPanelHTML() {
         const settings = data.settings;
+        if (settingsAdminPanel === "subscription") {
+          const info = subscriptionInfo(currentEnterprise());
+          const isFree = info.plan === "free";
+          const isStandard = info.plan === "standard";
+          const isBusiness = info.plan === "business";
+          const currentLabel = info.label || (isBusiness ? "Business" : isStandard ? "Standard" : "Free");
+          const statusLabel = info.state === "active" ? "Actif" : info.state === "expired" ? "Expiré" : "Suspendu";
+          return `<div class="card settings-panel-card subscription-page">${settingsPanelHeadingHTML("◈", "GESTION DE L’ABONNEMENT", "Abonnement", "Toutes les informations concernant votre formule sont regroupées dans cette page.")}<div class="settings-panel-body">
+            <div class="subscription-summary-grid">
+              <div class="subscription-summary-card primary"><span>Formule actuelle</span><strong>${esc(currentLabel)}</strong><small>${isFree ? "Gratuite pendant 10 jours" : isStandard ? "6 200 FCFA / mois" : "56 200 FCFA / an"}</small></div>
+              <div class="subscription-summary-card"><span>Statut</span><strong>${statusLabel}</strong><small>${info.state === "active" ? "Abonnement actuellement actif" : "Activation ou renouvellement nécessaire"}</small></div>
+              <div class="subscription-summary-card"><span>Échéance</span><strong>${fmtDate(info.subscriptionEnd)}</strong><small>${Math.max(0, Number(info.daysRemaining || 0))} jour(s) restant(s)</small></div>
+            </div>
+            <div class="subscription-current-rules"><h4>Limites et accès de votre formule</h4><div class="subscription-rule-grid">
+              <div><span>Propriétaires</span><strong>${isBusiness ? "Illimité" : isStandard ? "10 maximum" : "2 maximum"}</strong></div>
+              <div><span>Biens par propriétaire</span><strong>${isBusiness ? "Illimité" : isStandard ? "5 maximum" : "2 maximum"}</strong></div>
+              <div><span>Catalogue public</span><strong>${isFree ? "Non disponible" : "Accès complet"}</strong></div>
+              <div><span>Durée</span><strong>${isFree ? "10 jours" : isStandard ? "30 jours" : "365 jours"}</strong></div>
+            </div></div>
+            <div class="subscription-plan-grid">
+              <article class="subscription-plan-card ${isFree ? "current" : ""}"><div class="subscription-plan-head"><span>FREE</span>${isFree ? "<b>Formule actuelle</b>" : ""}</div><h4>0 FCFA</h4><p>10 jours gratuits</p><ul><li>2 propriétaires maximum</li><li>2 biens par propriétaire</li><li>Catalogue public non disponible</li></ul></article>
+              <article class="subscription-plan-card ${isStandard ? "current" : ""}"><div class="subscription-plan-head"><span>STANDARD</span>${isStandard ? "<b>Formule actuelle</b>" : ""}</div><h4>6 200 FCFA</h4><p>par mois</p><ul><li>10 propriétaires maximum</li><li>5 biens par propriétaire</li><li>Catalogue public complet</li></ul><a class="btn btn-primary full" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Activer / renouveler Standard</a></article>
+              <article class="subscription-plan-card featured ${isBusiness ? "current" : ""}"><div class="subscription-plan-head"><span>BUSINESS</span>${isBusiness ? "<b>Formule actuelle</b>" : ""}</div><h4>56 200 FCFA</h4><p>par année</p><ul><li>Propriétaires illimités</li><li>Biens immobiliers illimités</li><li>Accès complet et illimité</li></ul><a class="btn btn-accent full" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer / renouveler Business</a></article>
+            </div>
+            <div class="subscription-help-box"><strong>Activation après paiement</strong><span>Après règlement, contactez le support afin que le Super Administrateur active ou renouvelle la formule choisie.</span></div>
+          </div></div>`;
+        }
         if (settingsAdminPanel === "finance") {
           return `<div class="card settings-panel-card">${settingsPanelHeadingHTML("₣", "PARAMÈTRES FINANCIERS", "Finances et apparence", "Définissez les valeurs financières utilisées par l’application et personnalisez les couleurs de l’agence.")}<div class="settings-panel-body"><div class="form-grid settings-panel-form"><div class="field"><label>Devise</label><input id="setCurrency" value="${attr(settings.currency)}"></div><div class="field"><label>Taxe par défaut (%)</label><input id="setTax" type="number" value="${settings.taxRate}"></div><div class="field"><label>Commission par défaut (%)</label><input id="setCommission" type="number" value="${settings.defaultCommission}"></div><div class="field"><label>Prix d’un contrat</label><input id="setContractFee" type="number" value="${settings.contractFee}"></div><div class="field"><label>Prix d’une visite</label><input id="setVisitFee" type="number" value="${settings.visitFee}"></div><div class="field"><label>Couleur principale</label><input id="setPrimary" type="color" value="${settings.primary}"></div><div class="field"><label>Couleur secondaire</label><input id="setAccent" type="color" value="${settings.accent}"></div></div></div><div class="settings-panel-save"><button class="btn btn-primary" type="button" onclick="saveFinanceSettings()">Enregistrer les modifications</button></div></div>`;
         }
@@ -11529,15 +11617,8 @@
           navigate("dashboard");
           return;
         }
-        const info = subscriptionInfo(currentEnterprise());
         $("settings").innerHTML =
           pageHead("Paramètres", "Gérez les informations, finances, accès et outils administratifs de votre entreprise.", "") +
-          subscriptionBannerHTML() +
-          (info.plan === "free"
-            ? '<div class="business-upgrade-settings"><div><h3>Passez à une formule payante</h3><p><b>Standard :</b> 6 200 FCFA/mois — 10 propriétaires, 5 biens par propriétaire, Catalogue public.<br><b>Business :</b> 56 200 FCFA/an — accès illimité.</p></div><div class="actions"><a class="btn btn-primary" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=6200" target="_blank" rel="noopener noreferrer">Standard</a><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Business</a></div></div>'
-            : info.plan === "standard"
-              ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
-              : "") +
           `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Navigation interne de paramètres</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
       };
 
