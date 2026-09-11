@@ -1,0 +1,5 @@
+CORRECTION V25 - 2026-09-11
+- Free plafonné à 10 jours effectifs, anciens comptes inclus
+- Activation Free réinitialisée à 10 jours au lieu de cumuler
+- Suppression des textes de bannière Administration
+- Les 7 boutons occupent toute la bannière sur une seule ligne

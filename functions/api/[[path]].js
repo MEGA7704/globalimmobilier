@@ -402,7 +402,7 @@ async function superSubscription(request, env, companyId) {
   if (['free','standard','business'].includes(action)) {
     plan = action;
     const duration = planDurationDays(plan);
-    const base = effectivePlan(company) === plan && isSubscriptionActive(company) ? company.subscription_end : today;
+    const base = plan === 'free' ? today : (effectivePlan(company) === plan && isSubscriptionActive(company) ? company.subscription_end : today);
     status = 'active';
     start = today;
     end = addDays(base, duration);
@@ -793,16 +793,29 @@ function assertSubscription(company) {
   }
 }
 
+function effectiveSubscriptionEnd(company) {
+  let end = company.subscription_end || company.subscriptionEnd || '';
+  if (effectivePlan(company) === 'free') {
+    const start = company.subscription_start || company.subscriptionStart || '';
+    if (start) {
+      const maxEnd = addDays(start, 10);
+      if (!end || new Date(`${maxEnd}T23:59:59Z`).getTime() < new Date(`${end}T23:59:59Z`).getTime()) end = maxEnd;
+    }
+  }
+  return end;
+}
+
 function isSubscriptionActive(company) {
   if ((company.subscription_status || company.subscriptionStatus) === 'suspended') return false;
-  const end = company.subscription_end || company.subscriptionEnd;
+  const end = effectiveSubscriptionEnd(company);
   return !end || new Date(`${end}T23:59:59Z`).getTime() >= Date.now();
 }
 
 function subscriptionDays(company) {
   if (!isSubscriptionActive(company)) return 0;
-  const end = company.subscription_end || company.subscriptionEnd;
-  return Math.max(0, Math.floor((new Date(`${end}T23:59:59Z`).getTime() - Date.now()) / 86400000));
+  const end = effectiveSubscriptionEnd(company);
+  const days = Math.max(0, Math.floor((new Date(`${end}T23:59:59Z`).getTime() - Date.now()) / 86400000));
+  return effectivePlan(company) === 'free' ? Math.min(10, days) : days;
 }
 
 async function uniqueCompanyCode(env, name) {
