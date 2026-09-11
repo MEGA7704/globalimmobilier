@@ -3440,7 +3440,7 @@
     <section id="loginPage" class="login-page gi-home-page gi-home-v2">
       <header class="gi-home-nav gi-home-nav-v2">
         <div class="gi-home-brand">
-          <div class="gi-home-brand-mark"><img class="gi-home-brand-logo-img" src="/global-immobilier-logo.png" alt="Globe GLOBAL IMMOBILIER" /></div>
+          <div class="gi-home-brand-mark"><img class="gi-home-brand-logo-img" src="/global-immobilier-globe.png" alt="Globe GLOBAL IMMOBILIER" /></div>
           <div class="gi-home-brand-copy"><strong>GLOBAL</strong><span>IMMOBILIER</span></div>
           <div class="gi-home-brand-tagline">La gestion immobilière, organisée autrement</div>
         </div>
@@ -8287,6 +8287,309 @@
         .settings-panel-save { padding:14px; }
         .settings-panel-save .btn { width:100%; }
         .settings-embedded-module { padding:14px; }
+      }
+
+
+      /* ===== V19 — Refonte ciblée Accueil + Paramètres Administration ===== */
+      #loginPage .gi-home-nav-v2{
+        min-height:68px;
+        padding-top:6px;
+        padding-bottom:6px;
+      }
+      #loginPage .gi-home-brand{
+        gap:11px;
+      }
+      #loginPage .gi-home-brand-mark{
+        width:48px !important;
+        height:48px !important;
+        flex:0 0 48px !important;
+        overflow:visible;
+      }
+      #loginPage .gi-home-brand-logo-img{
+        width:48px !important;
+        height:48px !important;
+        object-fit:contain !important;
+        object-position:center !important;
+        transform:none !important;
+        filter:drop-shadow(0 4px 8px rgba(0,0,0,.16));
+      }
+      #loginPage .gi-home-brand-copy strong{
+        font-size:21px;
+        line-height:.95;
+        letter-spacing:.025em;
+      }
+      #loginPage .gi-home-brand-copy span{
+        font-size:14px;
+        margin-top:3px;
+      }
+      #loginPage .gi-home-brand-tagline{
+        font-size:10px;
+        padding-left:15px;
+      }
+
+      /* Bannière Administration — fidèle au modèle fourni */
+      .settings-admin-links-v2{
+        width:100%;
+        min-height:138px;
+        display:grid !important;
+        grid-template-columns:minmax(310px, 390px) minmax(0, 1fr) !important;
+        align-items:center !important;
+        column-gap:28px !important;
+        padding:22px 26px !important;
+        border-radius:20px !important;
+        border:1px solid rgba(20,125,106,.24) !important;
+        background:linear-gradient(110deg,#07584b 0%,#086655 55%,#09685a 100%) !important;
+        box-shadow:0 18px 42px rgba(3,55,47,.14) !important;
+        overflow:hidden !important;
+        position:relative;
+      }
+      .settings-admin-links-v2::after{
+        content:"";
+        position:absolute;
+        right:-70px;
+        top:-90px;
+        width:260px;
+        height:260px;
+        transform:rotate(40deg);
+        border-radius:46px;
+        background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.015));
+        pointer-events:none;
+      }
+      .settings-admin-title{
+        min-width:0 !important;
+        padding:4px 28px 4px 16px !important;
+        border-right:1px solid rgba(255,255,255,.24) !important;
+      }
+      .settings-admin-kicker{
+        display:block;
+        margin-bottom:8px;
+        color:#f2bc38 !important;
+        font-size:12px !important;
+        line-height:1;
+        font-weight:950 !important;
+        letter-spacing:.13em !important;
+      }
+      .settings-admin-title h3{
+        margin:0 0 6px !important;
+        color:#fff !important;
+        font-size:30px !important;
+        line-height:1.06 !important;
+        font-weight:900 !important;
+        letter-spacing:-.02em;
+      }
+      .settings-admin-title p{
+        display:block !important;
+        margin:0 !important;
+        color:#d8e9e4 !important;
+        font-size:12px !important;
+        white-space:nowrap !important;
+      }
+      .settings-admin-actions-v2{
+        width:100%;
+        min-width:0;
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        align-items:center !important;
+        justify-content:flex-start !important;
+        gap:10px !important;
+        padding:3px 2px 7px !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        scroll-behavior:smooth;
+      }
+      .settings-admin-tab{
+        flex:0 0 auto !important;
+        min-height:54px !important;
+        padding:8px 14px !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:9px !important;
+        border:1px solid #dce7e3 !important;
+        border-radius:11px !important;
+        background:linear-gradient(180deg,#ffffff,#f8fbfa) !important;
+        color:#173f37 !important;
+        font-size:12px !important;
+        font-weight:900 !important;
+        white-space:nowrap !important;
+        box-shadow:0 8px 18px rgba(0,36,31,.10) !important;
+      }
+      .settings-admin-tab .settings-tab-icon{
+        width:32px !important;
+        height:32px !important;
+        flex:0 0 32px !important;
+        display:grid !important;
+        place-items:center !important;
+        border:0 !important;
+        border-radius:8px !important;
+        background:#edf5f2 !important;
+        color:#07584b !important;
+        font-size:16px !important;
+      }
+      .settings-admin-tab:hover{
+        transform:translateY(-1px) !important;
+        border-color:#d2aa46 !important;
+        box-shadow:0 11px 24px rgba(0,36,31,.14) !important;
+      }
+      .settings-admin-tab.active{
+        background:linear-gradient(135deg,#fff8dd,#f5d77f) !important;
+        color:#123c34 !important;
+        border-color:#e8c35e !important;
+        box-shadow:0 10px 24px rgba(93,71,12,.16) !important;
+      }
+      .settings-admin-tab.active .settings-tab-icon{
+        background:#0a5c4e !important;
+        color:#fff !important;
+      }
+
+      /* Sous-pages Paramètres : présentation administrative plus propre */
+      .settings-admin-panel-host{
+        margin-top:18px !important;
+      }
+      .settings-panel-card,
+      .settings-embedded-module{
+        border:1px solid #dce7e3 !important;
+        border-radius:18px !important;
+        background:#fff !important;
+        box-shadow:0 14px 34px rgba(3,55,47,.07) !important;
+      }
+      .settings-panel-heading{
+        padding:20px 24px !important;
+        background:linear-gradient(135deg,#f8fbfa,#edf5f2) !important;
+        border-bottom:1px solid #dde8e4 !important;
+      }
+      .settings-panel-heading-icon{
+        width:48px !important;
+        height:48px !important;
+        flex-basis:48px !important;
+        border-radius:12px !important;
+        background:linear-gradient(135deg,#07584b,#0a6b5b) !important;
+        color:#f2c75c !important;
+        box-shadow:0 8px 18px rgba(4,73,62,.16) !important;
+      }
+      .settings-panel-kicker{
+        color:#aa7d19 !important;
+        font-size:9px !important;
+        font-weight:950 !important;
+        letter-spacing:.14em !important;
+      }
+      .settings-panel-heading h3{
+        color:#083f37 !important;
+        font-size:22px !important;
+        margin:3px 0 5px !important;
+      }
+      .settings-panel-heading p{
+        max-width:850px !important;
+        color:#687d76 !important;
+        font-size:12px !important;
+      }
+      .settings-panel-body{
+        padding:24px !important;
+        background:#fff;
+      }
+      .settings-panel-form{
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:16px 18px !important;
+        padding:20px !important;
+        border:1px solid #e1eae6 !important;
+        border-radius:14px !important;
+        background:#fbfcfc !important;
+      }
+      .settings-panel-form .field{
+        min-width:0;
+      }
+      .settings-panel-form .field.span-2{
+        grid-column:1/-1 !important;
+      }
+      .settings-panel-form .field label{
+        display:block;
+        margin-bottom:7px !important;
+        color:#294c44 !important;
+        font-size:11px !important;
+        font-weight:900 !important;
+      }
+      .settings-panel-form input,
+      .settings-panel-form select,
+      .settings-panel-form textarea{
+        width:100%;
+        min-height:46px !important;
+        padding:10px 12px !important;
+        border:1px solid #d7e3de !important;
+        border-radius:10px !important;
+        background:#fff !important;
+        box-shadow:inset 0 1px 1px rgba(0,0,0,.015);
+      }
+      .settings-panel-form input:focus,
+      .settings-panel-form select:focus,
+      .settings-panel-form textarea:focus{
+        border-color:#0b7664 !important;
+        box-shadow:0 0 0 3px rgba(11,118,100,.10) !important;
+        outline:none !important;
+      }
+      .settings-panel-save{
+        padding:16px 24px !important;
+        display:flex !important;
+        justify-content:flex-end !important;
+        border-top:1px solid #dfe8e4 !important;
+        background:#f8faf9 !important;
+      }
+      .settings-panel-save .btn{
+        min-width:210px !important;
+        min-height:45px !important;
+        border-radius:10px !important;
+        font-weight:900 !important;
+      }
+      .settings-embedded-module{
+        padding:22px !important;
+      }
+      .settings-embedded-module > .page-head{
+        margin-bottom:18px !important;
+        border:1px solid #e0e9e5 !important;
+        border-radius:14px !important;
+        background:linear-gradient(135deg,#f8fbfa,#eef5f2) !important;
+      }
+
+      @media (max-width:1180px){
+        .settings-admin-links-v2{
+          grid-template-columns:260px minmax(0,1fr) !important;
+          column-gap:16px !important;
+          padding:16px !important;
+        }
+        .settings-admin-title{padding-right:16px !important;}
+        .settings-admin-title h3{font-size:22px !important;}
+        .settings-admin-title p{font-size:10px !important;}
+      }
+      @media (max-width:720px){
+        #loginPage .gi-home-brand-mark{
+          width:38px !important;
+          height:38px !important;
+          flex-basis:38px !important;
+        }
+        #loginPage .gi-home-brand-logo-img{
+          width:38px !important;
+          height:38px !important;
+        }
+        #loginPage .gi-home-brand-copy strong{font-size:16px !important;}
+        #loginPage .gi-home-brand-copy span{font-size:10px !important;}
+        .settings-admin-links-v2{
+          grid-template-columns:170px minmax(0,1fr) !important;
+          min-height:104px !important;
+          column-gap:10px !important;
+          padding:12px !important;
+          border-radius:15px !important;
+        }
+        .settings-admin-title{padding:2px 10px 2px 4px !important;}
+        .settings-admin-kicker{font-size:8px !important;margin-bottom:5px !important;}
+        .settings-admin-title h3{font-size:15px !important;margin-bottom:3px !important;}
+        .settings-admin-title p{display:none !important;}
+        .settings-admin-tab{min-height:44px !important;font-size:10px !important;padding:6px 10px !important;}
+        .settings-admin-tab .settings-tab-icon{width:27px !important;height:27px !important;flex-basis:27px !important;font-size:12px !important;}
+        .settings-panel-form{grid-template-columns:1fr !important;padding:14px !important;}
+        .settings-panel-form .field.span-2{grid-column:auto !important;}
+        .settings-panel-body{padding:14px !important;}
+        .settings-panel-save{padding:14px !important;}
+        .settings-panel-save .btn{width:100% !important;min-width:0 !important;}
       }
 </style></head><body><div class="head"><div class="logo">${data.settings.logo ? `<img src="${attr(data.settings.logo)}">` : "GI"}</div><div><h1>${esc(data.settings.agency)}</h1><div>${esc(data.settings.address)} · ${esc(data.settings.phone)} · ${esc(data.settings.email)}</div><h2>${esc(title)}</h2><div>${esc(subtitle)}</div><div>Référence document : DOC-${Date.now().toString().slice(-8)} · Date : ${new Date().toLocaleDateString("fr-FR")}</div></div></div>${body}<div class="footer">${esc(data.settings.footer)}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`,
         );
