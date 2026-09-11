@@ -3100,25 +3100,334 @@
         .settings-admin-actions .btn { flex:1 1 100%; }
       }
 
+
+
+      /* ===== V17 — Accueil fidèle à la maquette premium GLOBAL IMMOBILIER ===== */
+      #loginPage.gi-home-page{
+        min-height:100vh;
+        background:#073c36;
+        color:#fff;
+      }
+      #loginPage .gi-home-nav-v2{
+        min-height:70px;
+        padding:8px clamp(22px,4vw,76px);
+        background:linear-gradient(90deg,rgba(0,61,54,.98),rgba(0,79,70,.96));
+        border-bottom:1px solid rgba(231,173,47,.46);
+        box-shadow:none;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        position:relative;
+        z-index:20;
+      }
+      #loginPage .gi-home-brand{
+        display:flex;
+        align-items:center;
+        gap:15px;
+      }
+      #loginPage .gi-home-brand-logo-img{
+        width:190px;
+        height:58px;
+        object-fit:contain;
+        object-position:left center;
+        filter:drop-shadow(0 5px 12px rgba(0,0,0,.16));
+      }
+      #loginPage .gi-home-brand-tagline{
+        padding-left:16px;
+        border-left:1px solid rgba(255,255,255,.34);
+        color:#eef7f4;
+        font-size:11px;
+        white-space:nowrap;
+      }
+      #loginPage .gi-home-link{
+        min-height:42px;
+        padding:0 22px;
+        border:0;
+        border-radius:999px;
+        background:linear-gradient(135deg,#f0c04d,#dca523);
+        color:#17362f;
+        font-weight:950;
+        box-shadow:0 8px 20px rgba(0,0,0,.12);
+      }
+      #loginPage .gi-home-main-v2{width:100%;padding:0!important;margin:0!important;max-width:none!important;}
+      #loginPage .gi-home-stage{
+        position:relative;
+        min-height:calc(100vh - 70px);
+        display:grid;
+        grid-template-columns:minmax(0,1.58fr) minmax(500px,.92fr);
+        background:
+          linear-gradient(90deg,rgba(0,51,45,.93) 0%,rgba(0,51,45,.83) 35%,rgba(0,51,45,.52) 58%,rgba(0,51,45,.15) 100%),
+          url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=88') center/cover no-repeat;
+        overflow:hidden;
+      }
+      #loginPage .gi-home-stage::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        background:linear-gradient(0deg,rgba(0,32,28,.36),transparent 45%);
+      }
+      #loginPage .gi-home-showcase{
+        min-height:calc(100vh - 70px);
+        position:relative;
+        z-index:2;
+        background:transparent;
+        overflow:visible;
+      }
+      #loginPage .gi-home-villa{display:none!important;}
+      #loginPage .gi-home-shade{display:none!important;}
+      #loginPage .gi-home-decor-one{
+        width:210px;height:210px;right:-50px;top:0;
+        border-color:rgba(224,179,66,.45);
+      }
+      #loginPage .gi-home-decor-two{
+        width:330px;height:330px;right:-95px;top:-75px;
+        border-color:rgba(224,179,66,.27);
+      }
+      #loginPage .gi-home-showcase-content{
+        min-height:calc(100vh - 70px);
+        max-width:920px;
+        padding:clamp(52px,6vw,88px) clamp(36px,5vw,82px) 38px;
+        justify-content:center;
+      }
+      #loginPage .gi-home-eyebrow{
+        color:#efbb34;
+        font-size:10px;
+        letter-spacing:.20em;
+        font-weight:950;
+      }
+      #loginPage .gi-home-eyebrow span{width:36px;background:#efbb34;}
+      #loginPage .gi-home-showcase h1{
+        max-width:780px;
+        margin:18px 0 14px;
+        font-family:Georgia,'Times New Roman',serif;
+        font-size:clamp(44px,5.1vw,77px);
+        line-height:.99;
+        letter-spacing:-.035em;
+        font-weight:800;
+        color:#fff;
+      }
+      #loginPage .gi-home-showcase h1 em{
+        display:block;
+        margin-top:4px;
+        color:#efbb3f;
+        font-style:normal;
+      }
+      #loginPage .gi-home-showcase-content>p{
+        max-width:730px;
+        color:#eef5f2;
+        font-size:clamp(14px,1.08vw,17px);
+        line-height:1.62;
+      }
+      #loginPage .gi-home-cta-row{margin-top:24px;gap:12px;}
+      #loginPage .gi-home-main-cta,
+      #loginPage .gi-home-catalog-cta{
+        min-height:50px;
+        padding:0 20px;
+        border-radius:12px;
+        font-size:13px;
+        font-weight:900;
+      }
+      #loginPage .gi-home-main-cta{
+        background:linear-gradient(135deg,#efbd3e,#e1a828);
+        border:0;
+        color:#18352f;
+      }
+      #loginPage .gi-home-catalog-cta{
+        background:rgba(3,59,52,.44);
+        border:1px solid rgba(255,255,255,.55);
+        color:#fff;
+      }
+      #loginPage .gi-home-capabilities{
+        width:min(760px,100%);
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px 12px;
+        margin-top:28px;
+      }
+      #loginPage .gi-home-capabilities article{
+        min-height:76px;
+        padding:12px 14px;
+        border:1px solid rgba(255,255,255,.22);
+        border-radius:13px;
+        background:rgba(0,61,54,.62);
+        box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+      }
+      #loginPage .gi-home-capabilities article>span{
+        width:42px;height:42px;flex:0 0 42px;
+        border-radius:50%;
+        border:1px solid #e4b63f;
+        color:#eec44f;
+        font-size:19px;
+        background:rgba(0,48,42,.36);
+      }
+      #loginPage .gi-home-capabilities strong{font-size:12px;color:#fff;}
+      #loginPage .gi-home-capabilities small{font-size:10.5px;color:#dbe8e4;}
+      #loginPage .gi-home-signature{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin-top:28px;
+        color:#d6e6e1;
+        font-size:9px;
+        letter-spacing:.24em;
+        text-transform:uppercase;
+      }
+      #loginPage .gi-home-signature::before{content:"";width:42px;height:2px;background:#e7ad2f;}
+      #loginPage .gi-auth-zone{
+        min-height:calc(100vh - 70px);
+        padding:40px clamp(36px,4vw,64px) 34px;
+        z-index:3;
+        background:rgba(255,255,255,.11);
+        backdrop-filter:blur(1px);
+        -webkit-backdrop-filter:blur(1px);
+        border-left:1px solid rgba(255,255,255,.18);
+        justify-content:center;
+      }
+      #loginPage .gi-auth-zone::before{display:none;}
+      #loginPage .gi-auth-brandline{
+        width:min(600px,100%);
+        margin:0 auto 14px;
+        color:#fff;
+        gap:12px;
+      }
+      #loginPage .gi-auth-mark{
+        width:46px;height:46px;
+        background:#00463d;
+        color:#e7ad2f;
+        border-radius:12px;
+      }
+      #loginPage .gi-auth-brandline strong{color:#f3f8f6;font-size:13px;}
+      #loginPage .gi-auth-brandline small{color:#cfe1dc;font-size:10px;}
+      #loginPage .login-wrap{width:min(600px,100%)!important;}
+      #loginPage .login-card,
+      #loginPage .login-card.create-mode{
+        width:100%;
+        min-height:570px;
+        padding:28px 30px 26px;
+        border-radius:24px;
+        border:1px solid rgba(255,255,255,.76);
+        background:rgba(255,255,255,.98);
+        box-shadow:0 24px 58px rgba(0,33,29,.18);
+        justify-content:center;
+      }
+      #loginPage .gi-login-logo{
+        display:block;
+        width:132px;
+        height:116px;
+        margin:0 auto 3px;
+        object-fit:contain;
+      }
+      #loginPage .gi-login-heading{
+        justify-content:center;
+        text-align:center;
+        margin-bottom:18px;
+      }
+      #loginPage .gi-login-heading small{
+        display:block;
+        color:#bb8120;
+        font-size:10px;
+        letter-spacing:.18em;
+      }
+      #loginPage .gi-login-heading h2{
+        margin:5px 0 4px!important;
+        color:#063c35;
+        font-family:Georgia,'Times New Roman',serif;
+        font-size:38px;
+        text-align:center!important;
+      }
+      #loginPage .gi-login-heading p{
+        color:#6c7c77;
+        text-align:center;
+        font-size:12px;
+      }
+      #loginPage .auth-choice{
+        padding:4px;
+        border-radius:12px;
+        background:#eef2f0;
+        gap:4px;
+      }
+      #loginPage .auth-choice .btn{
+        min-height:46px;
+        border-radius:10px;
+        border:0;
+      }
+      #loginPage .auth-choice .btn-primary,
+      #loginPage .auth-choice .btn.active{
+        background:linear-gradient(135deg,#00675b,#005248);
+        color:#fff;
+        box-shadow:0 7px 18px rgba(0,79,69,.22);
+      }
+      #loginPage .field label{font-size:10px;color:#24473f;font-weight:900;}
+      #loginPage .login-field-control,
+      #loginPage .password-box{
+        position:relative;
+      }
+      #loginPage .auth-panel input{
+        min-height:48px;
+        border-radius:11px;
+        border:1px solid #d7e1dd;
+        background:#fff;
+        box-shadow:none;
+      }
+      #loginPage .login-primary-action{
+        min-height:50px;
+        border-radius:11px;
+        background:linear-gradient(135deg,#00675b,#005247);
+        color:#fff;
+        box-shadow:0 10px 22px rgba(0,79,69,.18);
+      }
+      #loginPage .gi-auth-help{
+        margin-top:13px;
+        color:#7c8a86;
+        font-size:10px;
+      }
+      #loginPage .gi-auth-help span{color:#1b846f;}
+      #loginPage .gi-auth-assurance{
+        width:min(600px,100%);
+        margin:14px auto 0;
+        border-radius:12px;
+        border:1px solid rgba(255,255,255,.7);
+        background:rgba(255,255,255,.94);
+        box-shadow:0 12px 30px rgba(0,42,37,.12);
+      }
+      #loginPage .gi-auth-assurance b{color:#163e36;font-size:10px;}
+      #loginPage .gi-auth-assurance span{color:#7c8985;font-size:9px;}
+      #loginPage .gi-footer{background:#052f2a;border-top:2px solid #b88b27;}
+      @media(max-width:1180px){
+        #loginPage .gi-home-stage{grid-template-columns:1fr;}
+        #loginPage .gi-auth-zone{min-height:auto;padding-block:40px;background:rgba(0,54,48,.42);}
+        #loginPage .gi-home-showcase,#loginPage .gi-home-showcase-content{min-height:660px;}
+        #loginPage .gi-home-brand-tagline{display:none;}
+      }
+      @media(max-width:720px){
+        #loginPage .gi-home-nav-v2{min-height:62px;padding:7px 12px;}
+        #loginPage .gi-home-brand-logo-img{width:135px;height:46px;}
+        #loginPage .gi-home-link{min-height:38px;padding:0 15px;font-size:11px;}
+        #loginPage .gi-home-showcase-content{padding:44px 18px 28px;}
+        #loginPage .gi-home-showcase h1{font-size:42px;}
+        #loginPage .gi-home-capabilities{grid-template-columns:1fr;}
+        #loginPage .gi-auth-zone{padding:28px 14px;}
+        #loginPage .login-card,#loginPage .login-card.create-mode{padding:23px 17px;min-height:auto;}
+        #loginPage .gi-login-logo{width:105px;height:92px;}
+      }
+
 </style>
   </head>
   <body>
     <section id="loginPage" class="login-page gi-home-page gi-home-v2">
       <header class="gi-home-nav gi-home-nav-v2">
         <div class="gi-home-brand">
-          <div class="gi-home-logo">GI</div>
-          <div><strong>GLOBAL IMMOBILIER</strong><small>La gestion immobilière, organisée autrement</small></div>
+          <img class="gi-home-brand-logo-img" src="/global-immobilier-logo.png" alt="GLOBAL IMMOBILIER" />
+          <div class="gi-home-brand-tagline">La gestion immobilière, organisée autrement</div>
         </div>
         <nav aria-label="Navigation principale">
-          <button class="gi-home-link active" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">Accueil</button>
+          <button class="gi-home-link active" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂&nbsp;&nbsp;Accueil</button>
         </nav>
       </header>
 
       <main class="gi-home-main gi-home-main-v2">
         <section class="gi-home-stage">
           <div class="gi-home-showcase">
-            <img class="gi-home-villa" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&amp;fit=crop&amp;w=2200&amp;q=88" alt="Villa moderne de standing" loading="eager" />
-            <div class="gi-home-shade"></div>
             <div class="gi-home-decor gi-home-decor-one"></div>
             <div class="gi-home-decor gi-home-decor-two"></div>
             <div class="gi-home-showcase-content">
@@ -3126,22 +3435,24 @@
               <h1>Gérez votre activité immobilière avec <em>clarté, contrôle et efficacité.</em></h1>
               <p>GLOBAL IMMOBILIER réunit dans un même environnement vos propriétaires, biens, locataires, paiements, dépenses, visites, publications et documents professionnels.</p>
               <div class="gi-home-cta-row">
-                <button class="btn btn-accent gi-home-main-cta" type="button" onclick="setAuthMode('create'); document.querySelector('.gi-auth-zone').scrollIntoView({behavior:'smooth',block:'center'})">Créer mon espace professionnel</button>
-                <button class="btn gi-home-catalog-cta" type="button" onclick="openPublicFromLogin()">Consulter le catalogue public</button>
+                <button class="btn btn-accent gi-home-main-cta" type="button" onclick="setAuthMode('create'); document.querySelector('.gi-auth-zone').scrollIntoView({behavior:'smooth',block:'center'})">♙&nbsp;&nbsp;Créer mon espace professionnel&nbsp;&nbsp;→</button>
+                <button class="btn gi-home-catalog-cta" type="button" onclick="openPublicFromLogin()">▧&nbsp;&nbsp;Consulter le catalogue public</button>
               </div>
               <div class="gi-home-capabilities">
-                <article><span>01</span><div><strong>Portefeuille immobilier</strong><small>Propriétaires, biens et disponibilités centralisés.</small></div></article>
-                <article><span>02</span><div><strong>Gestion locative</strong><small>Locataires, loyers, paiements et échéances suivis.</small></div></article>
-                <article><span>03</span><div><strong>Pilotage financier</strong><small>Comptabilité, dépenses et indicateurs regroupés.</small></div></article>
-                <article><span>04</span><div><strong>Visibilité commerciale</strong><small>Catalogue public, visites et demandes clients.</small></div></article>
+                <article><span>⌂</span><div><strong>Portefeuille immobilier</strong><small>Propriétaires, biens et disponibilités centralisés.</small></div></article>
+                <article><span>♙</span><div><strong>Gestion locative</strong><small>Locataires, loyers, paiements et échéances suivis.</small></div></article>
+                <article><span>▥</span><div><strong>Pilotage financier</strong><small>Comptabilité, dépenses et indicateurs regroupés.</small></div></article>
+                <article><span>◉</span><div><strong>Visibilité commerciale</strong><small>Catalogue public, visites et demandes clients.</small></div></article>
               </div>
+              <div class="gi-home-signature">IMMOBILIER&nbsp;&nbsp;•&nbsp;&nbsp;CONFIANCE&nbsp;&nbsp;•&nbsp;&nbsp;PERFORMANCE</div>
             </div>
           </div>
 
           <aside class="gi-auth-zone" aria-label="Espace de connexion">
-            <div class="gi-auth-brandline"><span class="gi-auth-mark">GI</span><div><strong>Espace professionnel</strong><small>Accès sécurisé à votre entreprise</small></div></div>
+            <div class="gi-auth-brandline"><span class="gi-auth-mark">▣</span><div><strong>Espace professionnel</strong><small>Accès sécurisé à votre entreprise</small></div></div>
             <div class="login-wrap">
               <div class="login-card">
+                <img class="gi-login-logo" src="/global-immobilier-logo.png" alt="GLOBAL IMMOBILIER" />
                 <div class="gi-login-heading">
                   <div><small>GLOBAL IMMOBILIER</small><h2>Bienvenue</h2><p>Connectez-vous ou créez l’espace de votre entreprise immobilière.</p></div>
                 </div>
@@ -3154,7 +3465,7 @@
                   <form id="loginForm">
                     <div class="field"><label for="loginUser">Identifiant</label><input id="loginUser" autocomplete="username" placeholder="Votre identifiant" required /></div>
                     <div class="field"><label for="loginPass">Mot de passe</label><div class="password-box"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required /><button class="password-toggle" type="button" onclick="togglePassword('loginPass', this)">Afficher</button></div></div>
-                    <button class="btn full login-primary-action" type="submit">Se connecter</button>
+                    <button class="btn full login-primary-action" type="submit">Se connecter&nbsp;&nbsp;→</button>
                   </form>
                   <div class="gi-auth-help"><span>●</span> Connexion sécurisée à votre environnement de travail.</div>
                 </div>
@@ -3175,7 +3486,7 @@
                 </div>
               </div>
             </div>
-            <div class="gi-auth-assurance"><b>Une interface pensée pour les professionnels</b><span>Simple à prendre en main · Centralisée · Responsive</span></div>
+            <div class="gi-auth-assurance"><b>Une interface pensée pour les professionnels</b><span>Simple · Centralisée · Responsive</span></div>
           </aside>
         </section>
       </main>
