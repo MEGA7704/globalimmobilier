@@ -3123,17 +3123,51 @@
       #loginPage .gi-home-brand{
         display:flex;
         align-items:center;
-        gap:15px;
+        gap:16px;
+        min-width:0;
+      }
+      #loginPage .gi-home-brand-mark{
+        width:64px;
+        height:64px;
+        flex:0 0 64px;
+        display:grid;
+        place-items:center;
+        overflow:hidden;
+        filter:drop-shadow(0 6px 14px rgba(0,0,0,.16));
       }
       #loginPage .gi-home-brand-logo-img{
-        width:190px;
-        height:58px;
-        object-fit:contain;
+        width:205px;
+        height:64px;
+        object-fit:cover;
         object-position:left center;
-        filter:drop-shadow(0 5px 12px rgba(0,0,0,.16));
+        transform:translateX(0);
+      }
+      #loginPage .gi-home-brand-copy{
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        min-width:0;
+      }
+      #loginPage .gi-home-brand-copy strong{
+        color:#ffffff;
+        font-size:31px;
+        line-height:.88;
+        letter-spacing:.03em;
+        font-weight:900;
+        text-transform:uppercase;
+      }
+      #loginPage .gi-home-brand-copy span{
+        color:#efbb3f;
+        font-size:22px;
+        line-height:1;
+        letter-spacing:.07em;
+        font-weight:800;
+        text-transform:uppercase;
+        margin-top:2px;
       }
       #loginPage .gi-home-brand-tagline{
-        padding-left:16px;
+        padding-left:18px;
+        margin-left:2px;
         border-left:1px solid rgba(255,255,255,.34);
         color:#eef7f4;
         font-size:11px;
@@ -3284,20 +3318,8 @@
         justify-content:center;
       }
       #loginPage .gi-auth-zone::before{display:none;}
-      #loginPage .gi-auth-brandline{
-        width:min(600px,100%);
-        margin:0 auto 14px;
-        color:#fff;
-        gap:12px;
-      }
-      #loginPage .gi-auth-mark{
-        width:46px;height:46px;
-        background:#00463d;
-        color:#e7ad2f;
-        border-radius:12px;
-      }
-      #loginPage .gi-auth-brandline strong{color:#f3f8f6;font-size:13px;}
-      #loginPage .gi-auth-brandline small{color:#cfe1dc;font-size:10px;}
+      #loginPage .gi-auth-brandline{display:none!important;}
+      #loginPage .gi-auth-mark{display:none!important;}
       #loginPage .login-wrap{width:min(600px,100%)!important;}
       #loginPage .login-card,
       #loginPage .login-card.create-mode{
@@ -3323,10 +3345,7 @@
         margin-bottom:18px;
       }
       #loginPage .gi-login-heading small{
-        display:block;
-        color:#bb8120;
-        font-size:10px;
-        letter-spacing:.18em;
+        display:none!important;
       }
       #loginPage .gi-login-heading h2{
         margin:5px 0 4px!important;
@@ -3401,7 +3420,11 @@
       }
       @media(max-width:720px){
         #loginPage .gi-home-nav-v2{min-height:62px;padding:7px 12px;}
-        #loginPage .gi-home-brand-logo-img{width:135px;height:46px;}
+        #loginPage .gi-home-brand{gap:10px;}
+        #loginPage .gi-home-brand-mark{width:44px;height:44px;flex-basis:44px;}
+        #loginPage .gi-home-brand-logo-img{width:140px;height:44px;}
+        #loginPage .gi-home-brand-copy strong{font-size:18px;}
+        #loginPage .gi-home-brand-copy span{font-size:13px;}
         #loginPage .gi-home-link{min-height:38px;padding:0 15px;font-size:11px;}
         #loginPage .gi-home-showcase-content{padding:44px 18px 28px;}
         #loginPage .gi-home-showcase h1{font-size:42px;}
@@ -3417,7 +3440,8 @@
     <section id="loginPage" class="login-page gi-home-page gi-home-v2">
       <header class="gi-home-nav gi-home-nav-v2">
         <div class="gi-home-brand">
-          <img class="gi-home-brand-logo-img" src="/global-immobilier-logo.png" alt="GLOBAL IMMOBILIER" />
+          <div class="gi-home-brand-mark"><img class="gi-home-brand-logo-img" src="/global-immobilier-logo.png" alt="Globe GLOBAL IMMOBILIER" /></div>
+          <div class="gi-home-brand-copy"><strong>GLOBAL</strong><span>IMMOBILIER</span></div>
           <div class="gi-home-brand-tagline">La gestion immobilière, organisée autrement</div>
         </div>
         <nav aria-label="Navigation principale">
@@ -3449,12 +3473,11 @@
           </div>
 
           <aside class="gi-auth-zone" aria-label="Espace de connexion">
-            <div class="gi-auth-brandline"><span class="gi-auth-mark">▣</span><div><strong>Espace professionnel</strong><small>Accès sécurisé à votre entreprise</small></div></div>
             <div class="login-wrap">
               <div class="login-card">
                 <img class="gi-login-logo" src="/global-immobilier-logo.png" alt="GLOBAL IMMOBILIER" />
                 <div class="gi-login-heading">
-                  <div><small>GLOBAL IMMOBILIER</small><h2>Bienvenue</h2><p>Connectez-vous ou créez l’espace de votre entreprise immobilière.</p></div>
+                  <div><h2>Bienvenue</h2><p>Connectez-vous ou créez l’espace de votre entreprise immobilière.</p></div>
                 </div>
                 <div class="auth-choice">
                   <button id="authLoginBtn" class="btn btn-primary active" type="button" onclick="setAuthMode('login')">Se connecter</button>
@@ -3486,7 +3509,6 @@
                 </div>
               </div>
             </div>
-            <div class="gi-auth-assurance"><b>Une interface pensée pour les professionnels</b><span>Simple · Centralisée · Responsive</span></div>
           </aside>
         </section>
       </main>
@@ -8013,30 +8035,44 @@
         display:flex;
         flex-direction:row !important;
         align-items:center;
-        gap:18px;
+        gap:22px;
         width:100%;
-        padding:16px 18px;
-        border:1px solid rgba(231,173,47,.34);
-        border-radius:18px;
-        background:linear-gradient(110deg,#063a33 0%,#07554b 58%,#0a6256 100%);
-        box-shadow:0 16px 34px rgba(4,48,42,.15);
+        padding:22px 24px;
+        border:1px solid rgba(231,173,47,.18);
+        border-radius:22px;
+        background:linear-gradient(120deg,#075244 0%,#0a6a5a 55%,#0b5b4e 100%);
+        box-shadow:0 20px 40px rgba(4,48,42,.14);
         overflow:hidden;
+        position:relative;
+        isolation:isolate;
+      }
+      .settings-admin-links-v2::before{
+        content:"";
+        position:absolute;
+        inset:auto -60px -70px auto;
+        width:240px;
+        height:240px;
+        border-radius:40px;
+        background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.02));
+        transform:rotate(28deg);
+        pointer-events:none;
+        z-index:-1;
       }
       .settings-admin-title {
         flex:0 0 auto;
-        min-width:205px;
-        padding-right:17px;
-        border-right:1px solid rgba(255,255,255,.16);
+        min-width:400px;
+        padding-right:26px;
+        border-right:1px solid rgba(255,255,255,.18);
       }
-      .settings-admin-title h3 { margin:3px 0 2px; color:#fff; font-size:15px; line-height:1.2; }
-      .settings-admin-title p { margin:0; color:#bad4cd; font-size:9.5px; white-space:nowrap; }
+      .settings-admin-title h3 { margin:4px 0 4px; color:#fff; font-size:20px; line-height:1.14; font-weight:900; }
+      .settings-admin-title p { margin:0; color:#d8ebe6; font-size:9px; letter-spacing:.04em; white-space:nowrap; }
       .settings-admin-actions-v2 {
         flex:1 1 auto;
         min-width:0;
         display:flex;
         align-items:center;
         justify-content:flex-start;
-        gap:8px;
+        gap:12px;
         flex-wrap:nowrap !important;
         overflow-x:auto;
         overflow-y:hidden;
@@ -8049,22 +8085,22 @@
       .settings-admin-actions-v2::-webkit-scrollbar-thumb { background:rgba(240,196,91,.65); border-radius:999px; }
       .settings-admin-tab {
         flex:0 0 auto;
-        min-height:46px;
+        min-height:52px;
         display:inline-flex;
         align-items:center;
         justify-content:center;
-        gap:8px;
-        padding:8px 13px 8px 9px;
-        border:1px solid rgba(255,255,255,.20);
-        border-radius:12px;
-        background:rgba(255,255,255,.075);
-        color:#edf7f4;
+        gap:10px;
+        padding:10px 16px 10px 12px;
+        border:1px solid rgba(7,60,54,.12);
+        border-radius:14px;
+        background:#ffffff;
+        color:#173f37;
         font:inherit;
-        font-size:10.5px;
-        font-weight:850;
+        font-size:11px;
+        font-weight:900;
         white-space:nowrap;
         cursor:pointer;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+        box-shadow:0 10px 22px rgba(0,0,0,.08);
         transition:transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
       }
       .settings-admin-tab .settings-tab-icon {
@@ -8074,28 +8110,28 @@
         display:grid;
         place-items:center;
         border-radius:9px;
-        background:rgba(255,255,255,.10);
-        border:1px solid rgba(255,255,255,.13);
-        color:#f0c45b;
+        background:#f4f8f6;
+        border:1px solid #dde8e3;
+        color:#0a5b4e;
         font-size:14px;
         line-height:1;
       }
       .settings-admin-tab:hover {
         transform:translateY(-1px);
-        border-color:rgba(240,196,91,.72);
-        background:rgba(255,255,255,.13);
-        box-shadow:0 8px 18px rgba(0,0,0,.12);
+        border-color:rgba(240,196,91,.48);
+        background:#ffffff;
+        box-shadow:0 12px 24px rgba(0,0,0,.12);
       }
       .settings-admin-tab.active {
-        color:#173f37;
-        border-color:#f0cb6e;
-        background:linear-gradient(135deg,#f6df8f,#e2ad31);
-        box-shadow:0 9px 22px rgba(0,0,0,.18);
+        color:#ffffff;
+        border-color:rgba(255,255,255,.26);
+        background:linear-gradient(135deg,#0b6558,#0e7a68);
+        box-shadow:0 14px 28px rgba(0,0,0,.17);
       }
       .settings-admin-tab.active .settings-tab-icon {
-        color:#063a33;
-        background:rgba(255,255,255,.45);
-        border-color:rgba(6,58,51,.12);
+        color:#ffffff;
+        background:rgba(255,255,255,.18);
+        border-color:rgba(255,255,255,.12);
       }
       .settings-admin-panel-host {
         scroll-margin-top:112px;
@@ -8112,19 +8148,19 @@
         padding:0;
         overflow:hidden;
         border:1px solid #dbe6e1;
-        border-radius:18px;
+        border-radius:20px;
         background:#fff;
-        box-shadow:0 13px 34px rgba(4,48,42,.08);
+        box-shadow:0 18px 38px rgba(4,48,42,.09);
       }
       .settings-panel-heading {
         display:flex;
         align-items:center;
         justify-content:space-between;
         gap:18px;
-        padding:20px 22px;
+        padding:22px 24px;
         margin:0;
         border-bottom:1px solid #dfe8e4;
-        background:linear-gradient(135deg,#f8fbf9,#eef5f2);
+        background:linear-gradient(135deg,#fbfdfc,#edf5f2);
       }
       .settings-panel-heading-main { display:flex; align-items:center; gap:14px; min-width:0; }
       .settings-panel-heading-icon {
@@ -8232,17 +8268,17 @@
       }
 
       @media (max-width: 1050px) {
-        .settings-admin-links-v2 { gap:12px; padding:14px; }
-        .settings-admin-title { min-width:180px; padding-right:12px; }
+        .settings-admin-links-v2 { gap:14px; padding:16px; }
+        .settings-admin-title { min-width:250px; padding-right:14px; }
         .settings-admin-title p { display:none; }
-        .settings-admin-tab { padding-right:11px; }
+        .settings-admin-tab { padding-right:12px; }
       }
       @media (max-width: 650px) {
-        .settings-admin-links-v2 { flex-direction:row !important; align-items:center !important; padding:12px; gap:10px; border-radius:14px; }
-        .settings-admin-title { min-width:142px; }
-        .settings-admin-title h3 { font-size:13px; }
+        .settings-admin-links-v2 { flex-direction:row !important; align-items:center !important; padding:12px; gap:10px; border-radius:16px; }
+        .settings-admin-title { min-width:190px; }
+        .settings-admin-title h3 { font-size:15px; }
         .settings-admin-kicker { font-size:8px; }
-        .settings-admin-tab { min-height:42px; font-size:10px; padding:6px 10px 6px 7px; }
+        .settings-admin-tab { min-height:44px; font-size:10px; padding:7px 11px 7px 8px; }
         .settings-admin-tab .settings-tab-icon { width:27px; height:27px; flex-basis:27px; font-size:12px; }
         .settings-panel-heading { padding:16px; }
         .settings-panel-heading-icon { width:40px; height:40px; flex-basis:40px; }
@@ -10974,7 +11010,7 @@
             : info.plan === "standard"
               ? '<div class="business-upgrade-settings"><div><h3>Passez au plan Business</h3><p>56 200 FCFA/an — accès illimité au programme complet.</p></div><a class="btn btn-accent" href="https://pay.wave.com/m/M_ci_Enx-2JNAklk-/c/ci/?amount=56200" target="_blank" rel="noopener noreferrer">Activer Business</a></div>'
               : "") +
-          `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Navigation interne des paramètres</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
+          `<div class="settings-admin-links settings-admin-links-v2"><div class="settings-admin-title"><span class="settings-admin-kicker">ADMINISTRATION</span><h3>Gestion de l’entreprise</h3><p>Navigation interne de paramètres</p></div><div class="settings-admin-actions settings-admin-actions-v2">${settingsAdminButtonsHTML()}</div></div><div id="settingsAdminPanelHost" class="settings-admin-panel-host">${settingsAdminPanelHTML()}</div>`;
       };
 
       async function saveAgencySettings() {
